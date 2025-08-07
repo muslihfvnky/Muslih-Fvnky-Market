@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pembayaran Muslih Fvnky</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .box {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background-color: #e60000;
+      color: #fff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Pembayaran Muslih Fvnky</h2>
+    <p><strong>Nomor DANA:</strong> 083821665970</p>
+
+    <label for="produk">Jenis Produk:</label>
+    <input type="text" id="produk" placeholder="Contoh: FLM Trabas" required />
+
+    <label for="nominal">Nominal Transfer (Rp):</label>
+    <input type="number" id="nominal" placeholder="Contoh: 100.000" required />
+
+    <button onclick="kirimWA()">Kirim ke WhatsApp</button>
+  </div>
+
+  <script>
+    function kirimWA() {
+      const produk = document.getElementById('produk').value;
+      const nominal = document.getElementById('nominal').value;
+
+      if (!produk || !nominal) {
+        alert('Mohon isi semua data');
+        return;
+      }
+
+      const metode = "DANA";
+      const now = new Date();
+      const jam = now.toTimeString().split(' ')[0];
+
+      const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+      const tanggal = `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+      const transaksiID = `MF-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      const pesan = `*Website Pembayaran - Muslih Fvnky*
+
+*📌 ID Transaksi : ${transaksiID}*
+*🛒 Produk         : ${produk}*
+*💰 Nominal        : Rp${nominal}*
+*💳 Metode         : ${metode}*
+*🕒 Jam               : ${jam} WIB*
+*📅 Tanggal        : ${tanggal}*
+> *Harap kirim screenshot transaksi*`;
+
+      const url = `https://wa.me/6283821665970?text=${encodeURIComponent(pesan)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
