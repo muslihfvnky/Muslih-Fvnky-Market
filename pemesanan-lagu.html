@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pemesanan Remix</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .box {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background-color: #e60000;
+      color: #fff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Pemesanan Remix Lagu</h2>
+
+    <label for="Judul">Silahkan Isi Mau Remix Lagu Apa:</label>
+    <input type="text" id="Judul" placeholder="Contoh: Empat Mata" required />
+
+    <label for="Style">Tulis Mau Style Apa??:</label>
+    <input type="text" id="Style" placeholder="Contoh: Style Candu" required />
+
+    <label for="LinkYT">Kirim Link YT Stylenya!!:</label>
+    <input type="text" id="LinkYT" placeholder="Contoh: https://youtu.be/abcd1234" required />
+
+    <button onclick="kirimWA()">Kirim ke WhatsApp</button>
+  </div>
+
+  <script>
+    function kirimWA() {
+      const Judul = document.getElementById('Judul').value.trim();
+      const Style = document.getElementById('Style').value.trim();
+      const LinkYT = document.getElementById('LinkYT').value.trim();
+
+      if (!Judul || !Style || !LinkYT) {
+        alert('Mohon isi semua data');
+        return;
+      }
+
+      const transaksiID = `RMX-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      const now = new Date();
+      const jam = now.toTimeString().split(' ')[0];
+      const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      const tanggal = `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+
+      const pesan = `*Website Pemesanan Remix - Muslih Fvnky*\n\n*📌 ID Transaksi : ${transaksiID}*\n*🎵 Judul        : ${Judul}*\n*🎧 Style        : ${Style}*\n*🔗 Link YT Style : ${LinkYT}*\n*🕒 Jam          : ${jam} WIB*\n*📅 Tanggal      : ${tanggal}*\n\n> *terimakasih sudah mengirim silahkan tunggu admin membalas 🙏🏻*`;
+
+      const url = `https://wa.me/6283821665970?text=${encodeURIComponent(pesan)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
