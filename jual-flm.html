@@ -24,45 +24,91 @@
     FLM Dibawah Hanya Khusus FL Studio Mobile Ya!! Ouh Iya Cara Pemasangannya Yaitu Kalian Gausah Di extract Jadi Langsung Di Import Di FLnya Langsung Atau Kalo Masih Belum Paham Bisa Hubungi WA Saya
   </p>
 
-  <ul class="space-y-3">
+  <ul class="space-y-4">
     <li>
       <a href="pembayaran.html?produk=FLM RULLY FVNKY" class="block p-3 bg-red-800 rounded hover:bg-red-700">
         FLM RULLY FVNKY – Harga: Rp 98.000
       </a>
+      <button onclick="togglePlay('audio1', this)" class="mt-1 w-full p-2 bg-green-600 hover:bg-green-500 rounded">▶ Play Preview</button>
+      <audio id="audio1" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Rully%20Fvnky%20Contoh.mp3"></audio>
     </li>
+
     <li>
       <a href="pembayaran.html?produk=FLM KONDANG" class="block p-3 bg-red-800 rounded hover:bg-red-700">
         FLM KONDANG – Harga: Rp 99.000
       </a>
+      <button onclick="togglePlay('audio2', this)" class="mt-1 w-full p-2 bg-green-600 hover:bg-green-500 rounded">▶ Play Preview</button>
+      <audio id="audio2" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kondang%20Contoh.mp3"></audio>
     </li>
+
     <li>
-            <a href="pembayaran.html?produk=REQUEST FLM!!" class="block p-3 bg-red-800 rounded hover:bg-red-700">
+      <a href="pembayaran.html?produk=REQUEST FLM!!" class="block p-3 bg-red-800 rounded hover:bg-red-700">
         REQUEST FLM!! – Harga: 80K - 115K
       </a>
+      <button onclick="togglePlay('audio3', this)" class="mt-1 w-full p-2 bg-green-600 hover:bg-green-500 rounded">▶ Play Preview</button>
+      <audio id="audio3" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Request%20FLM%20Contoh.mp3"></audio>
     </li>
+
     <li>
-            <a href="pembayaran.html?produk=FLM HIPDUT LAMUNAN" class="block p-3 bg-red-800 rounded hover:bg-red-700">
+      <a href="pembayaran.html?produk=FLM HIPDUT LAMUNAN" class="block p-3 bg-red-800 rounded hover:bg-red-700">
         FLM HIPDUT LAMUNAN – Harga: Rp 115.000
       </a>
+      <button onclick="togglePlay('audio4', this)" class="mt-1 w-full p-2 bg-green-600 hover:bg-green-500 rounded">▶ Play Preview</button>
+      <audio id="audio4" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Hipdut%20Contoh.mp3"></audio>
     </li>
+
     <li>
-         <a href="pembayaran.html?produk=FLM MAMAN FVNDY" class="block p-3 bg-red-800 rounded hover:bg-red-700">
+      <a href="pembayaran.html?produk=FLM MAMAN FVNDY" class="block p-3 bg-red-800 rounded hover:bg-red-700">
         FLM MAMAN FVNDY – Harga: Rp 115.000
       </a>
+      <button onclick="togglePlay('audio5', this)" class="mt-1 w-full p-2 bg-green-600 hover:bg-green-500 rounded">▶ Play Preview</button>
+      <audio id="audio5" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Maman%20Fvndy%20Contoh.mp3"></audio>
     </li>
+
     <li>
       <a href="pembayaran.html?produk=FLM Style Candu" class="block p-3 bg-red-800 rounded hover:bg-red-700">
-        FLM Style Candu – Harga: Rp 98.000
+        FLM Style Candu - Harga: Rp 98.000
       </a>
+      <button onclick="togglePlay('audio6', this)" class="mt-1 w-full p-2 bg-green-600 hover:bg-green-500 rounded">
+        ▶ Play Preview
+      </button>
+      <audio id="audio6" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Candu%20Contoh.mp3"></audio>
     </li>
-        <a href="pembayaran.html?produk=FLM HAPPY TEAM ORI" class="block p-3 bg-red-800 rounded hover:bg-red-700">
+
+    <li>
+      <a href="pembayaran.html?produk=FLM HAPPY TEAM ORI" class="block p-3 bg-red-800 rounded hover:bg-red-700">
         FLM HAPPY TEAM ORI – Harga: Rp 95.000
       </a>
+      <button onclick="togglePlay('audio7', this)" class="mt-1 w-full p-2 bg-green-600 hover:bg-green-500 rounded">▶ Play Preview</button>
+      <audio id="audio7" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Happy%20Team%20Contoh.mp3"></audio>
     </li>
-    <li>
   </ul>
+
   <footer class="mt-8 text-xs text-gray-400 border-t border-gray-600 pt-4 bg-black/50 p-2 rounded">
     © 2025 Muslih Fvnky Shop. All rights reserved.
   </footer>
+
+  <script>
+    function togglePlay(audioId, btn) {
+      const audios = document.querySelectorAll('audio');
+      audios.forEach(audio => {
+        if (audio.id !== audioId) {
+          audio.pause();
+          audio.currentTime = 0;
+          const otherBtn = audio.previousElementSibling;
+          if (otherBtn) otherBtn.textContent = '▶ Play Preview';
+        }
+      });
+
+      const audio = document.getElementById(audioId);
+      if (audio.paused) {
+        audio.play();
+        btn.textContent = '⏸ Pause Preview';
+      } else {
+        audio.pause();
+        btn.textContent = '▶ Play Preview';
+      }
+    }
+  </script>
 </body>
 </html>
