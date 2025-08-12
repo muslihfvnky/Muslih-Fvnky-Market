@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jasa Nyusun Chord & BPM Lagu — Muslih Fvnky</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-image: url('https://i.imgur.com/5HuEhsu.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      margin: 0;
+    }
+    .overlay {
+      background: rgba(0,0,0,0.72);
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body class="text-white font-sans">
+  <div class="overlay">
+    <div class="max-w-2xl mx-auto p-4">
+
+      <!-- Header -->
+      <header class="flex items-center gap-4 p-4 bg-gradient-to-r from-black to-red-900 text-white shadow-md rounded-lg mb-6">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="Logo Muslih Fvnky" class="w-14 h-14 rounded-full shadow-lg">
+        <div>
+          <h1 class="text-xl font-bold">Muslih Fvnky Shop</h1>
+          <p class="text-sm text-gray-300">Jasa Nyusun Chord & BPM Lagu — Kirim detail, kami proses</p>
+        </div>
+      </header>
+
+      <!-- Form -->
+      <main class="bg-black/60 p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-2">Pesan Jasa Nyusun Chord & BPM Lagu</h2>
+        <p class="text-sm text-gray-300 mb-4">Pilih paket, isi data & detail, lalu kirim ke WhatsApp.</p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm mb-1">Nama</label>
+            <input id="nama" type="text" placeholder="Masukkan nama kamu" class="w-full p-3 rounded bg-gray-800 border border-gray-700" />
+          </div>
+
+          <div>
+            <label class="block text-sm mb-1">Kontak (WA atau Email)</label>
+            <input id="kontak" type="text" placeholder="Contoh: 0838xxxx atau email@ex.com" class="w-full p-3 rounded bg-gray-800 border border-gray-700" />
+          </div>
+
+          <div>
+            <label class="block text-sm mb-1">Pilih Paket</label>
+            <select id="paket" class="w-full p-3 rounded bg-gray-800 border border-gray-700">
+              <option value="1 Lagu - Rp 20.000">1 Lagu — Rp 20.000</option>
+              <option value="2 Lagu - Rp 40.000">2 Lagu — Rp 40.000</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm mb-1">Link Lagu YouTube</label>
+            <input id="linkfile" type="text" placeholder="https://youtube.com/..." class="w-full p-3 rounded bg-gray-800 border border-gray-700" />
+            <p class="text-xs text-gray-400 mt-1">Tempel link lagu yang mau dibuat chord & BPM-nya.</p>
+          </div>
+
+          <div>
+            <label class="block text-sm mb-1">Detail / Catatan</label>
+            <textarea id="catatan" rows="4" placeholder="Contoh: ingin chord gitar + tempo BPM jelas" class="w-full p-3 rounded bg-gray-800 border border-gray-700"></textarea>
+          </div>
+
+          <div class="flex gap-3">
+            <button id="waBtn" onclick="kirimWA()" class="flex-1 p-3 bg-red-600 rounded font-bold hover:bg-red-500">Kirim & Pesan lewat WhatsApp</button>
+            <button id="previewBtn" onclick="previewTemplate()" class="w-40 p-3 bg-green-600 rounded font-semibold hover:bg-green-500">Preview Pesan</button>
+          </div>
+
+          <p id="msg" class="text-sm text-gray-300"></p>
+        </div>
+      </main>
+
+      <footer class="text-center text-gray-400 text-xs mt-6">
+        © 2025 Muslih Fvnky Shop. All rights reserved.
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const WA_NUMBER = "6283821665970";
+
+    function generateID(prefix='CHD') {
+      return prefix + '-' + Math.floor(100000 + Math.random() * 900000);
+    }
+
+    function getDateTime() {
+      const now = new Date();
+      const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+      const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+      const jam = now.toTimeString().split(' ')[0];
+      const tanggal = `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+      return { jam, tanggal };
+    }
+
+    function buildMessage(nama, kontak, paket, linkfile, catatan) {
+      const trx = generateID('CHD');
+      const dt = getDateTime();
+      let msg = `*Website Pemesanan Nyusun Chord & BPM Lagu - Muslih Fvnky*%0A%0A`;
+      msg += `*📌 ID Transaksi : ${trx}*%0A`;
+      msg += `*👤 Nama        : ${nama || '-'}*%0A`;
+      msg += `*📞 Kontak      : ${kontak || '-'}*%0A`;
+      msg += `*🎵 Paket       : ${paket}*%0A`;
+      if (linkfile) msg += `*🔗 Link Lagu   : ${linkfile}*%0A`;
+      msg += `*📝 Catatan     : ${catatan || '-'}*%0A`;
+      msg += `*🕒 Jam         : ${dt.jam} WIB*%0A`;
+      msg += `*📅 Tanggal     : ${dt.tanggal}*%0A%0A`;
+      msg += `> *Terima kasih — silakan tunggu admin membalas.*`;
+      return { text: msg, trx };
+    }
+
+    function kirimWA() {
+      const nama = document.getElementById('nama').value.trim();
+      const kontak = document.getElementById('kontak').value.trim();
+      const paket = document.getElementById('paket').value;
+      const linkfile = document.getElementById('linkfile').value.trim();
+      const catatan = document.getElementById('catatan').value.trim();
+      const statusEl = document.getElementById('msg');
+
+      if (!nama || !kontak) {
+        statusEl.textContent = 'Mohon isi Nama dan Kontak agar admin dapat menghubungi Anda.';
+        return;
+      }
+
+      const { text, trx } = buildMessage(nama, kontak, paket, linkfile, catatan);
+      const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(decodeURIComponent(text))}`;
+      statusEl.innerHTML = `Pesan siap dikirim (ID: <strong>${trx}</strong>) — membuka WhatsApp...`;
+      window.open(url, '_blank');
+    }
+
+    function previewTemplate() {
+      const nama = document.getElementById('nama').value.trim();
+      const kontak = document.getElementById('kontak').value.trim();
+      const paket = document.getElementById('paket').value;
+      const linkfile = document.getElementById('linkfile').value.trim();
+      const catatan = document.getElementById('catatan').value.trim();
+      const { text } = buildMessage(nama, kontak, paket, linkfile, catatan);
+
+      const decoded = decodeURIComponent(text.replace(/%0A/g, '\n'));
+      const w = window.open('', '_blank', 'width=600,height=600');
+      w.document.write('<pre style="white-space:pre-wrap;font-family:monospace;padding:20px;background:#111;color:#fff;">' + decoded + '</pre>');
+      w.document.title = 'Preview Pesan';
+    }
+  </script>
+</body>
+</html>
