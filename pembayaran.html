@@ -61,7 +61,7 @@
     <p><strong>Nomor DANA:</strong> 083821665970</p>
 
     <!-- Gambar QR DANA -->
-    <img src="https://i.imgur.com/qD7pCy2.jpeg" alt="QR DANA" class="qr-img" />
+    <img src="blob:https://imgur.com/c3f2b905-f843-44ef-9297-8209c7b93b8c" alt="QR DANA" class="qr-img" />
 
     <label for="produk">Jenis Produk:</label>
     <input type="text" id="produk" placeholder="Contoh: FLM Trabas" required />
@@ -94,8 +94,8 @@
         alert('Mohon isi nominal transfer');
         return;
       }
-      // Link DANA (akan buka aplikasi di HP)
-      const danaLink = `https://link.dana.id/minta/083821665970`;
+      // Link DANA terbaru
+      const danaLink = `https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012012022011164159294`;
       window.open(danaLink, '_blank');
     });
 
