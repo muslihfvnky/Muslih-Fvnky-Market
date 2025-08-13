@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -5,7 +6,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-image: url('https://i.imgur.com/5HuEhsu.jpeg');
+      background-image: url('https://i.imgur.com/p0K2KQs.png');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -13,7 +14,7 @@
       text-align: center;
       padding: 20px;
     }
-    /* Overlay hitam transparan supaya teks lebih jelas */
+    /* Overlay transparan */
     .overlay {
       background-color: rgba(0, 0, 0, 0.6);
       padding: 20px;
@@ -21,21 +22,42 @@
       max-width: 400px;
       margin: auto;
     }
-    input, select, button {
+    /* Input & Select Transparan + Border Mint */
+    input, select {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       border-radius: 5px;
-      border: none;
+      border: 2px solid #0FFCBE;
+      background-color: rgba(255, 255, 255, 0.05);
+      font-size: 16px;
+      color: white;
+      box-sizing: border-box;
+      outline: none;
+      transition: 0.3s ease;
     }
+    input:focus, select:focus {
+      box-shadow: 0 0 8px #0FFCBE;
+      border-color: #0FFCBE;
+    }
+    /* Tombol WhatsApp */
     button {
-      background-color: #e60000;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 2px solid #0FFCBE;
+      background-color: #106EBE;
       color: #fff;
       font-weight: bold;
       cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
     }
     button:hover {
-      background-color: #ff1a1a;
+      background-color: #0FFCBE;
+      color: #000;
+      box-shadow: 0 0 15px #0FFCBE, 0 0 25px #106EBE;
     }
   </style>
 </head>
@@ -67,7 +89,6 @@
       }
 
       const transaksiID = `RMX-${Math.floor(100000 + Math.random() * 900000)}`;
-
       const now = new Date();
       const jam = now.toTimeString().split(' ')[0];
       const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
