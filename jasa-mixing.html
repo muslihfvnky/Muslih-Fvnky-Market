@@ -6,18 +6,52 @@
   <title>Jasa Mixing & Mastering — Muslih Fvnky</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Background sama seperti halaman lain */
+    /* Background sesuai request */
     body {
-      background-image: url('https://i.imgur.com/5HuEhsu.jpeg');
+      background-image: url('https://i.imgur.com/p0K2KQs.png');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       margin: 0;
     }
-    /* overlay agar teks terbaca */
     .overlay {
       background: rgba(0,0,0,0.72);
       min-height: 100vh;
+    }
+
+    /* Input / Select / Textarea: transparan + border mint + hover/focus glow */
+    input, select, textarea {
+      background-color: rgba(255,255,255,0.05);
+      border: 2px solid #0FFCBE;
+      color: #fff;
+      transition: box-shadow .25s ease, border-color .25s ease, background-color .25s ease;
+      border-radius: .5rem; /* biar match sama tombol */
+    }
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,.75);
+    }
+    input:hover, select:hover, textarea:hover,
+    input:focus, select:focus, textarea:focus,
+    input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: none;
+      border-color: #0FFCBE;
+      box-shadow: 0 0 10px #0FC, 0 0 20px #106EBE55;
+      background-color: rgba(255,255,255,0.07);
+    }
+
+    /* Tombol: biru -> hover mint + glow biru-mint */
+    .btn {
+      border: 2px solid #0FFCBE;
+      background-color: #106EBE;
+      color: #fff;
+      transition: all .25s ease;
+      border-radius: .5rem;
+    }
+    .btn:hover, .btn:focus-visible {
+      background-color: #0FFCBE;
+      color: #106EBE; /* teks biru saat hover */
+      box-shadow: 0 0 14px #0FFCBE, 0 0 28px #106EBE;
+      outline: none;
     }
   </style>
 </head>
@@ -25,34 +59,34 @@
   <div class="overlay">
     <div class="max-w-2xl mx-auto p-4">
 
-      <!-- Header (sama gaya dengan halaman lain) -->
-      <header class="flex items-center gap-4 p-4 bg-gradient-to-r from-black to-red-900 text-white shadow-md rounded-lg mb-6">
+      <!-- Header -->
+      <header class="flex items-center gap-4 p-4 bg-gradient-to-r from-[#106EBE] to-[#0FFCBE] text-black shadow-md rounded-lg mb-6">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="Logo Muslih Fvnky" class="w-14 h-14 rounded-full shadow-lg">
         <div>
           <h1 class="text-xl font-bold">Muslih Fvnky Shop</h1>
-          <p class="text-sm text-gray-300">Jasa Mixing & Mastering — Kirim detail, kami proses</p>
+          <p class="text-sm">Jasa Mixing & Mastering — Kirim detail, kami proses</p>
         </div>
       </header>
 
-      <!-- Card / Form -->
+      <!-- Form -->
       <main class="bg-black/60 p-6 rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-2">Pesan Jasa Mixing & Mastering</h2>
-        <p class="text-sm text-gray-300 mb-4">Pilih paket, isi data & detail, lalu kirim FLM ke WhatsApp.".</p>
+        <p class="text-sm text-gray-300 mb-4">Pilih paket, isi data & detail, lalu kirim FLM ke WhatsApp.</p>
 
         <div class="space-y-4">
           <div>
             <label class="block text-sm mb-1">Nama</label>
-            <input id="nama" type="text" placeholder="Masukkan nama kamu" class="w-full p-3 rounded bg-gray-800 border border-gray-700" />
+            <input id="nama" type="text" placeholder="Masukkan nama kamu" class="w-full p-3" />
           </div>
 
           <div>
             <label class="block text-sm mb-1">Kontak (WA atau Email)</label>
-            <input id="kontak" type="text" placeholder="Contoh: 0838xxxx atau email@ex.com" class="w-full p-3 rounded bg-gray-800 border border-gray-700" />
+            <input id="kontak" type="text" placeholder="Contoh: 0838xxxx atau email@ex.com" class="w-full p-3" />
           </div>
 
           <div>
             <label class="block text-sm mb-1">Pilih Paket</label>
-            <select id="paket" class="w-full p-3 rounded bg-gray-800 border border-gray-700">
+            <select id="paket" class="w-full p-3">
               <option value="Mixing Saja">Mixing Saja — Rp 30.000</option>
               <option value="Mastering Saja">Mastering Saja — Rp 30.000</option>
               <option value="Mixing & Mastering">Mixing & Mastering — Rp 55.000</option>
@@ -60,26 +94,25 @@
           </div>
 
           <div>
-            <label class="block text-sm mb-1">Link FLM (Google Drive / Dropbox) — optional (Boleh Diisi Atau Dibiarkan) </label>
-            <input id="linkfile" type="text" placeholder="https://drive.google.com/..." class="w-full p-3 rounded bg-gray-800 border border-gray-700" />
-            <p class="text-xs text-gray-400 mt-1">Kalau file besar, upload ke GG Drive lalu paste link di sini.</p>
+            <label class="block text-sm mb-1">Link FLM (Google Drive / Dropbox) — optional</label>
+            <input id="linkfile" type="text" placeholder="https://drive.google.com/..." class="w-full p-3" />
+            <p class="text-xs text-gray-400 mt-1">Kalau file besar, upload ke Google Drive lalu paste link di sini.</p>
           </div>
 
           <div>
             <label class="block text-sm mb-1">Detail / Catatan</label>
-            <textarea id="catatan" rows="4" placeholder="Contoh: suara vokal ke depan, bass sedikit ditekan, durasi 3:20" class="w-full p-3 rounded bg-gray-800 border border-gray-700"></textarea>
+            <textarea id="catatan" rows="4" placeholder="Contoh: suara vokal ke depan, bass sedikit ditekan" class="w-full p-3"></textarea>
           </div>
 
           <div class="flex gap-3">
-            <button id="waBtn" onclick="kirimWA()" class="flex-1 p-3 bg-red-600 rounded font-bold hover:bg-red-500">Kirim & Pesan lewat WhatsApp</button>
-            <button id="previewBtn" onclick="previewTemplate()" class="w-40 p-3 bg-green-600 rounded font-semibold hover:bg-green-500">Preview Pesan</button>
+            <button onclick="kirimWA()" class="btn flex-1 p-3 font-bold">Kirim & Pesan lewat WhatsApp</button>
+            <button onclick="previewTemplate()" class="btn w-40 p-3 font-semibold">Preview Pesan</button>
           </div>
 
           <p id="msg" class="text-sm text-gray-300"></p>
         </div>
       </main>
 
-      <!-- Footer kecil -->
       <footer class="text-center text-gray-400 text-xs mt-6">
         © 2025 Muslih Fvnky Shop. All rights reserved.
       </footer>
@@ -87,23 +120,19 @@
   </div>
 
   <script>
-    // nomor WhatsApp (sama seperti halaman lain)
     const WA_NUMBER = "6283821665970";
-
     function generateID(prefix='MX') {
-      // contoh: MX-123456
       return prefix + '-' + Math.floor(100000 + Math.random() * 900000);
     }
-
     function getDateTime() {
       const now = new Date();
       const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
       const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-      const jam = now.toTimeString().split(' ')[0];
-      const tanggal = `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
-      return { jam, tanggal };
+      return {
+        jam: now.toTimeString().split(' ')[0],
+        tanggal: `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`
+      };
     }
-
     function buildMessage(nama, kontak, paket, linkfile, catatan) {
       const trx = generateID('RMX');
       const dt = getDateTime();
@@ -119,7 +148,6 @@
       msg += `> *Terima kasih — silakan tunggu admin membalas.*`;
       return { text: msg, trx };
     }
-
     function kirimWA() {
       const nama = document.getElementById('nama').value.trim();
       const kontak = document.getElementById('kontak').value.trim();
@@ -127,21 +155,15 @@
       const linkfile = document.getElementById('linkfile').value.trim();
       const catatan = document.getElementById('catatan').value.trim();
       const statusEl = document.getElementById('msg');
-
-      // minimal: nama & kontak disarankan
       if (!nama || !kontak) {
-        statusEl.textContent = 'Mohon isi Nama dan Kontak agar admin dapat menghubungi Anda.';
+        statusEl.textContent = 'Mohon isi Nama dan Kontak.';
         return;
       }
-
       const { text, trx } = buildMessage(nama, kontak, paket, linkfile, catatan);
       const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(decodeURIComponent(text))}`;
-
-      // tampilkan sedikit info & buka WA
       statusEl.innerHTML = `Pesan siap dikirim (ID: <strong>${trx}</strong>) — membuka WhatsApp...`;
       window.open(url, '_blank');
     }
-
     function previewTemplate() {
       const nama = document.getElementById('nama').value.trim();
       const kontak = document.getElementById('kontak').value.trim();
@@ -149,8 +171,6 @@
       const linkfile = document.getElementById('linkfile').value.trim();
       const catatan = document.getElementById('catatan').value.trim();
       const { text } = buildMessage(nama, kontak, paket, linkfile, catatan);
-
-      // tampilkan di jendela baru (decoded) supaya mudah dibaca
       const decoded = decodeURIComponent(text.replace(/%0A/g, '\n'));
       const w = window.open('', '_blank', 'width=600,height=600');
       w.document.write('<pre style="white-space:pre-wrap;font-family:monospace;padding:20px;background:#111;color:#fff;">' + decoded + '</pre>');
