@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: url('https://i.imgur.com/5HuEhsu.jpeg') no-repeat center center fixed;
+      background: url('https://i.imgur.com/p0K2KQs.png') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
       text-align: center;
@@ -15,14 +15,16 @@
       margin: 0;
     }
     .box {
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(16, 110, 190, 0.85);
       padding: 20px;
       border-radius: 10px;
       max-width: 400px;
       margin: auto;
+      border: 2px solid #0FFCBE;
+      box-shadow: 0 0 15px rgba(15, 252, 190, 0.7);
     }
     input, select, button, a {
-      width: 100%;
+      width: calc(100% - 4px);
       padding: 12px;
       margin: 10px 0;
       border-radius: 5px;
@@ -30,31 +32,35 @@
       text-decoration: none;
       display: block;
       font-size: 16px;
+      box-sizing: border-box;
     }
     button {
-      background-color: #e60000;
+      background-color: #106EBE;
       color: #fff;
       font-weight: bold;
       cursor: pointer;
+      border: 2px solid #0FFCBE;
     }
     button:hover {
-      background-color: #ff1a1a;
+      background-color: #0b5ca0;
     }
     .btn-dana {
-      background-color: #00b14f;
-      color: white;
+      background-color: #0FFCBE;
+      color: #106EBE;
       font-weight: bold;
       text-align: center;
       cursor: pointer;
+      border: 2px solid #106EBE;
     }
     .btn-dana:hover {
-      background-color: #00cc5f;
+      background-color: #14e4a8;
     }
     .qr-img {
       width: 250px;
       border-radius: 10px;
       margin: 10px auto;
       display: block;
+      border: 2px solid #0FFCBE;
     }
   </style>
 </head>
@@ -63,7 +69,6 @@
     <h2>Pembayaran Muslih Fvnky</h2>
     <p><strong>Nomor DANA:</strong> 083821665970</p>
 
-    <!-- Gambar QR DANA -->
     <img src="https://i.imgur.com/sd67NeU.jpeg" alt="QR DANA" class="qr-img" />
 
     <label for="produk">Jenis Produk:</label>
@@ -72,15 +77,12 @@
     <label for="nominal">Nominal Transfer (Rp):</label>
     <input type="number" id="nominal" placeholder="Contoh: 100000" required />
 
-    <!-- Tombol Bayar via DANA -->
     <a id="btnDana" class="btn-dana" href="#" target="_blank">Bayar via DANA</a>
 
-    <!-- Tombol Kirim ke WhatsApp -->
     <button onclick="kirimWA()">Kirim ke WhatsApp</button>
   </div>
 
   <script>
-    // AUTO-ISI PRODUK DARI URL
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const produk = urlParams.get('produk');
@@ -89,7 +91,6 @@
       }
     });
 
-    // Tombol DANA
     document.getElementById('btnDana').addEventListener('click', function (e) {
       e.preventDefault();
       const nominal = document.getElementById('nominal').value;
@@ -97,12 +98,10 @@
         alert('Mohon isi nominal transfer');
         return;
       }
-      // Link DANA terbaru
       const danaLink = `https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012012022011164159294`;
       window.open(danaLink, '_blank');
     });
 
-    // Tombol WhatsApp
     function kirimWA() {
       const produk = document.getElementById('produk').value;
       const nominal = document.getElementById('nominal').value;
