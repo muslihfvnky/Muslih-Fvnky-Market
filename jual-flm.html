@@ -89,10 +89,32 @@
       border: none;
     }
 
+    /* skip buttons */
+    .skip-btn {
+      min-width: 44px;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid rgba(15,252,190,0.85);
+      background: rgba(16,110,190,0.9);
+      color: #dffbf2;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      padding: 0 8px;
+    }
+    .skip-btn:hover {
+      background: #0FFCBE;
+      color: #001827;
+    }
+
     /* small responsive tweak */
     @media (max-width: 480px) {
       .player-controls .time { min-width: 40px; font-size: 0.75rem; }
       .player-controls .progress { height: 7px; }
+      .skip-btn { min-width: 38px; height: 28px; font-size: 0.75rem; }
     }
   </style>
 </head>
@@ -387,15 +409,18 @@
       const controls = document.createElement('div');
       controls.className = 'player-controls';
       controls.innerHTML = `
+        <button class="skip-btn" data-skip="-3" title="Mundur 3 detik">⏪ 3s</button>
         <span class="time current">0:00</span>
         <input type="range" class="progress" min="0" max="100" value="0" step="0.1">
         <span class="time duration">0:00</span>
+        <button class="skip-btn" data-skip="3" title="Maju 3 detik">3s ⏩</button>
       `;
       container.appendChild(controls);
 
       const progress = controls.querySelector('.progress');
       const currentTimeEl = controls.querySelector('.current');
       const durationEl = controls.querySelector('.duration');
+      const skipButtons = controls.querySelectorAll('.skip-btn');
 
       // when metadata loaded set duration & max
       audio.addEventListener('loadedmetadata', () => {
@@ -410,6 +435,9 @@
           // update filled track background to match percent
           const pct = (audio.currentTime / audio.duration) * 100;
           progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
+          currentTimeEl.textContent = formatTime(audio.currentTime);
+        } else {
+          // if duration unknown, still show currentTime and keep some background
           currentTimeEl.textContent = formatTime(audio.currentTime);
         }
       });
@@ -426,9 +454,34 @@
       let isSeeking = false;
       progress.addEventListener('input', (e) => {
         isSeeking = true;
-        audio.currentTime = parseFloat(e.target.value);
+        const val = parseFloat(e.target.value);
+        audio.currentTime = val;
+        // reflect immediately
+        currentTimeEl.textContent = formatTime(val);
+        const pct = (!isNaN(audio.duration) && audio.duration > 0) ? (val / audio.duration) * 100 : 0;
+        progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
       });
       progress.addEventListener('change', () => { isSeeking = false; });
+
+      // Skip buttons (±3s)
+      skipButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const skip = parseFloat(btn.getAttribute('data-skip')) || 0;
+          if (isNaN(skip) || skip === 0) return;
+          if (isNaN(audio.duration)) {
+            // duration not known yet: just add/subtract (clamp min 0)
+            audio.currentTime = Math.max(0, audio.currentTime + skip);
+          } else {
+            const newTime = Math.max(0, Math.min(audio.duration, audio.currentTime + skip));
+            audio.currentTime = newTime;
+            // update UI immediately
+            progress.value = newTime;
+            currentTimeEl.textContent = formatTime(newTime);
+            const pct = (newTime / audio.duration) * 100;
+            progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
+          }
+        });
+      });
 
       return controls;
     }
@@ -448,13 +501,6 @@
         if (!exceptAudio || targetId !== exceptAudio.id) {
           btn.textContent = '▶ Play Preview';
         }
-      });
-
-      // hide other controls containers
-      document.querySelectorAll('.player-controls-container').forEach(container => {
-        // keep the controls but visually we leave them (optional: hide)
-        // I keep controls visible so users can see progress if they pause,
-        // but they are updated only for the active audio.
       });
     }
 
@@ -501,8 +547,6 @@
           progress.value = 0;
           progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
         };
-
-        // in case user navigates slider while playing, the timeupdate handler handles visuals
       });
     });
 
