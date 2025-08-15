@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request FLM - Muslih Fvnky</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://i.imgur.com/p0K2KQs.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+    .box {
+      background-color: rgba(16, 110, 190, 0.85);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      border: 2px solid #0FFCBE;
+      box-shadow: 0 0 15px rgba(15, 252, 190, 0.7);
+    }
+    input, button, a {
+      width: calc(100% - 4px);
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+      text-decoration: none;
+      display: block;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #106EBE;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      border: 2px solid #0FFCBE;
+    }
+    button:hover {
+      background-color: #0b5ca0;
+    }
+    .qr-img {
+      width: 250px;
+      border-radius: 10px;
+      margin: 10px auto;
+      display: block;
+      border: 2px solid #0FFCBE;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Request FLM - Muslih Fvnky</h2>
+    <p><strong>Nomor DANA:</strong> 083821665970</p>
+
+    <img src="https://i.imgur.com/vxI5p9w.png" alt="Qris" class="qr-img" />
+
+    <label for="produk">Judul / Jenis FLM:</label>
+    <input type="text" id="produk" placeholder="Contoh: FLM Trabas" required />
+
+    <label for="linkyt">Link YouTube Contoh:</label>
+    <input type="url" id="linkyt" placeholder="Contoh: https://youtu.be/xxxx" required />
+
+    <button onclick="kirimWA()">Kirim Request ke WhatsApp</button>
+  </div>
+
+  <script>
+    function kirimWA() {
+      const produk = document.getElementById('produk').value.trim();
+      const linkyt = document.getElementById('linkyt').value.trim();
+
+      if (!produk || !linkyt) {
+        alert('Mohon isi semua data');
+        return;
+      }
+
+      const now = new Date();
+      const jam = now.toTimeString().split(' ')[0];
+
+      const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+      const tanggal = `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+      const requestID = `REQ-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      const pesan = `*Request FLM - Muslih Fvnky*
+
+*📌 ID Request : ${requestID}*
+*🎬 Judul FLM  : ${produk}*
+*🔗 Link YT    : ${linkyt}*
+*🕒 Jam        : ${jam} WIB*
+*📅 Tanggal    : ${tanggal}*`;
+
+      const url = `https://wa.me/6283821665970?text=${encodeURIComponent(pesan)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
