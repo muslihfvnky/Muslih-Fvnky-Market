@@ -35,6 +35,65 @@
       background: rgba(0,0,0,0.55);
       backdrop-filter: blur(4px);
     }
+
+    /* Custom player styles */
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .player-controls .time {
+      min-width: 48px;
+      font-size: 0.85rem;
+      color: #d5fff0;
+      text-align: center;
+    }
+    .player-controls .progress {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0FFCBE 0%, rgba(15,110,190,0.25) 0%);
+      outline: none;
+      cursor: pointer;
+    }
+    /* track in Firefox */
+    .player-controls .progress::-moz-range-track {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+    }
+    .player-controls .progress::-webkit-slider-runnable-track {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+    }
+    .player-controls .progress::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #0FFCBE;
+      box-shadow: 0 0 8px rgba(15,252,190,0.8);
+      margin-top: -5px;
+    }
+    .player-controls .progress::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #0FFCBE;
+      box-shadow: 0 0 8px rgba(15,252,190,0.8);
+      border: none;
+    }
+
+    /* small responsive tweak */
+    @media (max-width: 480px) {
+      .player-controls .time { min-width: 40px; font-size: 0.75rem; }
+      .player-controls .progress { height: 7px; }
+    }
   </style>
 </head>
 <body class="text-white font-sans p-4 bg-black/70">
@@ -63,12 +122,15 @@
           </div>
           <div class="text-sm opacity-90 mt-1">💲 80K – 115K</div>
           <p class="text-sm text-gray-300 mt-2">Butuh custom beat / style sesuai request? Klik tombol Request untuk isi detail dan harga estimasi.</p>
-          <div class="mt-3 flex gap-2">
-            <button onclick="togglePlay('audio3', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-3 flex gap-2 items-center">
+            <button data-audio="audio3" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="request-flm.html?produk=REQUEST%20FLM!!" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Request / Beli</a>
           </div>
+
+          <!-- player controls container (will be used by JS) -->
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio3" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Request%20FLM%20Contoh.mp3"></audio>
+        <audio id="audio3" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Request%20FLM%20Contoh.mp3" preload="metadata"></audio>
       </div>
     </section>
 
@@ -81,12 +143,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM RULLY FVNKY</div>
           <div class="text-sm opacity-90">💲 Rp 98.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio1', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio1" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20RULLY%20FVNKY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio1" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Rully%20Fvnky%20Contoh.mp3"></audio>
+        <audio id="audio1" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Rully%20Fvnky%20Contoh.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 2 -->
@@ -95,12 +158,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM KONDANG</div>
           <div class="text-sm opacity-90">💲 Rp 90.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio2', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio2" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20KONDANG" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio2" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kondang%20Contoh.mp3"></audio>
+        <audio id="audio2" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kondang%20Contoh.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 4 -->
@@ -109,12 +173,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM HIPDUT LAMUNAN</div>
           <div class="text-sm opacity-90">💲 Rp 115.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio4', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio4" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20HIPDUT%20LAMUNAN" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio4" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Hipdut%20Contoh.mp3"></audio>
+        <audio id="audio4" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Hipdut%20Contoh.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 5 -->
@@ -123,12 +188,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM MAMAN FVNDY</div>
           <div class="text-sm opacity-90">💲 Rp 100.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio5', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio5" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20MAMAN%20FVNDY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio5" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/stylemaman.mp3"></audio>
+        <audio id="audio5" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/stylemaman.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 6 -->
@@ -137,12 +203,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Candu</div>
           <div class="text-sm opacity-90">💲 Rp 98.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio6', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio6" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20Style%20Candu" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio6" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Candu%20Contoh.mp3"></audio>
+        <audio id="audio6" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Candu%20Contoh.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 7 -->
@@ -151,12 +218,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM HAPPY TEAM ORI</div>
           <div class="text-sm opacity-90">💲 Rp 95.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio7', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio7" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20HAPPY%20TEAM%20ORI" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio7" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Happy%20Team%20Contoh.mp3"></audio>
+        <audio id="audio7" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Happy%20Team%20Contoh.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 8 -->
@@ -165,12 +233,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Arif Sopan</div>
           <div class="text-sm opacity-90">💲 Rp 55.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio8', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio8" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20Arif%20Sopan" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio8" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kane%20Contoh.mp3"></audio>
+        <audio id="audio8" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kane%20Contoh.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 9 -->
@@ -179,12 +248,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Lambada</div>
           <div class="text-sm opacity-90">💲 Rp 100.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio9', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio9" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20Lambada" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio9" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Lambada.mp3"></audio>
+        <audio id="audio9" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Lambada.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 10 -->
@@ -193,12 +263,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Angga Fvnky</div>
           <div class="text-sm opacity-90">💲 Rp 95.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio10', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio10" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20Angga%20Fvnky" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio10" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Angga%20Fvnky.mp3"></audio>
+        <audio id="audio10" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Angga%20Fvnky.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 11 -->
@@ -207,12 +278,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Enaff V1</div>
           <div class="text-sm opacity-90">💲 Rp 98.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio11', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio11" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20Enaff%20V1" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio11" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Enaff%20V1.mp3"></audio>
+        <audio id="audio11" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Enaff%20V1.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 12 -->
@@ -221,12 +293,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Febri Remix</div>
           <div class="text-sm opacity-90">💲 Rp 92.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio12', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio12" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20Febri%20Remix" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio12" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Febri%20Remix.mp3"></audio>
+        <audio id="audio12" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Febri%20Remix.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 13 -->
@@ -235,12 +308,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride</div>
           <div class="text-sm opacity-90">💲 Rp 90.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio13', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio13" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20Jawa%20Pride" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio13" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride.mp3"></audio>
+        <audio id="audio13" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 14 -->
@@ -249,12 +323,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride V2</div>
           <div class="text-sm opacity-90">💲 Rp 90.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio14', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio14" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V2" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio14" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride%20V2.mp3"></audio>
+        <audio id="audio14" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride%20V2.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 15 -->
@@ -263,12 +338,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride V3</div>
           <div class="text-sm opacity-90">💲 Rp 90.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio15', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio15" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V3" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio15" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride%20V3.mp3"></audio>
+        <audio id="audio15" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride%20V3.mp3" preload="metadata"></audio>
       </li>
 
       <!-- 16 -->
@@ -277,12 +353,13 @@
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM JDM KT</div>
           <div class="text-sm opacity-90">💲 Rp 110.000</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio16', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+          <div class="mt-2 flex gap-2 items-center">
+            <button data-audio="audio16" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a href="pembayaran.html?produk=FLM%20JDM%20KT" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
+          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio16" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20JDM%20KT.mp3"></audio>
+        <audio id="audio16" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20JDM%20KT.mp3" preload="metadata"></audio>
       </li>
 
     </ul>
@@ -293,31 +370,149 @@
   </footer>
 
   <script>
-    // Pastikan hanya satu audio yang bermain. Tombol aktif berubah label.
-    function togglePlay(audioId, btn) {
-      const audios = document.querySelectorAll('audio');
-      audios.forEach(a => {
-        if (a.id !== audioId) {
-          a.pause();
-          a.currentTime = 0;
-          const otherBtn = a.closest('li')?.querySelector('button[onclick^="togglePlay"]') || a.closest('div')?.querySelector('button[onclick^="togglePlay"]');
-          if (otherBtn) otherBtn.textContent = '▶ Play Preview';
+    // Helper: format seconds -> mm:ss
+    function formatTime(sec) {
+      if (isNaN(sec) || sec === Infinity) return '0:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return m + ':' + (s < 10 ? '0' + s : s);
+    }
+
+    // Create player controls markup inside container for each card
+    function createControls(container, audio) {
+      // if already exists return it
+      let existing = container.querySelector('.player-controls');
+      if (existing) return existing;
+
+      const controls = document.createElement('div');
+      controls.className = 'player-controls';
+      controls.innerHTML = `
+        <span class="time current">0:00</span>
+        <input type="range" class="progress" min="0" max="100" value="0" step="0.1">
+        <span class="time duration">0:00</span>
+      `;
+      container.appendChild(controls);
+
+      const progress = controls.querySelector('.progress');
+      const currentTimeEl = controls.querySelector('.current');
+      const durationEl = controls.querySelector('.duration');
+
+      // when metadata loaded set duration & max
+      audio.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatTime(audio.duration);
+        progress.max = audio.duration;
+      });
+
+      // update on timeupdate
+      audio.addEventListener('timeupdate', () => {
+        if (!isNaN(audio.duration)) {
+          progress.value = audio.currentTime;
+          // update filled track background to match percent
+          const pct = (audio.currentTime / audio.duration) * 100;
+          progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
+          currentTimeEl.textContent = formatTime(audio.currentTime);
         }
       });
 
-      const audio = document.getElementById(audioId);
-      if (!audio) return;
-      if (audio.paused) {
-        audio.play();
-        btn.textContent = '⏸ Pause Preview';
-      } else {
-        audio.pause();
-        btn.textContent = '▶ Play Preview';
-      }
+      // when ended reset UI
+      audio.addEventListener('ended', () => {
+        progress.value = 0;
+        currentTimeEl.textContent = '0:00';
+        // reset background
+        progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
+      });
 
-      // Reset label saat track selesai
-      audio.onended = () => { btn.textContent = '▶ Play Preview'; };
+      // Seek on input (works for mobile touch and mouse)
+      let isSeeking = false;
+      progress.addEventListener('input', (e) => {
+        isSeeking = true;
+        audio.currentTime = parseFloat(e.target.value);
+      });
+      progress.addEventListener('change', () => { isSeeking = false; });
+
+      return controls;
     }
+
+    // Utility to pause all audios except the one provided
+    function pauseOthers(exceptAudio) {
+      const audios = document.querySelectorAll('audio');
+      audios.forEach(a => {
+        if (a !== exceptAudio) {
+          a.pause();
+        }
+      });
+
+      // reset other buttons text
+      document.querySelectorAll('.play-btn').forEach(btn => {
+        const targetId = btn.getAttribute('data-audio');
+        if (!exceptAudio || targetId !== exceptAudio.id) {
+          btn.textContent = '▶ Play Preview';
+        }
+      });
+
+      // hide other controls containers
+      document.querySelectorAll('.player-controls-container').forEach(container => {
+        // keep the controls but visually we leave them (optional: hide)
+        // I keep controls visible so users can see progress if they pause,
+        // but they are updated only for the active audio.
+      });
+    }
+
+    // Main: attach click handlers to .play-btn
+    document.querySelectorAll('.play-btn').forEach(btn => {
+      btn.addEventListener('click', async function () {
+        const audioId = btn.getAttribute('data-audio');
+        const audio = document.getElementById(audioId);
+        if (!audio) return;
+
+        // Determine container to place controls (closest .player-controls-container)
+        const container = btn.closest('li')?.querySelector('.player-controls-container') || btn.closest('div')?.querySelector('.player-controls-container');
+        if (!container) return;
+
+        // create controls if not exist
+        createControls(container, audio);
+
+        // pause other audios
+        pauseOthers(audio);
+
+        // toggle play/pause
+        if (audio.paused) {
+          try {
+            await audio.play();
+            btn.textContent = '⏸ Pause Preview';
+          } catch (err) {
+            // autoplay or play refused: user gesture required
+            console.warn('play failed', err);
+            alert('Audio tidak bisa diputar otomatis. Silakan tekan lagi untuk memulai.');
+            return;
+          }
+        } else {
+          audio.pause();
+          btn.textContent = '▶ Play Preview';
+        }
+
+        // ensure controls reflect state (in case metadata was loaded after play)
+        const controls = container.querySelector('.player-controls');
+        const progress = controls.querySelector('.progress');
+
+        // when audio ends -> reset button
+        audio.onended = () => {
+          btn.textContent = '▶ Play Preview';
+          progress.value = 0;
+          progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
+        };
+
+        // in case user navigates slider while playing, the timeupdate handler handles visuals
+      });
+    });
+
+    // Optional: stop all audio when leaving page or switching tab (helps mobile)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        document.querySelectorAll('audio').forEach(a => a.pause());
+        document.querySelectorAll('.play-btn').forEach(b => b.textContent = '▶ Play Preview');
+      }
+    });
   </script>
 </body>
 </html>
