@@ -15,157 +15,259 @@
   </style>
 </head>
 <body class="text-white font-sans p-4 bg-black/70">
-  <h1 class="text-2xl font-bold mb-4">MUSLIH FVNKY SHOP</h1>
-  <p class="mb-6">List FLM Beserta Harga Ada Di Bawah</p>
-  <div class="flex justify-center mt-4 mb-2">
-    <img src="https://i.imgur.com/ghNd4So.jpeg" alt="Logo Muslih Fvnky" class="w-20 h-20 rounded-full">
-  </div>
-  <p class="mb-6 text-gray-300 italic bg-black/60 p-2 rounded">
-    FLM Dibawah Hanya Khusus FL Studio Mobile Ya!! Ouh Iya Cara Pemasangannya Yaitu Kalian Gausah Di extract Jadi Langsung Di Import Di FLnya Langsung Atau Kalo Masih Belum Paham Bisa Hubungi WA Saya
-  </p>
+  <header class="max-w-5xl mx-auto">
+    <h1 class="text-2xl font-bold mb-1">MUSLIH FVNKY SHOP</h1>
+    <p class="mb-6">List FLM Beserta Harga Ada Di Bawah</p>
+    <div class="flex justify-center mt-2 mb-4">
+      <img src="https://i.imgur.com/ghNd4So.jpeg" alt="Logo Muslih Fvnky" class="w-20 h-20 rounded-full ring-2 ring-[#0FFCBE]/70">
+    </div>
+    <p class="mb-8 text-gray-300 italic bg-black/60 p-3 rounded">
+      FLM di bawah khusus **FL Studio Mobile**. Cara pasang: <span class="not-italic">langsung import ke FL Studio Mobile tanpa di-extract</span>. Jika masih bingung, silakan hubungi WA saya.
+    </p>
+  </header>
 
-  <ul class="space-y-4">
-    <li>
-      <a href="pembayaran.html?produk=FLM RULLY FVNKY" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM RULLY FVNKY – Harga: Rp 98.000
-      </a>
-      <button onclick="togglePlay('audio1', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio1" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Rully%20Fvnky%20Contoh.mp3"></audio>
-    </li>
+  <main class="max-w-5xl mx-auto">
+    <!-- GRID CARD PRODUK -->
+    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+      <!-- 1 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM RULLY FVNKY" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM RULLY FVNKY</div>
+          <div class="text-sm opacity-90">💲 Rp 98.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio1', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20RULLY%20FVNKY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio1" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Rully%20Fvnky%20Contoh.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM KONDANG" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM KONDANG – Harga: Rp 99.000
-      </a>
-      <button onclick="togglePlay('audio2', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio2" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kondang%20Contoh.mp3"></audio>
-    </li>
+      <!-- 2 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM KONDANG" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM KONDANG</div>
+          <div class="text-sm opacity-90">💲 Rp 99.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio2', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20KONDANG" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio2" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kondang%20Contoh.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=REQUEST FLM!!" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        REQUEST FLM!! – Harga: 80K - 115K
-      </a>
-      <button onclick="togglePlay('audio3', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio3" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Request%20FLM%20Contoh.mp3"></audio>
-    </li>
+      <!-- 3 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="REQUEST FLM!!" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">REQUEST FLM!!</div>
+          <div class="text-sm opacity-90">💲 80K – 115K</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio3', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=REQUEST%20FLM!!" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio3" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Request%20FLM%20Contoh.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM HIPDUT LAMUNAN" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM HIPDUT LAMUNAN – Harga: Rp 115.000
-      </a>
-      <button onclick="togglePlay('audio4', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio4" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Hipdut%20Contoh.mp3"></audio>
-    </li>
+      <!-- 4 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM HIPDUT LAMUNAN" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM HIPDUT LAMUNAN</div>
+          <div class="text-sm opacity-90">💲 Rp 115.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio4', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20HIPDUT%20LAMUNAN" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio4" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Hipdut%20Contoh.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM MAMAN FVNDY" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM MAMAN FVNDY – Harga: Rp 100.000
-      </a>
-      <button onclick="togglePlay('audio5', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio5" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/stylemaman.mp3"></audio>
-    </li>
+      <!-- 5 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM MAMAN FVNDY" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM MAMAN FVNDY</div>
+          <div class="text-sm opacity-90">💲 Rp 100.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio5', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20MAMAN%20FVNDY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio5" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/stylemaman.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM Style Candu" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM Style Candu - Harga: Rp 98.000
-      </a>
-      <button onclick="togglePlay('audio6', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio6" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Candu%20Contoh.mp3"></audio>
-    </li>
+      <!-- 6 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Candu" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM Style Candu</div>
+          <div class="text-sm opacity-90">💲 Rp 98.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio6', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20Style%20Candu" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio6" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Candu%20Contoh.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM HAPPY TEAM ORI" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM HAPPY TEAM ORI – Harga: Rp 95.000
-      </a>
-      <button onclick="togglePlay('audio7', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio7" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Happy%20Team%20Contoh.mp3"></audio>
-    </li>
+      <!-- 7 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM HAPPY TEAM ORI" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM HAPPY TEAM ORI</div>
+          <div class="text-sm opacity-90">💲 Rp 95.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio7', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20HAPPY%20TEAM%20ORI" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio7" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Happy%20Team%20Contoh.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM Arif Sopan" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM Arif Sopan – Harga: Rp 55.000
-      </a>
-      <button onclick="togglePlay('audio8', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio8" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kane%20Contoh.mp3"></audio>
-    </li>
+      <!-- 8 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Arif Sopan" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM Arif Sopan</div>
+          <div class="text-sm opacity-90">💲 Rp 55.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio8', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20Arif%20Sopan" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio8" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kane%20Contoh.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM Lambada" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM Lambada – Harga: Rp 100.000
-      </a>
-      <button onclick="togglePlay('audio9', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio9" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Lambada.mp3"></audio>
-    </li>
+      <!-- 9 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Lambada" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM Lambada</div>
+          <div class="text-sm opacity-90">💲 Rp 100.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio9', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20Lambada" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio9" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Lambada.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM Angga Fvnky" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM Angga Fvnky – Harga: Rp 95.000
-      </a>
-      <button onclick="togglePlay('audio10', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio10" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Angga%20Fvnky.mp3"></audio>
-    </li>
+      <!-- 10 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Angga Fvnky" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM Angga Fvnky</div>
+          <div class="text-sm opacity-90">💲 Rp 95.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio10', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20Angga%20Fvnky" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio10" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Angga%20Fvnky.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM Enaff V1" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM Enaff V1 – Harga: Rp 98.000
-      </a>
-      <button onclick="togglePlay('audio11', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio11" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Enaff%20V1.mp3"></audio>
-    </li>
+      <!-- 11 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Enaff V1" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM Enaff V1</div>
+          <div class="text-sm opacity-90">💲 Rp 98.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio11', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20Enaff%20V1" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio11" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Enaff%20V1.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM Febri Remix" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM Febri Remix – Harga: Rp 92.000
-      </a>
-      <button onclick="togglePlay('audio12', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio12" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Febri%20Remix.mp3"></audio>
-    </li>
+      <!-- 12 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Febri Remix" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM Febri Remix</div>
+          <div class="text-sm opacity-90">💲 Rp 92.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio12', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20Febri%20Remix" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio12" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Febri%20Remix.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM Jawa Pride" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM Jawa Pride – Harga: Rp 90.000
-      </a>
-      <button onclick="togglePlay('audio13', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio13" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride.mp3"></audio>
-    </li>
+      <!-- 13 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM Jawa Pride</div>
+          <div class="text-sm opacity-90">💲 Rp 90.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio13', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20Jawa%20Pride" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio13" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM Jawa Pride V2" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM Jawa Pride V2 – Harga: Rp 90.000
-      </a>
-      <button onclick="togglePlay('audio14', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio14" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride%20V2.mp3"></audio>
-    </li>
+      <!-- 14 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride V2" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM Jawa Pride V2</div>
+          <div class="text-sm opacity-90">💲 Rp 90.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio14', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V2" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio14" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride%20V2.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM Jawa Pride V3" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM Jawa Pride V3 – Harga: Rp 90.000
-      </a>
-      <button onclick="togglePlay('audio15', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio15" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride%20V3.mp3"></audio>
-    </li>
+      <!-- 15 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride V3" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM Jawa Pride V3</div>
+          <div class="text-sm opacity-90">💲 Rp 90.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio15', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V3" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio15" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Jawa%20Pride%20V3.mp3"></audio>
+      </li>
 
-    <li>
-      <a href="pembayaran.html?produk=FLM JDM KT" class="block p-3 bg-[#106EBE] rounded hover:bg-[#0FFCBE] hover:text-black font-semibold transition">
-        FLM JDM KT – Harga: Rp 110.000
-      </a>
-      <button onclick="togglePlay('audio16', this)" class="mt-1 w-full p-2 bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white rounded font-semibold transition">▶ Play Preview</button>
-      <audio id="audio16" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20JDM%20KT.mp3"></audio>
-    </li>
-  </ul>
+      <!-- 16 -->
+      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM JDM KT" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="font-semibold leading-tight">FLM JDM KT</div>
+          <div class="text-sm opacity-90">💲 Rp 110.000</div>
+          <div class="mt-2 flex gap-2">
+            <button onclick="togglePlay('audio16', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="pembayaran.html?produk=FLM%20JDM%20KT" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+          </div>
+        </div>
+        <audio id="audio16" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20JDM%20KT.mp3"></audio>
+      </li>
+    </ul>
+  </main>
 
-  <footer class="mt-8 text-xs text-gray-300 border-t border-[#0FFCBE] pt-4 bg-black/50 p-2 rounded">
+  <footer class="max-w-5xl mx-auto mt-10 text-xs text-gray-300 border-t border-[#0FFCBE] pt-4 bg-black/50 p-2 rounded">
     © 2025 Muslih Fvnky Shop. All rights reserved.
   </footer>
 
   <script>
+    // Pastikan hanya satu audio yang bermain. Tombol aktif berubah label.
     function togglePlay(audioId, btn) {
       const audios = document.querySelectorAll('audio');
-      audios.forEach(audio => {
-        if (audio.id !== audioId) {
-          audio.pause();
-          audio.currentTime = 0;
-          const otherBtn = audio.previousElementSibling;
+      audios.forEach(a => {
+        if (a.id !== audioId) {
+          a.pause();
+          a.currentTime = 0;
+          const otherBtn = a.closest('li')?.querySelector('button[onclick^="togglePlay"]');
           if (otherBtn) otherBtn.textContent = '▶ Play Preview';
         }
       });
@@ -178,6 +280,9 @@
         audio.pause();
         btn.textContent = '▶ Play Preview';
       }
+
+      // Reset label saat track selesai
+      audio.onended = () => { btn.textContent = '▶ Play Preview'; };
     }
   </script>
 </body>
