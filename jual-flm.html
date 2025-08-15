@@ -12,6 +12,29 @@
       background-position: center;
       background-attachment: fixed;
     }
+
+    /* Styling spesial untuk Request FLM */
+    .special-card {
+      border: 2px solid #0FFCBE;
+      box-shadow: 0 10px 30px rgba(15, 252, 190, 0.18);
+      transform: translateY(-4px);
+    }
+    .special-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #0FFCBE;
+      color: #000;
+      border-radius: 999px;
+      margin-left: 8px;
+    }
+
+    /* small tweak agar background gelap tapi blur sedikit di mobile */
+    .overlay-card {
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+    }
   </style>
 </head>
 <body class="text-white font-sans p-4 bg-black/70">
@@ -27,10 +50,33 @@
   </header>
 
   <main class="max-w-5xl mx-auto">
-    <!-- GRID CARD PRODUK -->
-    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+    <!-- SECTION KHUSUS: REQUEST FLM -->
+    <section id="request-flm-section" class="mb-8">
+      <h2 class="text-xl font-bold mb-3">🔥 Request FLM Khusus</h2>
+
+      <div class="special-card overlay-card rounded-2xl p-3 flex gap-3 items-center shadow mb-2">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="REQUEST FLM!!" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+        <div class="flex-1">
+          <div class="flex items-center">
+            <div class="font-semibold leading-tight text-lg">REQUEST FLM!!</div>
+            <span class="special-badge">Custom</span>
+          </div>
+          <div class="text-sm opacity-90 mt-1">💲 80K – 115K</div>
+          <p class="text-sm text-gray-300 mt-2">Butuh custom beat / style sesuai request? Klik tombol Request untuk isi detail dan harga estimasi.</p>
+          <div class="mt-3 flex gap-2">
+            <button onclick="togglePlay('audio3', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <a href="request-flm.html?produk=REQUEST%20FLM!!" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Request / Beli</a>
+          </div>
+        </div>
+        <audio id="audio3" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Request%20FLM%20Contoh.mp3"></audio>
+      </div>
+    </section>
+
+    <!-- GRID CARD PRODUK (semua item kecuali request sudah dimasukkan di sini) -->
+    <ul id="produk-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+
       <!-- 1 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM RULLY FVNKY" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM RULLY FVNKY</div>
@@ -44,7 +90,7 @@
       </li>
 
       <!-- 2 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM KONDANG" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM KONDANG</div>
@@ -57,22 +103,8 @@
         <audio id="audio2" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20Kondang%20Contoh.mp3"></audio>
       </li>
 
-      <!-- 3 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
-        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="REQUEST FLM!!" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
-        <div class="flex-1">
-          <div class="font-semibold leading-tight">REQUEST FLM!!</div>
-          <div class="text-sm opacity-90">💲 80K – 115K</div>
-          <div class="mt-2 flex gap-2">
-            <button onclick="togglePlay('audio3', this)" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
-            <a href="request-flm.html?produk=REQUEST%20FLM!!" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
-          </div>
-        </div>
-        <audio id="audio3" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Request%20FLM%20Contoh.mp3"></audio>
-      </li>
-
       <!-- 4 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM HIPDUT LAMUNAN" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM HIPDUT LAMUNAN</div>
@@ -86,7 +118,7 @@
       </li>
 
       <!-- 5 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM MAMAN FVNDY" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM MAMAN FVNDY</div>
@@ -100,7 +132,7 @@
       </li>
 
       <!-- 6 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Candu" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Candu</div>
@@ -114,7 +146,7 @@
       </li>
 
       <!-- 7 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM HAPPY TEAM ORI" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM HAPPY TEAM ORI</div>
@@ -128,7 +160,7 @@
       </li>
 
       <!-- 8 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Arif Sopan" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Arif Sopan</div>
@@ -142,7 +174,7 @@
       </li>
 
       <!-- 9 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Lambada" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Lambada</div>
@@ -156,7 +188,7 @@
       </li>
 
       <!-- 10 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Angga Fvnky" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Angga Fvnky</div>
@@ -170,7 +202,7 @@
       </li>
 
       <!-- 11 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Enaff V1" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Enaff V1</div>
@@ -184,7 +216,7 @@
       </li>
 
       <!-- 12 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Febri Remix" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Febri Remix</div>
@@ -198,7 +230,7 @@
       </li>
 
       <!-- 13 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride</div>
@@ -212,7 +244,7 @@
       </li>
 
       <!-- 14 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride V2" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride V2</div>
@@ -226,7 +258,7 @@
       </li>
 
       <!-- 15 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride V3" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride V3</div>
@@ -240,7 +272,7 @@
       </li>
 
       <!-- 16 -->
-      <li class="bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM JDM KT" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM JDM KT</div>
@@ -252,6 +284,7 @@
         </div>
         <audio id="audio16" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20JDM%20KT.mp3"></audio>
       </li>
+
     </ul>
   </main>
 
@@ -267,12 +300,13 @@
         if (a.id !== audioId) {
           a.pause();
           a.currentTime = 0;
-          const otherBtn = a.closest('li')?.querySelector('button[onclick^="togglePlay"]');
+          const otherBtn = a.closest('li')?.querySelector('button[onclick^="togglePlay"]') || a.closest('div')?.querySelector('button[onclick^="togglePlay"]');
           if (otherBtn) otherBtn.textContent = '▶ Play Preview';
         }
       });
 
       const audio = document.getElementById(audioId);
+      if (!audio) return;
       if (audio.paused) {
         audio.play();
         btn.textContent = '⏸ Pause Preview';
