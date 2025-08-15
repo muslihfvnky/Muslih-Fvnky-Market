@@ -145,14 +145,10 @@
           <div class="text-sm opacity-90 mt-1">💲 80K – 115K</div>
           <p class="text-sm text-gray-300 mt-2">Butuh custom beat / style sesuai request? Klik tombol Request untuk isi detail dan harga estimasi.</p>
           <div class="mt-3 flex gap-2 items-center">
-            <button data-audio="audio3" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <!-- preview for Request FLM removed as requested -->
             <a href="request-flm.html?produk=REQUEST%20FLM!!" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Request / Beli</a>
           </div>
-
-          <!-- player controls container (will be used by JS) -->
-          <div class="player-controls-container"></div>
         </div>
-        <audio id="audio3" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Request%20FLM%20Contoh.mp3" preload="metadata"></audio>
       </div>
     </section>
 
@@ -392,6 +388,26 @@
   </footer>
 
   <script>
+    // === durationMap: durasi yang kamu kirim (detik) ===
+    const durationMap = {
+      audio1: 51,
+      audio2: 23,
+      // audio3 (Request) preview dihapus
+      audio4: 13,
+      audio5: 69,
+      audio6: 60,
+      audio7: 30,
+      audio8: 37,
+      audio9: 59,
+      audio10: 51,
+      audio11: 49,
+      audio12: 53,
+      audio13: 44,
+      audio14: 46,
+      audio15: 28,
+      audio16: 83
+    };
+
     // Helper: format seconds -> mm:ss
     function formatTime(sec) {
       if (isNaN(sec) || sec === Infinity) return '0:00';
@@ -422,23 +438,39 @@
       const durationEl = controls.querySelector('.duration');
       const skipButtons = controls.querySelectorAll('.skip-btn');
 
-      // when metadata loaded set duration & max
+      // If we have a known duration from durationMap, use it immediately
+      const known = durationMap[audio.id];
+      if (known && typeof known === 'number' && known > 0) {
+        durationEl.textContent = formatTime(known);
+        progress.max = known;
+        // set initial background to 0%
+        progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
+      }
+
+      // when metadata loaded, if we didn't have known duration, use audio.duration
       audio.addEventListener('loadedmetadata', () => {
-        durationEl.textContent = formatTime(audio.duration);
-        progress.max = audio.duration;
+        // prefer known durationMap if present (to avoid mismatch/bug), otherwise use metadata
+        if (!known || isNaN(known)) {
+          if (!isNaN(audio.duration) && audio.duration > 0) {
+            durationEl.textContent = formatTime(audio.duration);
+            progress.max = audio.duration;
+          }
+        } else {
+          // if known exists but metadata is larger (rare), still keep known as source of truth
+          progress.max = known;
+        }
       });
 
       // update on timeupdate
       audio.addEventListener('timeupdate', () => {
-        if (!isNaN(audio.duration)) {
-          progress.value = audio.currentTime;
-          // update filled track background to match percent
-          const pct = (audio.currentTime / audio.duration) * 100;
+        if (!isNaN(audio.currentTime)) {
+          // determine total for percent calc (prefer known)
+          const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? 0 : audio.duration);
+          const current = Math.min(audio.currentTime, total || audio.currentTime);
+          progress.value = current;
+          const pct = (total > 0) ? (current / total) * 100 : 0;
           progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
-          currentTimeEl.textContent = formatTime(audio.currentTime);
-        } else {
-          // if duration unknown, still show currentTime and keep some background
-          currentTimeEl.textContent = formatTime(audio.currentTime);
+          currentTimeEl.textContent = formatTime(current);
         }
       });
 
@@ -451,35 +483,40 @@
       });
 
       // Seek on input (works for mobile touch and mouse)
-      let isSeeking = false;
       progress.addEventListener('input', (e) => {
-        isSeeking = true;
         const val = parseFloat(e.target.value);
-        audio.currentTime = val;
-        // reflect immediately
-        currentTimeEl.textContent = formatTime(val);
-        const pct = (!isNaN(audio.duration) && audio.duration > 0) ? (val / audio.duration) * 100 : 0;
-        progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
+        // clamp to known duration if present
+        const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? null : audio.duration);
+        if (total !== null) {
+          const newTime = Math.max(0, Math.min(total, val));
+          audio.currentTime = newTime;
+          currentTimeEl.textContent = formatTime(newTime);
+          const pct = (total > 0) ? (newTime / total) * 100 : 0;
+          progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
+        } else {
+          audio.currentTime = val;
+          currentTimeEl.textContent = formatTime(val);
+        }
       });
-      progress.addEventListener('change', () => { isSeeking = false; });
 
       // Skip buttons (±3s)
       skipButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
           const skip = parseFloat(btn.getAttribute('data-skip')) || 0;
           if (isNaN(skip) || skip === 0) return;
-          if (isNaN(audio.duration)) {
-            // duration not known yet: just add/subtract (clamp min 0)
-            audio.currentTime = Math.max(0, audio.currentTime + skip);
+          const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? null : audio.duration);
+          let newTime = audio.currentTime + skip;
+          if (total !== null) {
+            newTime = Math.max(0, Math.min(total, newTime));
           } else {
-            const newTime = Math.max(0, Math.min(audio.duration, audio.currentTime + skip));
-            audio.currentTime = newTime;
-            // update UI immediately
-            progress.value = newTime;
-            currentTimeEl.textContent = formatTime(newTime);
-            const pct = (newTime / audio.duration) * 100;
-            progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
+            newTime = Math.max(0, newTime);
           }
+          audio.currentTime = newTime;
+          // update UI immediately
+          progress.value = newTime;
+          currentTimeEl.textContent = formatTime(newTime);
+          const pct = (total && total > 0) ? (newTime / total) * 100 : 0;
+          progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
         });
       });
 
