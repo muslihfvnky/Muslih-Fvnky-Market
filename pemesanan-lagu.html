@@ -31,8 +31,14 @@
     p.price {
       text-align: center;
       color: #0FFCBE;
-      margin-bottom: 20px;
+      margin-bottom: 5px;
       font-weight: bold;
+    }
+    p.note {
+      text-align: center;
+      font-size: 0.9em;
+      color: #ccc;
+      margin-bottom: 20px;
     }
     label {
       display: block;
@@ -104,6 +110,7 @@
   <div class="overlay">
     <h2>🎶 Pemesanan Remix Lagu</h2>
     <p class="price">💲 80K – 125K</p>
+    <p class="note">💡 Harga tergantung kesulitan style & lagu</p>
 
     <label for="Judul">1️⃣ Judul Lagu</label>
     <input type="text" id="Judul" placeholder="Contoh: Empat Mata" required />
@@ -141,7 +148,7 @@
       const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
       const tanggal = `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
 
-      const pesan = `*Website Pemesanan Remix - Muslih Fvnky*\n\n*📌 ID Transaksi : ${transaksiID}*\n*🎵 Judul        : ${Judul}*\n*🎧 Style        : ${Style}*\n*🔗 Link YT Style : ${LinkYT}*\n*🕒 Jam          : ${jam} WIB*\n*📅 Tanggal      : ${tanggal}*\n\n> *Terima kasih, tunggu balasan admin 🙏🏻*`;
+      const pesan = `*Website Pemesanan Remix - Muslih Fvnky*\n\n*📌 ID Transaksi : ${transaksiID}*\n*🎵 Judul        : ${Judul}*\n*🎧 Style        : ${Style}*\n*🔗 Link YT Style : ${LinkYT}*\n*🕒 Jam          : ${jam} WIB*\n*📅 Tanggal      : ${tanggal}*\n\n> *Harga tergantung kesulitan style & lagu*\n> *Terima kasih, tunggu balasan admin 🙏🏻*`;
 
       const url = `https://wa.me/6283821665970?text=${encodeURIComponent(pesan)}`;
       window.open(url, '_blank');
