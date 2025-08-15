@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pemesanan Remix Harga Kisaran 80k - 150k</title>
+  <title>Pemesanan Remix Lagu</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,23 +12,38 @@
       background-position: center;
       background-attachment: fixed;
       color: #fff;
-      text-align: center;
+      margin: 0;
       padding: 20px;
     }
-    /* Overlay transparan */
     .overlay {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 400px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 420px;
       margin: auto;
+      box-shadow: 0 0 20px rgba(15, 252, 190, 0.3);
     }
-    /* Input & Select Transparan + Border Mint */
-    input, select {
+    h2 {
+      text-align: center;
+      margin-bottom: 5px;
+      font-size: 1.6em;
+    }
+    p.price {
+      text-align: center;
+      color: #0FFCBE;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+    input {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
+      padding: 12px;
+      border-radius: 6px;
       border: 2px solid #0FFCBE;
       background-color: rgba(255, 255, 255, 0.05);
       font-size: 16px;
@@ -36,46 +52,76 @@
       outline: none;
       transition: 0.3s ease;
     }
-    input:focus, select:focus {
+    input:focus {
       box-shadow: 0 0 8px #0FFCBE;
       border-color: #0FFCBE;
     }
-    /* Tombol WhatsApp */
     button {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 2px solid #0FFCBE;
-      background-color: #106EBE;
-      color: #fff;
+      padding: 12px;
+      margin-top: 20px;
+      border-radius: 6px;
+      border: none;
+      background-color: #0FFCBE;
+      color: #000;
       font-weight: bold;
       cursor: pointer;
       font-size: 16px;
       transition: all 0.3s ease;
     }
     button:hover {
-      background-color: #0FFCBE;
-      color: #000;
+      background-color: #09cfa3;
       box-shadow: 0 0 15px #0FFCBE, 0 0 25px #106EBE;
+    }
+    /* Tombol WA melayang */
+    .wa-floating {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25D366;
+      padding: 15px 20px;
+      border-radius: 50px;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .wa-floating:hover {
+      background: #20b858;
+    }
+    .wa-floating img {
+      width: 20px;
+      height: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <h2>Pemesanan Remix Lagu 80k - 125k</h2>
 
-    <label for="Judul">Silahkan Isi Mau Remix Lagu Apa:</label>
+  <div class="overlay">
+    <h2>🎶 Pemesanan Remix Lagu</h2>
+    <p class="price">💲 80K – 125K</p>
+
+    <label for="Judul">1️⃣ Judul Lagu</label>
     <input type="text" id="Judul" placeholder="Contoh: Empat Mata" required />
 
-    <label for="Style">Tulis Mau Style Apa??:</label>
+    <label for="Style">2️⃣ Style Remix</label>
     <input type="text" id="Style" placeholder="Contoh: Style Candu" required />
 
-    <label for="LinkYT">Kirim Link YT Stylenya!!:</label>
-    <input type="text" id="LinkYT" placeholder="Contoh: https://youtu.be/abcd1234" required />
+    <label for="LinkYT">3️⃣ Link Referensi Style</label>
+    <input type="url" id="LinkYT" placeholder="Contoh: https://youtu.be/abcd1234" required />
 
-    <button onclick="kirimWA()">Kirim ke WhatsApp</button>
+    <button onclick="kirimWA()">🟢 Kirim Pesanan</button>
   </div>
+
+  <!-- Tombol WA melayang -->
+  <a href="https://wa.me/6283821665970" target="_blank" class="wa-floating">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" />
+    Chat Admin
+  </a>
 
   <script>
     function kirimWA() {
@@ -95,11 +141,12 @@
       const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
       const tanggal = `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
 
-      const pesan = `*Website Pemesanan Remix - Muslih Fvnky*\n\n*📌 ID Transaksi : ${transaksiID}*\n*🎵 Judul        : ${Judul}*\n*🎧 Style        : ${Style}*\n*🔗 Link YT Style : ${LinkYT}*\n*🕒 Jam          : ${jam} WIB*\n*📅 Tanggal      : ${tanggal}*\n\n> *terimakasih sudah mengirim silahkan tunggu admin membalas 🙏🏻*`;
+      const pesan = `*Website Pemesanan Remix - Muslih Fvnky*\n\n*📌 ID Transaksi : ${transaksiID}*\n*🎵 Judul        : ${Judul}*\n*🎧 Style        : ${Style}*\n*🔗 Link YT Style : ${LinkYT}*\n*🕒 Jam          : ${jam} WIB*\n*📅 Tanggal      : ${tanggal}*\n\n> *Terima kasih, tunggu balasan admin 🙏🏻*`;
 
       const url = `https://wa.me/6283821665970?text=${encodeURIComponent(pesan)}`;
       window.open(url, '_blank');
     }
   </script>
+
 </body>
 </html>
