@@ -182,12 +182,12 @@
     <section id="popular-section" class="mb-6">
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-xl font-bold">🔥 Produk Populer</h2>
-        <div style="font-size:0.9rem;color:#cdebdc">Berdasarkan interaksi pengunjung</div>
+        <!-- "Berdasarkan interaksi pengunjung" dihapus sesuai permintaan -->
       </div>
       <div id="popular-grid" aria-live="polite">
         <!-- akan di-render oleh JS -->
       </div>
-      <div style="margin-top:8px;color:#cfeee0;font-size:0.85rem">TIP: klik <strong>Play Preview</strong> atau tombol <strong>Beli</strong> untuk menaikkan popularitas.</div>
+      <!-- TIP dihapus sesuai permintaan -->
     </section>
 
     <!-- SECTION KHUSUS: REQUEST FLM -->
@@ -646,17 +646,15 @@
         return { id, title, price, img, count, li };
       });
 
-      // sort by count desc, then fallback to first items order
+      // sort by count desc, then fallback to original order
       mapped.sort((a,b) => {
         if ((b.count - a.count) !== 0) return b.count - a.count;
         return 0;
       });
 
-      // pick top n that have >0 count; if none have >0, pick first 4 as default popular
-      let top = mapped.filter(x => x.count > 0).slice(0, n);
-      if (top.length === 0) {
-        top = mapped.slice(0, Math.min(n, mapped.length));
-      }
+      // pick top n (if none have >0, still show first n)
+      let top = mapped.slice(0, Math.min(n, mapped.length));
+      // ensure top is top by count already due to sort
 
       // render
       grid.innerHTML = '';
@@ -671,14 +669,13 @@
               <div style="margin-left:auto"><span class="popular-badge">POP</span></div>
             </div>
             <div class="price">${escapeHtml(item.price)}</div>
-            <div class="count">Interaksi: <strong>${item.count}</strong></div>
+            <div class="count">Pembelian: <strong>${item.count}</strong></div>
             <div style="margin-top:8px">
               <a href="pembayaran.html?produk=${encodeURIComponent(item.title)}" class="px-2 py-1 rounded-md bg-[#106EBE] text-sm inline-block">🛒 Beli</a>
               <button data-preview="${item.li.querySelector('audio')?.id || ''}" class="px-2 py-1 ml-2 rounded-md bg-[#0FFCBE] text-sm text-black">▶ Preview</button>
             </div>
           </div>
         `;
-        // preview button handler (delegated)
         grid.appendChild(card);
       });
     }
@@ -696,10 +693,7 @@
         const audio = document.getElementById(audioId);
         if (!audio) return;
 
-        // increment popularity for parent product if known
-        const li = btn.closest('li');
-        const prodId = li?.getAttribute('data-prod-id');
-        if (prodId) incrementPopularity(prodId, 1);
+        // NOTE: play **NO LONGER** increments popularity (per request)
 
         // Determine container to place controls (closest .player-controls-container)
         const container = btn.closest('li')?.querySelector('.player-controls-container') || btn.closest('div')?.querySelector('.player-controls-container');
@@ -739,11 +733,13 @@
       });
     });
 
-    // buy links: increment popularity
+    // buy links: increment popularity (only buy increases popularity now)
     document.querySelectorAll('a[data-buy]').forEach(a => {
       a.addEventListener('click', (e) => {
         const id = a.getAttribute('data-buy');
-        if (id) incrementPopularity(id, 2); // heavier weight for beli
+        if (id) {
+          incrementPopularity(id, 2); // heavier weight for beli
+        }
         // let link continue (no preventDefault) so user goes to pembayaran
       });
     });
@@ -756,16 +752,25 @@
       if (!aid) return;
       const audio = document.getElementById(aid);
       if (!audio) return;
-      // find associated play button and trigger click
+      // find associated play button and trigger click (which will NOT increment)
       const originBtn = document.querySelector(`.play-btn[data-audio="${aid}"]`);
       if (originBtn) originBtn.click();
     });
 
-    // Optional: reset popularity (dev only) - comment out if tidak mau
-    // window.resetPopularity = () => { localStorage.removeItem(POP_KEY); renderPopular(); };
-
     // when DOM ready
     document.addEventListener('DOMContentLoaded', () => {
+      // ensure default starting popularity (only set when missing)
+      const defaults = { rully: 3, maman: 1 }; // rully = 3 purchases, maman = 1 purchase
+      const pop = loadPopularity();
+      let changed = false;
+      for (const k in defaults) {
+        if (!Object.prototype.hasOwnProperty.call(pop, k)) {
+          pop[k] = defaults[k];
+          changed = true;
+        }
+      }
+      if (changed) savePopularity(pop);
+
       renderPopular(5);
       // Re-render every 20s in case other tab changed localStorage
       setInterval(renderPopular, 20000);
@@ -786,3 +791,4 @@
   </script>
 </body>
 </html>
+```0
