@@ -58,6 +58,18 @@
       backdrop-filter: blur(4px);
     }
 
+    /* Popular badges */
+    .popular-badge {
+      display:inline-block;
+      background: linear-gradient(90deg,#ffd24d,#ffb84d);
+      color:#222;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:0.85rem;
+      box-shadow:0 6px 12px rgba(0,0,0,0.25);
+    }
+
     /* Custom player styles */
     .player-controls {
       display: flex;
@@ -132,11 +144,23 @@
       color: #001827;
     }
 
+    /* Popular section styles */
+    #popular-section { margin-bottom: 18px; }
+    #popular-grid { display:flex; gap:12px; overflow:auto; padding-bottom:8px; }
+    .popular-card { min-width:230px; max-width:260px; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.06)); padding:12px; border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,0.45); display:flex; gap:12px; align-items:flex-start; flex-shrink:0; }
+    .popular-card img{ width:64px; height:64px; object-fit:cover; border-radius:10px; flex:0 0 64px; }
+    .popular-meta{ flex:1; }
+    .popular-meta .title{ font-weight:800; color:#fff; }
+    .popular-meta .price{ color:#bfeee0; margin-top:6px; font-weight:700;}
+    .popular-meta .count{ margin-top:6px; color:#ffd; font-size:0.9rem; opacity:0.95; }
+
     /* small responsive tweak */
     @media (max-width: 480px) {
       .player-controls .time { min-width: 40px; font-size: 0.75rem; }
       .player-controls .progress { height: 7px; }
       .skip-btn { min-width: 38px; height: 28px; font-size: 0.75rem; }
+      #popular-grid { gap:10px; }
+      .popular-card { min-width:200px; }
     }
   </style>
 </head>
@@ -148,11 +172,24 @@
       <img src="https://i.imgur.com/ghNd4So.jpeg" alt="Logo Muslih Fvnky" class="w-20 h-20 rounded-full ring-2 ring-[#0FFCBE]/70">
     </div>
     <p class="mb-8 text-gray-300 italic bg-black/60 p-3 rounded">
-      FLM di bawah khusus **FL Studio Mobile**. Cara pasang: <span class="not-italic">langsung import ke FL Studio Mobile tanpa di-extract</span>. Jika masih bingung, silakan hubungi WA saya.
+      FLM di bawah khusus <strong>FL Studio Mobile</strong>. Cara pasang: <span class="not-italic">langsung import ke FL Studio Mobile tanpa di-extract</span>. Jika masih bingung, silakan hubungi WA saya.
     </p>
   </header>
 
   <main class="max-w-5xl mx-auto">
+
+    <!-- POPULAR SECTION (baru) -->
+    <section id="popular-section" class="mb-6">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xl font-bold">🔥 Produk Populer</h2>
+        <div style="font-size:0.9rem;color:#cdebdc">Berdasarkan interaksi pengunjung</div>
+      </div>
+      <div id="popular-grid" aria-live="polite">
+        <!-- akan di-render oleh JS -->
+      </div>
+      <div style="margin-top:8px;color:#cfeee0;font-size:0.85rem">TIP: klik <strong>Play Preview</strong> atau tombol <strong>Beli</strong> untuk menaikkan popularitas.</div>
+    </section>
+
     <!-- SECTION KHUSUS: REQUEST FLM -->
     <section id="request-flm-section" class="mb-8">
       <h2 class="text-xl font-bold mb-3">🔥 Request FLM Khusus</h2>
@@ -177,15 +214,16 @@
     <!-- GRID CARD PRODUK (semua item kecuali request sudah dimasukkan di sini) -->
     <ul id="produk-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
 
+      <!-- NOTE: setiap <li> sekarang punya data-prod-id untuk identifikasi -->
       <!-- 1 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="rully" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM RULLY FVNKY" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM RULLY FVNKY</div>
           <div class="text-sm opacity-90">💲 Rp 89.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio1" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20RULLY%20FVNKY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="rully" href="pembayaran.html?produk=FLM%20RULLY%20FVNKY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -193,14 +231,14 @@
       </li>
 
       <!-- 2 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="kondang" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM KONDANG" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM KONDANG</div>
           <div class="text-sm opacity-90">💲 Rp 84.500</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio2" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20KONDANG" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="kondang" href="pembayaran.html?produk=FLM%20KONDANG" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -208,14 +246,14 @@
       </li>
 
       <!-- 4 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="hipdut" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM HIPDUT LAMUNAN" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM HIPDUT LAMUNAN</div>
           <div class="text-sm opacity-90">💲 Rp 112.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio4" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20HIPDUT%20LAMUNAN" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="hipdut" href="pembayaran.html?produk=FLM%20HIPDUT%20LAMUNAN" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -223,14 +261,14 @@
       </li>
 
       <!-- 5 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="maman" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM MAMAN FVNDY" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM MAMAN FVNDY</div>
           <div class="text-sm opacity-90">💲 Rp 98.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio5" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20MAMAN%20FVNDY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="maman" href="pembayaran.html?produk=FLM%20MAMAN%20FVNDY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -238,14 +276,14 @@
       </li>
 
       <!-- 6 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="candu" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Candu" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Candu</div>
           <div class="text-sm opacity-90">💲 Rp 82.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio6" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20Style%20Candu" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="candu" href="pembayaran.html?produk=FLM%20Style%20Candu" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -253,14 +291,14 @@
       </li>
 
       <!-- 7 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="happy" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM HAPPY TEAM ORI" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM HAPPY TEAM ORI</div>
           <div class="text-sm opacity-90">💲 Rp 75.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio7" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20HAPPY%20TEAM%20ORI" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="happy" href="pembayaran.html?produk=FLM%20HAPPY%20TEAM%20ORI" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -268,14 +306,14 @@
       </li>
 
       <!-- 8 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="arif" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Arif Sopan" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Arif Sopan</div>
           <div class="text-sm opacity-90">💲 Rp 50.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio8" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20Arif%20Sopan" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="arif" href="pembayaran.html?produk=FLM%20Arif%20Sopan" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -283,14 +321,14 @@
       </li>
 
       <!-- 9 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="lambada" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Lambada" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Lambada</div>
           <div class="text-sm opacity-90">💲 Rp 92.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio9" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20Lambada" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="lambada" href="pembayaran.html?produk=FLM%20Lambada" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -298,14 +336,14 @@
       </li>
 
       <!-- 10 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="angga" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Angga Fvnky" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Angga Fvnky</div>
           <div class="text-sm opacity-90">💲 Rp 83.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio10" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20Angga%20Fvnky" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="angga" href="pembayaran.html?produk=FLM%20Angga%20Fvnky" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -313,14 +351,14 @@
       </li>
 
       <!-- 11 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="enaff" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Enaff V1" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Enaff V1</div>
           <div class="text-sm opacity-90">💲 Rp 95.500</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio11" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20Enaff%20V1" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="enaff" href="pembayaran.html?produk=FLM%20Enaff%20V1" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -328,14 +366,14 @@
       </li>
 
       <!-- 12 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="febri" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Febri Remix" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Febri Remix</div>
           <div class="text-sm opacity-90">💲 Rp 80.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio12" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20Febri%20Remix" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="febri" href="pembayaran.html?produk=FLM%20Febri%20Remix" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -343,14 +381,14 @@
       </li>
 
       <!-- 13 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="jawa1" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride</div>
           <div class="text-sm opacity-90">💲 Rp 80.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio13" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20Jawa%20Pride" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="jawa1" href="pembayaran.html?produk=FLM%20Jawa%20Pride" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -358,14 +396,14 @@
       </li>
 
       <!-- 14 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="jawa2" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride V2" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride V2</div>
           <div class="text-sm opacity-90">💲 Rp 80.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio14" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V2" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="jawa2" href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V2" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -373,14 +411,14 @@
       </li>
 
       <!-- 15 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="jawa3" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride V3" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride V3</div>
           <div class="text-sm opacity-90">💲 Rp 80.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio15" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V3" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="jawa3" href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V3" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -388,28 +426,29 @@
       </li>
 
       <!-- 16 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="jdm" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM JDM KT" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM JDM KT</div>
           <div class="text-sm opacity-90">💲 Rp 109.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio16" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20JDM%20KT" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="jdm" href="pembayaran.html?produk=FLM%20JDM%20KT" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
         <audio id="audio16" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/Style%20JDM%20KT.mp3" preload="metadata"></audio>
       </li>
-            <!-- 17 -->
-      <li class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
-        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM JDM KT" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+
+      <!-- 17 -->
+      <li data-prod-id="epamold" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+        <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM EPAM ESTETOD OLD" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM EPAM ESTETOD OLD</div>
           <div class="text-sm opacity-90">💲 Rp 79.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio17" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a href="pembayaran.html?produk=FLM%20EPAM%20ESTETOD%20OLD" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="epamold" href="pembayaran.html?produk=FLM%20EPAM%20ESTETOD%20OLD" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -486,14 +525,12 @@
 
       // when metadata loaded, if we didn't have known duration, use audio.duration
       audio.addEventListener('loadedmetadata', () => {
-        // prefer known durationMap if present (to avoid mismatch/bug), otherwise use metadata
         if (!known || isNaN(known)) {
           if (!isNaN(audio.duration) && audio.duration > 0) {
             durationEl.textContent = formatTime(audio.duration);
             progress.max = audio.duration;
           }
         } else {
-          // if known exists but metadata is larger (rare), still keep known as source of truth
           progress.max = known;
         }
       });
@@ -501,7 +538,6 @@
       // update on timeupdate
       audio.addEventListener('timeupdate', () => {
         if (!isNaN(audio.currentTime)) {
-          // determine total for percent calc (prefer known)
           const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? 0 : audio.duration);
           const current = Math.min(audio.currentTime, total || audio.currentTime);
           progress.value = current;
@@ -515,14 +551,12 @@
       audio.addEventListener('ended', () => {
         progress.value = 0;
         currentTimeEl.textContent = '0:00';
-        // reset background
         progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
       });
 
       // Seek on input (works for mobile touch and mouse)
       progress.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value);
-        // clamp to known duration if present
         const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? null : audio.duration);
         if (total !== null) {
           const newTime = Math.max(0, Math.min(total, val));
@@ -549,7 +583,6 @@
             newTime = Math.max(0, newTime);
           }
           audio.currentTime = newTime;
-          // update UI immediately
           progress.value = newTime;
           currentTimeEl.textContent = formatTime(newTime);
           const pct = (total && total > 0) ? (newTime / total) * 100 : 0;
@@ -568,8 +601,6 @@
           a.pause();
         }
       });
-
-      // reset other buttons text
       document.querySelectorAll('.play-btn').forEach(btn => {
         const targetId = btn.getAttribute('data-audio');
         if (!exceptAudio || targetId !== exceptAudio.id) {
@@ -578,12 +609,97 @@
       });
     }
 
-    // Main: attach click handlers to .play-btn
+    // --------------------
+    // POPULARITY STORAGE
+    // --------------------
+    const POP_KEY = 'mf_popularity_v1'; // localStorage key
+    function loadPopularity(){
+      try {
+        return JSON.parse(localStorage.getItem(POP_KEY) || '{}');
+      } catch(e){ return {}; }
+    }
+    function savePopularity(obj){
+      localStorage.setItem(POP_KEY, JSON.stringify(obj));
+    }
+    function incrementPopularity(prodId, amount = 1){
+      if (!prodId) return;
+      const obj = loadPopularity();
+      obj[prodId] = (obj[prodId] || 0) + amount;
+      savePopularity(obj);
+      renderPopular(); // update UI immediately
+    }
+
+    // Render top-N popular items from produk-grid
+    function renderPopular(n=5){
+      const grid = document.getElementById('popular-grid');
+      if (!grid) return;
+      const items = Array.from(document.querySelectorAll('#produk-grid > li'));
+      const pop = loadPopularity();
+
+      // build list with metadata
+      const mapped = items.map(li => {
+        const id = li.getAttribute('data-prod-id') || '';
+        const title = li.querySelector('.font-semibold')?.textContent?.trim() || 'Produk';
+        const price = li.querySelector('.text-sm')?.textContent || '';
+        const img = li.querySelector('img')?.src || '';
+        const count = pop[id] || 0;
+        return { id, title, price, img, count, li };
+      });
+
+      // sort by count desc, then fallback to first items order
+      mapped.sort((a,b) => {
+        if ((b.count - a.count) !== 0) return b.count - a.count;
+        return 0;
+      });
+
+      // pick top n that have >0 count; if none have >0, pick first 4 as default popular
+      let top = mapped.filter(x => x.count > 0).slice(0, n);
+      if (top.length === 0) {
+        top = mapped.slice(0, Math.min(n, mapped.length));
+      }
+
+      // render
+      grid.innerHTML = '';
+      top.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'popular-card';
+        card.innerHTML = `
+          <img src="${item.img}" alt="${escapeHtml(item.title)}">
+          <div class="popular-meta">
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="title">${escapeHtml(item.title)}</div>
+              <div style="margin-left:auto"><span class="popular-badge">POP</span></div>
+            </div>
+            <div class="price">${escapeHtml(item.price)}</div>
+            <div class="count">Interaksi: <strong>${item.count}</strong></div>
+            <div style="margin-top:8px">
+              <a href="pembayaran.html?produk=${encodeURIComponent(item.title)}" class="px-2 py-1 rounded-md bg-[#106EBE] text-sm inline-block">🛒 Beli</a>
+              <button data-preview="${item.li.querySelector('audio')?.id || ''}" class="px-2 py-1 ml-2 rounded-md bg-[#0FFCBE] text-sm text-black">▶ Preview</button>
+            </div>
+          </div>
+        `;
+        // preview button handler (delegated)
+        grid.appendChild(card);
+      });
+    }
+
+    function escapeHtml(s){
+      return (''+s).replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]);
+    }
+
+    // --------------------
+    // PLAY-BTN & BUY interaction wiring
+    // --------------------
     document.querySelectorAll('.play-btn').forEach(btn => {
       btn.addEventListener('click', async function () {
         const audioId = btn.getAttribute('data-audio');
         const audio = document.getElementById(audioId);
         if (!audio) return;
+
+        // increment popularity for parent product if known
+        const li = btn.closest('li');
+        const prodId = li?.getAttribute('data-prod-id');
+        if (prodId) incrementPopularity(prodId, 1);
 
         // Determine container to place controls (closest .player-controls-container)
         const container = btn.closest('li')?.querySelector('.player-controls-container') || btn.closest('div')?.querySelector('.player-controls-container');
@@ -601,7 +717,6 @@
             await audio.play();
             btn.textContent = '⏸ Pause Preview';
           } catch (err) {
-            // autoplay or play refused: user gesture required
             console.warn('play failed', err);
             alert('Audio tidak bisa diputar otomatis. Silakan tekan lagi untuk memulai.');
             return;
@@ -622,6 +737,43 @@
           progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
         };
       });
+    });
+
+    // buy links: increment popularity
+    document.querySelectorAll('a[data-buy]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('data-buy');
+        if (id) incrementPopularity(id, 2); // heavier weight for beli
+        // let link continue (no preventDefault) so user goes to pembayaran
+      });
+    });
+
+    // preview buttons in popular section (delegated dynamic)
+    document.getElementById('popular-grid').addEventListener('click', (e) => {
+      const pb = e.target.closest('button[data-preview]');
+      if (!pb) return;
+      const aid = pb.getAttribute('data-preview');
+      if (!aid) return;
+      const audio = document.getElementById(aid);
+      if (!audio) return;
+      // find associated play button and trigger click
+      const originBtn = document.querySelector(`.play-btn[data-audio="${aid}"]`);
+      if (originBtn) originBtn.click();
+    });
+
+    // Optional: reset popularity (dev only) - comment out if tidak mau
+    // window.resetPopularity = () => { localStorage.removeItem(POP_KEY); renderPopular(); };
+
+    // when DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPopular(5);
+      // Re-render every 20s in case other tab changed localStorage
+      setInterval(renderPopular, 20000);
+    });
+
+    // Optional: listen to storage events (update across tabs)
+    window.addEventListener('storage', (e) => {
+      if (e.key === POP_KEY) renderPopular();
     });
 
     // Optional: stop all audio when leaving page or switching tab (helps mobile)
