@@ -1,92 +1,264 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Komentar Pengunjung</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Komentar & Rating – Muslih Fvnky Shop</title>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="icon" href="https://i.imgur.com/aRy9T88.png">
+
+  <style>
+    html,body { height:100%; margin:0; }
+    body{
+      /* background khas kamu */
+      background-image: url('https://i.imgur.com/p0K2KQs.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: #fff;
+    }
+    /* gelapkan layer supaya teks terbaca */
+    .overlay{
+      min-height:100vh;
+      background: rgba(0,0,0,0.72);
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .star { font-size: 1.5rem; cursor:pointer; user-select:none; transition: transform .12s; }
+    .star.filled { color: #f6c94d; }
+    .thumb { max-width:120px; max-height:90px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
+    .progress { height:8px; background: rgba(255,255,255,0.08); border-radius:999px; overflow:hidden; }
+    .progress > i { display:block; height:100%; background: linear-gradient(90deg,#06b6d4,#3b82f6); width:0%; transition: width .2s linear; }
+    .muted { color: rgba(255,255,255,0.6); }
+  </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-6">
+<body>
+  <div class="overlay">
+    <main class="max-w-4xl mx-auto">
+      <header class="mb-6 flex items-center gap-4">
+        <img src="https://i.imgur.com/4jIRft9.jpeg" alt="Logo" class="w-14 h-14 rounded-full object-cover ring-2 ring-[#0FFCBE]/60">
+        <div>
+          <h1 class="text-2xl font-extrabold">💬 Komentar & Rating — Muslih Fvnky Shop</h1>
+          <p class="text-sm text-white/80">Isi komentar, pilih rating, dan upload foto (opsional).</p>
+        </div>
+      </header>
 
-  <!-- Judul -->
-  <h1 class="text-2xl font-bold mb-6">💬 Komentar Pengunjung</h1>
+      <!-- stats + link -->
+      <section class="card p-4 mb-6 flex items-center justify-between">
+        <div>
+          <div class="text-xs text-white/70">Rata-rata rating</div>
+          <div class="flex items-center gap-3 mt-1">
+            <div id="avgRatingVisual" class="text-lg font-bold">—</div>
+            <div id="avgStars" class="text-yellow-400">☆☆☆☆☆</div>
+            <div class="text-sm text-white/70">(<span id="totalCount">—</span> ulasan)</div>
+          </div>
+        </div>
+        <a href="index.html" class="inline-block px-4 py-2 rounded-full bg-white text-black font-medium">← Kembali ke Toko</a>
+      </section>
 
-  <!-- Form Komentar -->
-  <div class="bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md mb-6">
-    <h2 class="text-lg font-semibold mb-4">Tulis Komentar</h2>
+      <!-- form -->
+      <section class="card p-5 mb-6">
+        <form id="commentForm" class="space-y-3" autocomplete="off" enctype="multipart/form-data">
+          <div>
+            <label class="block text-sm text-white/90 font-medium">Nama</label>
+            <input id="username" name="nama" type="text" required class="mt-1 w-full rounded-md p-2 text-black" placeholder="Nama atau panggilan">
+          </div>
 
-    <form id="commentForm" enctype="multipart/form-data" class="space-y-3">
-      <input type="text" name="nama" placeholder="Nama" required class="w-full p-2 rounded text-black">
+          <div>
+            <label class="block text-sm text-white/90 font-medium">Komentar</label>
+            <textarea id="comment" name="komentar" rows="3" required class="mt-1 w-full rounded-md p-2 text-black" placeholder="Tulis pengalamanmu..."></textarea>
+          </div>
 
-      <textarea name="komentar" placeholder="Komentar" required class="w-full p-2 rounded text-black"></textarea>
+          <div>
+            <label class="block text-sm text-white/90 font-medium mb-1">Rating</label>
+            <div id="ratingStars" class="flex gap-2">
+              <span class="star" data-value="1">☆</span>
+              <span class="star" data-value="2">☆</span>
+              <span class="star" data-value="3">☆</span>
+              <span class="star" data-value="4">☆</span>
+              <span class="star" data-value="5">☆</span>
+            </div>
+            <input type="hidden" name="rating" id="ratingInput" value="">
+            <p id="ratingHint" class="text-xs text-white/60 mt-1">Klik satu bintang untuk memilih rating.</p>
+          </div>
 
-      <select name="rating" required class="w-full p-2 rounded text-black">
-        <option value="">Pilih Rating</option>
-        <option value="⭐">⭐</option>
-        <option value="⭐⭐">⭐⭐</option>
-        <option value="⭐⭐⭐">⭐⭐⭐</option>
-        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
-        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
-      </select>
+          <div>
+            <label class="block text-sm text-white/90 font-medium mb-1">Upload Foto (opsional, max 5 MB)</label>
+            <div class="flex items-center gap-3">
+              <input id="photoInput" name="file" type="file" accept="image/*" class="text-white" />
+              <div id="previewWrap" class="flex items-center gap-2"></div>
+            </div>
 
-      <input type="file" name="file" class="w-full text-sm text-gray-300">
+            <div id="uploadProgress" class="mt-2 hidden">
+              <div class="progress"><i id="progressBar"></i></div>
+              <div class="text-xs muted mt-1" id="progressText">0%</div>
+            </div>
+          </div>
 
-      <button type="submit" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded w-full">Kirim</button>
-    </form>
-  </div>
+          <div class="flex gap-3 items-center">
+            <button id="submitBtn" type="submit" class="bg-[#0FFCBE] text-black font-bold px-4 py-2 rounded-md">Kirim Komentar</button>
+            <button type="button" id="clearBtn" class="bg-white/10 text-white px-3 py-2 rounded-md">Reset</button>
+          </div>
+        </form>
+      </section>
 
-  <!-- List Komentar -->
-  <div id="commentList" class="w-full max-w-md space-y-4">
-    <!-- Komentar akan tampil otomatis di sini -->
+      <!-- comments list -->
+      <section id="commentsList" class="space-y-4 mb-8">
+        <div class="card p-4 text-center">Belum ada komentar. Jadilah yang pertama!</div>
+      </section>
+
+      <footer class="mt-8 text-xs text-white/60">
+        © 2025 Muslih Fvnky Shop — Testimoni ditampilkan publik.
+      </footer>
+    </main>
   </div>
 
   <script>
-    const form = document.getElementById("commentForm");
-    const commentList = document.getElementById("commentList");
+    // Simple client that posts to /api/upload (serverless endpoint) and shows upload progress.
+    const ratingStars = document.querySelectorAll('#ratingStars .star');
+    const ratingInput = document.getElementById('ratingInput');
+    const ratingHint = document.getElementById('ratingHint');
+    let selectedRating = 0;
 
-    form.addEventListener("submit", async (e) => {
+    ratingStars.forEach(star => {
+      star.addEventListener('click', () => {
+        selectedRating = Number(star.dataset.value);
+        updateStars(selectedRating);
+      });
+      star.addEventListener('mouseenter', () => {
+        highlightStars(Number(star.dataset.value));
+      });
+      star.addEventListener('mouseleave', () => {
+        updateStars(selectedRating);
+      });
+    });
+
+    function highlightStars(r){
+      ratingStars.forEach(s => s.classList.toggle('filled', Number(s.dataset.value) <= r));
+    }
+    function updateStars(r){
+      ratingStars.forEach(s => {
+        s.classList.toggle('filled', Number(s.dataset.value) <= r);
+        s.textContent = Number(s.dataset.value) <= r ? '★' : '☆';
+      });
+      ratingInput.value = r;
+      ratingHint.textContent = r ? `Kamu memilih ${r} bintang` : 'Klik satu bintang untuk memilih rating.';
+    }
+
+    // preview
+    const photoInput = document.getElementById('photoInput');
+    const previewWrap = document.getElementById('previewWrap');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    let selectedFile = null;
+    const MAX_FILE_BYTES = 5 * 1024 * 1024;
+
+    photoInput.addEventListener('change', e => {
+      previewWrap.innerHTML = '';
+      uploadProgress.classList.add('hidden');
+      progressBar.style.width = '0%';
+      progressText.textContent = '0%';
+      selectedFile = null;
+
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      if (!f.type.startsWith('image/')) { alert('Pilih gambar saja'); photoInput.value = ''; return; }
+      if (f.size > MAX_FILE_BYTES) { alert('Maks 5 MB'); photoInput.value = ''; return; }
+      selectedFile = f;
+      const img = document.createElement('img');
+      img.className = 'thumb';
+      img.src = URL.createObjectURL(f);
+      previewWrap.appendChild(img);
+    });
+
+    // clear
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.getElementById('commentForm').reset();
+      selectedFile = null;
+      previewWrap.innerHTML = '';
+      updateStars(0);
+    });
+
+    // submit form -> POST to /api/upload
+    const form = document.getElementById('commentForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const commentsList = document.getElementById('commentsList');
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!ratingInput.value || ratingInput.value === '0') { alert('Pilih rating dulu'); return; }
 
-      const formData = new FormData(form);
+      const fd = new FormData(form);
+      // If no file selected, remove 'file' so server won't attempt
+      if (!photoInput.files || !photoInput.files[0]) fd.delete('file');
 
-      // kalau user tidak pilih file → jangan dikirim
-      if (!form.file.value) {
-        formData.delete("file");
-      }
-
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Mengirim...';
       try {
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          body: formData
-        });
+        // Use XHR to show progress (fetch doesn't expose upload progress in all browsers)
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/upload');
+        xhr.onload = function(){
+          try {
+            const res = JSON.parse(xhr.responseText);
+            if (xhr.status >= 200 && xhr.status < 300 && res.success) {
+              // prepend comment card
+              const card = document.createElement('div');
+              card.className = 'card p-4';
+              const time = new Date().toLocaleString();
+              card.innerHTML = `<div class="font-semibold">${res.nama} <span class="text-yellow-400">${'★'.repeat(Number(res.rating))}</span></div>
+                                <div class="mt-2">${res.komentar}</div>
+                                ${res.fileUrl ? `<div class="mt-2"><a href="${res.fileUrl}" target="_blank" class="text-blue-300 underline">Lihat foto</a></div>` : ''}
+                                <div class="text-xs text-white/60 mt-2">${time}</div>`;
+              commentsList.prepend(card);
+              form.reset();
+              previewWrap.innerHTML = '';
+              updateStars(0);
+            } else {
+              console.error('Server error', res);
+              alert('Gagal mengirim komentar: ' + (res.error || 'server error'));
+            }
+          } catch (err) {
+            console.error('Invalid server response', err, xhr.responseText);
+            alert('Gagal mengirim komentar. Cek console.');
+          }
+        };
 
-        const data = await res.json();
+        xhr.upload.onprogress = function(e){
+          if (e.lengthComputable) {
+            const pct = Math.round((e.loaded / e.total) * 100);
+            uploadProgress.classList.remove('hidden');
+            progressBar.style.width = pct + '%';
+            progressText.textContent = pct + '%';
+          }
+        };
 
-        if (res.ok && data.success) {
-          alert("Komentar berhasil dikirim ✅");
+        xhr.onerror = function(){
+          alert('Network error saat upload. Cek koneksi.');
+        };
 
-          // tampilkan di daftar komentar tanpa reload
-          const div = document.createElement("div");
-          div.className = "bg-gray-800 p-4 rounded-lg shadow";
-          div.innerHTML = `
-            <p class="font-bold">${data.nama} <span class="text-yellow-400">${data.rating}</span></p>
-            <p>${data.komentar}</p>
-            ${data.fileUrl ? `<a href="${data.fileUrl}" target="_blank" class="text-blue-400 underline text-sm">📎 Lihat Lampiran</a>` : ""}
-            <p class="text-xs text-gray-400 mt-1">${new Date().toLocaleString()}</p>
-          `;
-          commentList.prepend(div);
-
-          form.reset();
-        } else {
-          alert("Gagal kirim komentar: " + (data.error || "Unknown error"));
-          console.error("Error:", data);
-        }
+        xhr.send(fd);
       } catch (err) {
-        alert("Gagal mengirim komentar. Cek console (F12) untuk detail.");
         console.error(err);
+        alert('Gagal mengirim komentar. Cek console.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Kirim Komentar';
+        setTimeout(()=>{ uploadProgress.classList.add('hidden'); progressBar.style.width='0%'; progressText.textContent='0%'; }, 600);
       }
     });
-  </script>
 
+    // inisialisasi stars
+    updateStars(0);
+  </script>
 </body>
 </html>
