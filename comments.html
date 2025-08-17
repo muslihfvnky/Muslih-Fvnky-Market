@@ -115,7 +115,7 @@
     </main>
   </div>
 
-  <!-- Firebase (Firestore) -->
+  <!-- Firebase (Firestore) + upload to server (then server uploads to Dropbox) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import {
@@ -137,11 +137,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
-    // ========= DROPBOX CONFIG =========
-    // Access token & folder — sudah kamu berikan sebelumnya
-    const DROPBOX_ACCESS_TOKEN = "sl.u.AF4bBl9_KhseZ1exdSm2eZcw0ulIfeuYGkHPFlj2IEkgr2DfObiJK6hHEFdRR_gJi7yrX7ufTQXcZllNeR-ItI63uC6sWIL2J_OiBcg4Ytx5j3FxaNgBemWVUmkUwpNkoJDXtuLjGzDsSCrIBhHji7qTEy7ZUTtKpemHvh48JqeH5V2I40gjZ2hOkyn_Ow7VtAGvc41YsjZtRvc98NAedjyU2Z2PwseHemtELEH-wH2OietSG70ozZN0lKYbyjjAChQROEPX45GMKSJnRD91e_S_BWrxLYkiCy2-6Bn8N96hg66dQYCcZkdPTQg52BfhKlY35bQqm4gqGyB19m9Gv3GCd0NJaS5Hj2LnUJ4wgBWTahL2b-nIWrJqBJon8_QLq8NFJVLA1WZ2u9oQhy-BAfdZK3d2Er-HqwlWaQahtBoolqPrI903wtNAeyNYfafvmGDtTf28GRBNIiEA-slRm-jE-UaZDguYaZ6DORvGOIN_S3pClkasNdXFWZ1ozNxZ6yBjZsv0FQE6ViyWa-2QCj407lnE9xipgR4yXR8CHYhC96j-rIammzJVrdVeeLRw6_W52kjkTmcqxy33B3jVx7p_0OWigLCSS1A9ZPk35anQ_34grif3SCRsLRoRTsRwLj-3h9JfXn2TFXzMVj0d9FM7uh_UYiBYR0brhGt9iZg1ZT1jb3Q8RTWOx1bdkAesTEDq-29zP4ypl0WF42B-o2E3oZ9v_4a7dfRNr_yhD1NmheMJE3LNm1QL3yqjMR5YNjhZKkaFfYWCHTMX7_maAG-yunGumbuyDRLgJjPz4mGGPzm9hsyZU31b6blYs-HIDh8e1oozmZzCdtkTbsxTB6Oceh2qQlHSSLrKukzdCzL7gsRRIdVN9zYE_JaJiCk7GLOX3KBN2TPozTQUZGFMkDYr8MucK3v4gLuFxbh5NJqx-QqD8Pj1t6Du1nohTd2ucGTVhP3AjXuVKBZKkMhXBZ2KeJ8SQWSAFuS9x-AV82_sXiFp1iuDkG71vR-Hdc9QFKLyDZfggJjJ6dEC6a5n-DprTkFVDwIYW1x7lYNOWEu1gDk17RVE6ixxaicYdjZ28ucYML3ZeMRoZSVBoi9o8AxT4f9tn8mCfEfOzDnomTNE_tZVcR_YZ9M-Xogm5TQLQ-Szij9e0GuvhJSy_Lbc7qzApGkysTaBaXPWZvBnj0r9QTzzaXwFlVe6MKGI09OiTOPzyILv91zUSxMi8HTWp0PXfwlqEt6p50YLmGpZ-rJVQggcsCOSb3DDC6Q_lnjMve-7MLaY8hMPV4tVnyGXhmTEutKrW4TsOsMg9mvCnGuWIlezYa8OJTZAzRUpahsKMqV4dZ1Ah3WniP0qTWTtMjXfduVS-1mJqmsn2S3C-4UEIjEJ14rAvTf0OeuPvQykkSehyQh3VF54LYOjBAqTRRaN14eVUBJogye5dny8B1z4Fw";
-    const DROPBOX_FOLDER = "/komentar-web"; // pastikan ini sesuai app-folder kamu
 
     // DOM refs
     const form = document.getElementById('commentForm');
@@ -176,6 +171,13 @@
       });
       star.addEventListener('mouseleave', () => {
         updateStars(selectedRating);
+      });
+      // keyboard accessibility
+      star.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          star.click();
+        }
       });
     });
 
@@ -230,18 +232,17 @@
       updateStars(0);
     });
 
-    // Upload helper: upload file to Dropbox with XHR so we can get progress
-    function uploadFileToDropbox(file) {
+    // Upload helper: send file to YOUR server endpoint (/api/upload) using XHR so we get progress
+    // Server (api/upload.js) must accept multipart/form-data, upload to Dropbox using your token,
+    // and respond with JSON { ok: true, url: "<public raw link>" , path: "<dropbox-path>" }
+    function uploadFileToServer(file) {
       return new Promise((resolve, reject) => {
-        const safeName = file.name.replace(/\s+/g, '_').replace(/[^\w\-.]/g, '');
-        const path = `${DROPBOX_FOLDER}/${Date.now()}_${safeName}`; // e.g. /komentar-web/162..._file.jpg
+        const fd = new FormData();
+        fd.append('file', file);
 
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
-        xhr.setRequestHeader('Authorization', 'Bearer ' + DROPBOX_ACCESS_TOKEN);
-        xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({ path: path, mode: 'add', autorename: true, mute: false }));
-        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-
+        xhr.open('POST', '/api/upload'); // <- endpoint pada Vercel / serverless
+        // If your server requires any auth header, add here. (Prefer server to be public for uploads)
         xhr.upload.onprogress = (e) => {
           if (e.lengthComputable) {
             const pct = Math.round((e.loaded / e.total) * 100);
@@ -249,60 +250,20 @@
             progressText.textContent = pct + '%';
           }
         };
-
-        xhr.onload = async () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              // upload response may be JSON string
-              let uploaded;
-              try { uploaded = JSON.parse(xhr.responseText); } catch (e) { uploaded = null; }
-
-              // try create shared link
-              const createRes = await fetch('https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings', {
-                method: 'POST',
-                headers: {
-                  'Authorization': 'Bearer ' + DROPBOX_ACCESS_TOKEN,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ path: path, settings: { requested_visibility: 'public' } })
-              });
-
-              const createData = await createRes.json();
-              if (createRes.ok && createData.url) {
-                const raw = createData.url.replace('?dl=0', '?raw=1');
-                resolve({ url: raw, path });
-                return;
-              }
-
-              // if create failed (maybe link already exists), try list_shared_links
-              const listRes = await fetch('https://api.dropboxapi.com/2/sharing/list_shared_links', {
-                method: 'POST',
-                headers: {
-                  'Authorization': 'Bearer ' + DROPBOX_ACCESS_TOKEN,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ path: path, direct_only: true })
-              });
-              const listData = await listRes.json();
-              if (listRes.ok && listData && listData.links && listData.links.length > 0) {
-                const raw = listData.links[0].url.replace('?dl=0', '?raw=1');
-                resolve({ url: raw, path });
-                return;
-              }
-
-              // fallback: resolve with null url but provide path
-              resolve({ url: null, path });
-            } catch (err) {
-              reject(err);
+        xhr.onload = () => {
+          try {
+            const data = JSON.parse(xhr.responseText || '{}');
+            if (xhr.status >= 200 && xhr.status < 300 && data && data.ok) {
+              resolve(data);
+            } else {
+              reject(new Error('Server upload gagal: ' + (data && data.error ? data.error : xhr.status)));
             }
-          } else {
-            let body = xhr.responseText || '';
-            reject(new Error('Upload failed: ' + xhr.status + ' ' + body));
+          } catch (err) {
+            reject(err);
           }
         };
-
-        xhr.onerror = () => reject(new Error('Network/Connection error during upload.'));
-        xhr.send(file);
+        xhr.onerror = () => reject(new Error('Koneksi ke server upload gagal.'));
+        xhr.send(fd);
       });
     }
 
@@ -332,10 +293,11 @@
           progressBar.style.width = '0%';
           progressText.textContent = '0%';
 
-          const res = await uploadFileToDropbox(selectedFile);
-          imageUrl = res.url; // mungkin null jika shared link gagal
-          imagePath = res.path;
-          console.log('Upload sukses:', res);
+          // upload to your server, which will upload to Dropbox and return public url
+          const res = await uploadFileToServer(selectedFile);
+          imageUrl = res.url || null;
+          imagePath = res.path || null;
+          console.log('Server upload result:', res);
         }
 
         // simpan ke Firestore
@@ -454,28 +416,6 @@
 
     // init
     updateStars(0);
-
-    // optional: quick token check (debug) — comment out in production
-    async function checkDropboxToken() {
-      try {
-        const res = await fetch('https://api.dropboxapi.com/2/users/get_current_account', {
-          method: 'POST',
-          headers: { Authorization: 'Bearer ' + DROPBOX_ACCESS_TOKEN }
-        });
-        if (!res.ok) {
-          console.warn('Dropbox token invalid/expired:', res.status, await res.text());
-          return false;
-        }
-        const info = await res.json();
-        console.log('Dropbox account:', info.email);
-        return true;
-      } catch (e) {
-        console.warn('Dropbox token check failed:', e);
-        return false;
-      }
-    }
-    // jalankan token check sekali untuk debugging
-    checkDropboxToken();
   </script>
 </body>
 </html>
