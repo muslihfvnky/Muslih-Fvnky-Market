@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Muslih Fvnky Shop – Daftar FLM</title>
 
-  <!-- ======= SEO & Social (ditambahkan tanpa menghapus konten lain) ======= -->
+  <!-- ======= SEO & Social ======= -->
   <meta name="description" content="Daftar FLM (projek FL Studio Mobile) dari Muslih Fvnky Shop — lengkap dengan preview, harga, dan tombol pembelian. FLM siap diimport ke FL Studio Mobile. Hubungi WA untuk bantuan.">
   <meta name="keywords" content="FLM, FL Studio Mobile, Jual FLM, Projek FLM, Muslih Fvnky Shop, Beat, Musik, Beli FLM" />
   <meta name="author" content="Muslih Fvnky" />
@@ -24,7 +24,7 @@
   <meta name="twitter:title" content="Muslih Fvnky Shop – Daftar FLM" />
   <meta name="twitter:description" content="Daftar FLM (projek FL Studio Mobile) — preview & harga tersedia. Hubungi WA untuk pembelian." />
   <meta name="twitter:image" content="https://i.imgur.com/ghNd4So.jpeg" />
-  <!-- =================================================================== -->
+  <!-- ========================= -->
 
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -93,7 +93,6 @@
       outline: none;
       cursor: pointer;
     }
-    /* track in Firefox */
     .player-controls .progress::-moz-range-track {
       height: 8px;
       border-radius: 999px;
@@ -182,7 +181,7 @@
     <section id="popular-section" class="mb-6">
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-xl font-bold">🔥 Produk Populer</h2>
-        <!-- "Berdasarkan interaksi pengunjung" dihapus sesuai permintaan -->
+        <!-- keterangan "Berdasarkan interaksi pengunjung" dihapus -->
       </div>
       <div id="popular-grid" aria-live="polite">
         <!-- akan di-render oleh JS -->
@@ -204,17 +203,15 @@
           <div class="text-sm opacity-90 mt-1">💲 80K – 115K</div>
           <p class="text-sm text-gray-300 mt-2">Butuh custom beat / style sesuai request? Klik tombol Request untuk isi detail dan harga estimasi.</p>
           <div class="mt-3 flex gap-2 items-center">
-            <!-- preview for Request FLM removed as requested -->
             <a href="request-flm.html?produk=REQUEST%20FLM!!" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Request / Beli</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- GRID CARD PRODUK (semua item kecuali request sudah dimasukkan di sini) -->
+    <!-- GRID CARD PRODUK -->
     <ul id="produk-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
 
-      <!-- NOTE: setiap <li> sekarang punya data-prod-id untuk identifikasi -->
       <!-- 1 -->
       <li data-prod-id="rully" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM RULLY FVNKY" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
@@ -467,7 +464,6 @@
     const durationMap = {
       audio1: 51,
       audio2: 23,
-      // audio3 (Request) preview dihapus
       audio4: 13,
       audio5: 69,
       audio6: 60,
@@ -484,7 +480,6 @@
       audio17: 46
     };
 
-    // Helper: format seconds -> mm:ss
     function formatTime(sec) {
       if (isNaN(sec) || sec === Infinity) return '0:00';
       const m = Math.floor(sec / 60);
@@ -492,9 +487,7 @@
       return m + ':' + (s < 10 ? '0' + s : s);
     }
 
-    // Create player controls markup inside container for each card
     function createControls(container, audio) {
-      // if already exists return it
       let existing = container.querySelector('.player-controls');
       if (existing) return existing;
 
@@ -514,16 +507,13 @@
       const durationEl = controls.querySelector('.duration');
       const skipButtons = controls.querySelectorAll('.skip-btn');
 
-      // If we have a known duration from durationMap, use it immediately
       const known = durationMap[audio.id];
       if (known && typeof known === 'number' && known > 0) {
         durationEl.textContent = formatTime(known);
         progress.max = known;
-        // set initial background to 0%
         progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
       }
 
-      // when metadata loaded, if we didn't have known duration, use audio.duration
       audio.addEventListener('loadedmetadata', () => {
         if (!known || isNaN(known)) {
           if (!isNaN(audio.duration) && audio.duration > 0) {
@@ -535,7 +525,6 @@
         }
       });
 
-      // update on timeupdate
       audio.addEventListener('timeupdate', () => {
         if (!isNaN(audio.currentTime)) {
           const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? 0 : audio.duration);
@@ -547,14 +536,12 @@
         }
       });
 
-      // when ended reset UI
       audio.addEventListener('ended', () => {
         progress.value = 0;
         currentTimeEl.textContent = '0:00';
         progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
       });
 
-      // Seek on input (works for mobile touch and mouse)
       progress.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value);
         const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? null : audio.duration);
@@ -570,7 +557,6 @@
         }
       });
 
-      // Skip buttons (±3s)
       skipButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
           const skip = parseFloat(btn.getAttribute('data-skip')) || 0;
@@ -593,13 +579,10 @@
       return controls;
     }
 
-    // Utility to pause all audios except the one provided
     function pauseOthers(exceptAudio) {
       const audios = document.querySelectorAll('audio');
       audios.forEach(a => {
-        if (a !== exceptAudio) {
-          a.pause();
-        }
+        if (a !== exceptAudio) a.pause();
       });
       document.querySelectorAll('.play-btn').forEach(btn => {
         const targetId = btn.getAttribute('data-audio');
@@ -636,7 +619,6 @@
       const items = Array.from(document.querySelectorAll('#produk-grid > li'));
       const pop = loadPopularity();
 
-      // build list with metadata
       const mapped = items.map(li => {
         const id = li.getAttribute('data-prod-id') || '';
         const title = li.querySelector('.font-semibold')?.textContent?.trim() || 'Produk';
@@ -646,17 +628,15 @@
         return { id, title, price, img, count, li };
       });
 
-      // sort by count desc, then fallback to original order
+      // sort by count desc
       mapped.sort((a,b) => {
         if ((b.count - a.count) !== 0) return b.count - a.count;
         return 0;
       });
 
-      // pick top n (if none have >0, still show first n)
-      let top = mapped.slice(0, Math.min(n, mapped.length));
-      // ensure top is top by count already due to sort
+      // take top n
+      const top = mapped.slice(0, Math.min(n, mapped.length));
 
-      // render
       grid.innerHTML = '';
       top.forEach(item => {
         const card = document.createElement('div');
@@ -693,19 +673,14 @@
         const audio = document.getElementById(audioId);
         if (!audio) return;
 
-        // NOTE: play **NO LONGER** increments popularity (per request)
+        // play NO LONGER increments popularity (per request)
 
-        // Determine container to place controls (closest .player-controls-container)
         const container = btn.closest('li')?.querySelector('.player-controls-container') || btn.closest('div')?.querySelector('.player-controls-container');
         if (!container) return;
 
-        // create controls if not exist
         createControls(container, audio);
-
-        // pause other audios
         pauseOthers(audio);
 
-        // toggle play/pause
         if (audio.paused) {
           try {
             await audio.play();
@@ -720,11 +695,9 @@
           btn.textContent = '▶ Play Preview';
         }
 
-        // ensure controls reflect state (in case metadata was loaded after play)
         const controls = container.querySelector('.player-controls');
         const progress = controls.querySelector('.progress');
 
-        // when audio ends -> reset button
         audio.onended = () => {
           btn.textContent = '▶ Play Preview';
           progress.value = 0;
@@ -733,14 +706,15 @@
       });
     });
 
-    // buy links: increment popularity (only buy increases popularity now)
+    // buy links: increment popularity by 1 (only beli meningkatkan poin sekarang)
     document.querySelectorAll('a[data-buy]').forEach(a => {
       a.addEventListener('click', (e) => {
         const id = a.getAttribute('data-buy');
         if (id) {
-          incrementPopularity(id, 2); // heavier weight for beli
+          // setiap klik Beli dianggap 1 pembelian -> tambah 1
+          incrementPopularity(id, 1);
         }
-        // let link continue (no preventDefault) so user goes to pembayaran
+        // link tetap berjalan ke halaman pembayaran
       });
     });
 
@@ -752,15 +726,14 @@
       if (!aid) return;
       const audio = document.getElementById(aid);
       if (!audio) return;
-      // find associated play button and trigger click (which will NOT increment)
       const originBtn = document.querySelector(`.play-btn[data-audio="${aid}"]`);
       if (originBtn) originBtn.click();
     });
 
     // when DOM ready
     document.addEventListener('DOMContentLoaded', () => {
-      // ensure default starting popularity (only set when missing)
-      const defaults = { rully: 3, maman: 1 }; // rully = 3 purchases, maman = 1 purchase
+      // default starting popularity (only set when missing)
+      const defaults = { rully: 7, maman: 5 }; // rully = 7 pembelian, maman = 5 pembelian
       const pop = loadPopularity();
       let changed = false;
       for (const k in defaults) {
@@ -772,16 +745,15 @@
       if (changed) savePopularity(pop);
 
       renderPopular(5);
-      // Re-render every 20s in case other tab changed localStorage
       setInterval(renderPopular, 20000);
     });
 
-    // Optional: listen to storage events (update across tabs)
+    // storage events (sync across tabs)
     window.addEventListener('storage', (e) => {
       if (e.key === POP_KEY) renderPopular();
     });
 
-    // Optional: stop all audio when leaving page or switching tab (helps mobile)
+    // pause audio on tab hide
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         document.querySelectorAll('audio').forEach(a => a.pause());
@@ -791,4 +763,3 @@
   </script>
 </body>
 </html>
-```0
