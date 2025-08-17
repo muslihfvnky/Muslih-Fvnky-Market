@@ -2,7 +2,7 @@ import { Dropbox } from "dropbox";
 import formidable from "formidable";
 import fs from "fs";
 
-// Biar Vercel tahu kalau kita mau handle form-data
+// pastikan body parser dimatikan karena kita pakai formidable
 export const config = {
   api: {
     bodyParser: false,
@@ -18,36 +18,37 @@ export default async function handler(req, res) {
 
   form.parse(req, async (err, fields, files) => {
     if (err) {
-      console.error("Formidable error:", err);
-      return res.status(500).json({ error: "Error parsing file" });
-    }
-
-    const file = files.file;
-    if (!file) {
-      return res.status(400).json({ error: "No file uploaded" });
+      console.error("Form parse error:", err);
+      return res.status(500).json({ error: "Form parse error" });
     }
 
     try {
-      // Ambil token dari env
-      const dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN });
+      const name = fields.name || "Anonim";
+      const comment = fields.comment || "";
+      const file = files.file;
 
-      // Baca file upload
-      const fileContent = fs.readFileSync(file.filepath);
+      const dbx = new Dropbox({ accessToken: process.env.DROPBOX_TOKEN });
 
-      // Upload ke Dropbox (folder root)
-      const response = await dbx.filesUpload({
-        path: "/" + file.originalFilename,
-        contents: fileContent,
-        mode: { ".tag": "add" }, // biar ga overwrite
+      // Simpan komentar ke file txt di Dropbox
+      const textData = `Nama: ${name}\nKomentar: ${comment}\nTanggal: ${new Date().toISOString()}\n\n`;
+      await dbx.filesUpload({
+        path: `/komentar-web/${Date.now()}-comment.txt`,
+        contents: textData,
       });
 
-      return res.status(200).json({
-        message: "Upload success!",
-        file: response.result,
-      });
-    } catch (uploadError) {
-      console.error("Dropbox error:", uploadError);
-      return res.status(500).json({ error: "Failed to upload to Dropbox" });
+      // Kalau ada file gambar, upload juga
+      if (file) {
+        const fileStream = fs.readFileSync(file.filepath);
+        await dbx.filesUpload({
+          path: `/komentar-web/${Date.now()}-${file.originalFilename}`,
+          contents: fileStream,
+        });
+      }
+
+      return res.status(200).json({ success: true, message: "Komentar berhasil dikirim!" });
+    } catch (uploadErr) {
+      console.error("Upload error:", uploadErr);
+      return res.status(500).json({ error: "Upload gagal" });
     }
   });
 }
