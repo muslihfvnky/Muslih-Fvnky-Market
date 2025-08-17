@@ -18,23 +18,9 @@
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       color: #fff;
     }
-    .overlay {
-      min-height:100vh;
-      background: rgba(0,0,0,0.72);
-      padding: 2rem 1rem;
-    }
-    .card {
-      background: rgba(255,255,255,0.04);
-      backdrop-filter: blur(6px);
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .star {
-      font-size: 1.6rem;
-      cursor: pointer;
-      user-select: none;
-      transition: transform .12s ease;
-    }
+    .overlay { min-height:100vh; background: rgba(0,0,0,0.72); padding: 2rem 1rem; }
+    .card { background: rgba(255,255,255,0.04); backdrop-filter: blur(6px); border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); }
+    .star { font-size: 1.6rem; cursor: pointer; user-select: none; transition: transform .12s ease; }
     .star:hover { transform: translateY(-3px); }
     .star.filled { color: #f6c94d; } /* gold */
     .thumb { max-width: 120px; max-height: 90px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); }
@@ -128,16 +114,13 @@
     </main>
   </div>
 
-  <!-- Firebase + Firestore + Storage (modular SDK) -->
+  <!-- Firebase (Firestore) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import {
       getFirestore, collection, addDoc, serverTimestamp,
       query, orderBy, onSnapshot
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import {
-      getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
     // ====== Firebase config (dari akunmu) ======
     const firebaseConfig = {
@@ -153,7 +136,11 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const storage = getStorage(app);
+
+    // ========= DROPBOX CONFIG =========
+    // ACCESS TOKEN yang kamu generate (jaga kerahasiaannya!)
+    const DROPBOX_ACCESS_TOKEN = "sl.u.AF4bBl9_KhseZ1exdSm2eZcw0ulIfeuYGkHPFlj2IEkgr2DfObiJK6hHEFdRR_gJi7yrX7ufTQXcZllNeR-ItI63uC6sWIL2J_OiBcg4Ytx5j3FxaNgBemWVUmkUwpNkoJDXtuLjGzDsSCrIBhHji7qTEy7ZUTtKpemHvh48JqeH5V2I40gjZ2hOkyn_Ow7VtAGvc41YsjZtRvc98NAedjyU2Z2PwseHemtELEH-wH2OietSG70ozZN0lKYbyjjAChQROEPX45GMKSJnRD91e_S_BWrxLYkiCy2-6Bn8N96hg66dQYCcZkdPTQg52BfhKlY35bQqm4gqGyB19m9Gv3GCd0NJaS5Hj2LnUJ4wgBWTahL2b-nIWrJqBJon8_QLq8NFJVLA1WZ2u9oQhy-BAfdZK3d2Er-HqwlWaQahtBoolqPrI903wtNAeyNYfafvmGDtTf28GRBNIiEA-slRm-jE-UaZDguYaZ6DORvGOIN_S3pClkasNdXFWZ1ozNxZ6yBjZsv0FQE6ViyWa-2QCj407lnE9xipgR4yXR8CHYhC96j-rIammzJVrdVeeLRw6_W52kjkTmcqxy33B3jVx7p_0OWigLCSS1A9ZPk35anQ_34grif3SCRsLRoRTsRwLj-3h9JfXn2TFXzMVj0d9FM7uh_UYiBYR0brhGt9iZg1ZT1jb3Q8RTWOx1bdkAesTEDq-29zP4ypl0WF42B-o2E3oZ9v_4a7dfRNr_yhD1NmheMJE3LNm1QL3yqjMR5YNjhZKkaFfYWCHTMX7_maAG-yunGumbuyDRLgJjPz4mGGPzm9hsyZU31b6blYs-HIDh8e1oozmZzCdtkTbsxTB6Oceh2qQlHSSLrKukzdCzL7gsRRIdVN9zYE_JaJiCk7GLOX3KBN2TPozTQUZGFMkDYr8MucK3v4gLuFxbh5NJqx-QqD8Pj1t6Du1nohTd2ucGTVhP3AjXuVKBZKkMhXBZ2KeJ8SQWSAFuS9x-AV82_sXiFp1iuDkG71vR-Hdc9QFKLyDZfggJjJ6dEC6a5n-DprTkFVDwIYW1x7lYNOWEu1gDk17RVE6ixxaicYdjZ28ucYML3ZeMRoZSVBoi9o8AxT4f9tn8mCfEfOzDnomTNE_tZVcR_YZ9M-Xogm5TQLQ-Szij9e0GuvhJSy_Lbc7qzApGkysTaBaXPWZvBnj0r9QTzzaXwFlVe6MKGI09OiTOPzyILv91zUSxMi8HTWp0PXfwlqEt6p50YLmGpZ-rJVQggcsCOSb3DDC6Q_lnjMve-7MLaY8hMPV4tVnyGXhmTEutKrW4TsOsMg9mvCnGuWIlezYa8OJTZAzRUpahsKMqV4dZ1Ah3WniP0qTWTtMjXfduVS-1mJqmsn2S3C-4UEIjEJ14rAvTf0OeuPvQykkSehyQh3VF54LYOjBAqTRRaN14eVUBJogye5dny8B1z4Fw";
+    const DROPBOX_FOLDER = "/komentar-web"; // folder yang kamu pilih
 
     // DOM refs
     const form = document.getElementById('commentForm');
@@ -243,6 +230,78 @@
       updateStars(0);
     });
 
+    // Upload helper: upload file to Dropbox with XHR so we can get progress
+    function uploadFileToDropbox(file) {
+      return new Promise((resolve, reject) => {
+        const safeName = file.name.replace(/\s+/g, '_').replace(/[^\w\-.]/g, '');
+        const path = `${DROPBOX_FOLDER}/${Date.now()}_${safeName}`;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + DROPBOX_ACCESS_TOKEN);
+        xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({ path: path, mode: 'add', autorename: true, mute: false }));
+        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const pct = Math.round((e.loaded / e.total) * 100);
+            progressBar.style.width = pct + '%';
+            progressText.textContent = pct + '%';
+          }
+        };
+
+        xhr.onload = async () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              // try create shared link
+              const createRes = await fetch('https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings', {
+                method: 'POST',
+                headers: {
+                  'Authorization': 'Bearer ' + DROPBOX_ACCESS_TOKEN,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ path: path, settings: { requested_visibility: 'public' } })
+              });
+
+              const createData = await createRes.json();
+              if (createRes.ok && createData.url) {
+                const raw = createData.url.replace('?dl=0', '?raw=1');
+                resolve({ url: raw, path });
+                return;
+              }
+
+              // if create failed (maybe link already exists), try list_shared_links
+              const listRes = await fetch('https://api.dropboxapi.com/2/sharing/list_shared_links', {
+                method: 'POST',
+                headers: {
+                  'Authorization': 'Bearer ' + DROPBOX_ACCESS_TOKEN,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ path: path, direct_only: true })
+              });
+              const listData = await listRes.json();
+              if (listRes.ok && listData && listData.links && listData.links.length > 0) {
+                const raw = listData.links[0].url.replace('?dl=0', '?raw=1');
+                resolve({ url: raw, path });
+                return;
+              }
+
+              // as fallback, resolve without shared link (but UI expects imageUrl)
+              resolve({ url: null, path });
+            } catch (err) {
+              reject(err);
+            }
+          } else {
+            let body = xhr.responseText || '';
+            reject(new Error('Upload failed: ' + xhr.status + ' ' + body));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error('Network/Connection error during upload.'));
+        xhr.send(file);
+      });
+    }
+
     // submit handler
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -262,25 +321,17 @@
       submitBtn.textContent = 'Mengirim...';
       try {
         let imageUrl = null;
+        let imagePath = null;
 
         if (selectedFile) {
-          const path = `comments/${Date.now()}_${selectedFile.name.replace(/\s+/g,'_')}`;
-          const sRef = storageRef(storage, path);
-          const uploadTask = uploadBytesResumable(sRef, selectedFile);
           uploadProgress.classList.remove('hidden');
+          progressBar.style.width = '0%';
+          progressText.textContent = '0%';
 
-          await new Promise((resolve, reject) => {
-            uploadTask.on('state_changed', (snapshot) => {
-              const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-              progressBar.style.width = percent + '%';
-              progressText.textContent = percent + '%';
-            }, (error) => {
-              reject(error);
-            }, async () => {
-              imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-              resolve();
-            });
-          });
+          const res = await uploadFileToDropbox(selectedFile);
+          imageUrl = res.url; // mungkin null jika shared link gagal
+          imagePath = res.path;
+          // jika shared link gagal dan imageUrl null, kamu masih bisa menyimpan imagePath
         }
 
         await addDoc(collection(db, 'comments'), {
@@ -288,6 +339,7 @@
           comment,
           rating: selectedRating,
           imageUrl: imageUrl || null,
+          imagePath: imagePath || null,
           createdAt: serverTimestamp()
         });
 
@@ -387,8 +439,7 @@
 
       const avg = (total / count) || 0;
       avgRatingVisual.textContent = avg ? avg.toFixed(2) : '-';
-      // visual stars for average (rounded to nearest half star not implemented; show full star count)
-      const fullStars = Math.round(avg); // round to nearest integer
+      const fullStars = Math.round(avg);
       avgStarsEl.innerHTML = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
     }, (err) => {
       console.error('Firestore onSnapshot error:', err);
