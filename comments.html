@@ -3,124 +3,120 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Komentar — Muslih Fvnky Shop</title>
+  <title>Komentar & Rating — Muslih Fvnky Shop</title>
   <style>
     :root{
-      --bg-a: #053c38;
-      --bg-b: #063f3b;
-      --card: rgba(3,58,51,0.92);
+      --bg1:#012f2b;
+      --bg2:#063f39;
+      --card:#063f3a;
+      --glass: rgba(255,255,255,0.03);
       --muted: #a8cfc6;
       --accent: #00e2a9;
-      --btn-text: #00322a;
-      --yellow: #ffd24d;
-      --glass: rgba(255,255,255,0.03);
+      --accent-dark:#00c189;
+      --btn-text:#012f26;
+      --yellow:#ffd24d;
+      --danger:#ff6b6b;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       min-height:100vh;
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
       background:
-        radial-gradient(800px 300px at 10% 10%, rgba(0,200,160,0.06), transparent 20%),
-        radial-gradient(700px 300px at 90% 90%, rgba(0,80,60,0.08), transparent 20%),
-        linear-gradient(180deg, var(--bg-a), var(--bg-b));
-      color: #e9f7f2;
-      padding:28px 16px;
+        radial-gradient(600px 300px at 10% 10%, rgba(0,200,160,0.06), transparent 20%),
+        radial-gradient(600px 300px at 90% 90%, rgba(0,80,60,0.06), transparent 20%),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:#e9f7f2;
+      -webkit-font-smoothing:antialiased;
+      padding:28px 18px;
     }
 
-    .container{max-width:960px;margin:0 auto;}
-    .topbar{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+    .wrap{max-width:1000px;margin:0 auto}
+    .header{display:flex;gap:16px;align-items:center;margin-bottom:20px}
     .logo{
-      width:68px;height:68px;border-radius:14px;background:linear-gradient(135deg,#053d36,#026754);display:flex;align-items:center;justify-content:center;font-weight:900;color:#cde;box-shadow:0 10px 30px rgba(2,20,16,0.45)
+      width:76px;height:76px;border-radius:14px;background:linear-gradient(135deg,#0d5f4c,#033a33);display:flex;align-items:center;justify-content:center;font-weight:900;color:#bcefe1;box-shadow:0 18px 40px rgba(0,0,0,0.45)
     }
-    h1{margin:0;font-size:30px;letter-spacing:-0.3px}
+    .title{font-size:28px;margin:0}
     .subtitle{color:var(--muted);margin-top:6px;font-size:14px}
 
-    .card{
-      margin-top:8px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-      border-radius:16px;
-      padding:18px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
-    }
+    .card{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));border-radius:16px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,0.45);margin-bottom:18px}
+    .summary{background: rgba(0,0,0,0.12);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+    .avg{font-size:28px;font-weight:900}
+    .avg small{font-size:14px;color:var(--muted);font-weight:600;margin-left:8px}
 
-    label{display:block;color:var(--muted);font-weight:700;margin-bottom:8px}
-    input[type=text], textarea {
-      width:100%;
-      padding:14px;
-      border-radius:12px;
-      border:none;
-      background:#f6f9f8;
-      color:#05342e;
-      font-size:15px;
-      outline:none;
-      box-shadow:inset 0 1px 0 rgba(0,0,0,0.06);
+    label{display:block;color:var(--muted);font-weight:800;margin-bottom:8px}
+    input[type=text], textarea{
+      width:100%;padding:14px;border-radius:12px;border:none;background:#f6fbfa;color:#05342e;font-size:15px;outline:none;
     }
     textarea{min-height:120px;resize:vertical}
 
-    .row{display:flex;gap:12px;align-items:center;margin-top:12px}
+    .stars{display:flex;gap:10px;align-items:center}
+    .star{font-size:28px;cursor:pointer;color:rgba(255,255,255,0.28);transition:color .12s}
+    .star.active{color:var(--yellow)}
+
+    .row{display:flex;gap:12px;align-items:center;margin-top:14px}
     .btn{
       padding:12px 18px;border-radius:12px;border:none;font-weight:800;cursor:pointer;
-      box-shadow: 0 8px 0 rgba(0,0,0,0.18);
+      box-shadow:0 8px 0 rgba(0,0,0,0.14);
     }
-    .btn-primary{background:var(--accent);color:var(--btn-text);}
-    .btn-ghost{background:rgba(255,255,255,0.06);color:var(--muted);box-shadow:none}
+    .btn-send{background:var(--accent);color:var(--btn-text)}
+    .btn-reset{background:rgba(255,255,255,0.06);color:var(--muted);box-shadow:none}
 
     .file-info{margin-left:12px;color:var(--muted);font-weight:700}
-
-    .stars{display:flex;gap:10px;align-items:center;margin-top:8px}
-    .star{font-size:28px;cursor:pointer;color:rgba(255,255,255,0.28);transition:color .12s ease}
-    .star.active{color:var(--yellow)}
 
     .progress-wrap{height:8px;background:rgba(255,255,255,0.04);border-radius:999px;margin-top:10px;overflow:hidden}
     .progress{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#00ffd0)}
 
     .status{margin-left:12px}
 
-    .comments{margin-top:18px;display:flex;flex-direction:column;gap:14px}
+    .comments{display:flex;flex-direction:column;gap:12px;margin-top:18px}
     .comment{
-      display:flex;gap:12px;align-items:flex-start;background:var(--card);padding:12px;border-radius:12px;
+      display:flex;gap:12px;align-items:flex-start;background:var(--card);padding:14px;border-radius:12px;
     }
-    .comment .thumb{width:72px;height:72px;border-radius:10px;object-fit:cover;flex:0 0 72px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.06))}
-    .comment .meta{flex:1}
-    .cname{font-weight:900;margin-bottom:6px}
-    .crating{color:var(--yellow);margin-bottom:8px}
+    .thumb{width:72px;height:72px;border-radius:10px;object-fit:cover;flex:0 0 72px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.06))}
+    .meta{flex:1}
+    .cname{font-weight:900}
+    .crating{color:var(--yellow);margin-top:6px}
     .ctime{font-size:12px;color:var(--muted);margin-top:8px}
+    .empty{padding:16px;border-radius:10px;background:rgba(0,0,0,0.12);color:var(--muted);text-align:center}
 
-    .notice{margin-top:14px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.03);color:var(--muted)}
+    .notice{margin-top:16px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);color:var(--muted);text-align:center}
 
-    /* responsive */
-    @media (max-width:520px){
-      h1{font-size:24px}
+    @media (max-width:560px){
       .logo{width:56px;height:56px}
+      .title{font-size:22px}
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="topbar">
+  <div class="wrap">
+    <div class="header">
       <div class="logo">MF</div>
       <div>
-        <h1>Komentar & Rating — Muslih Fvnky Shop</h1>
+        <h1 class="title">Komentar & Rating — Muslih Fvnky Shop</h1>
         <div class="subtitle">Pengunjung bisa beri rating, komentar, dan upload foto. Semua tampil otomatis.</div>
       </div>
     </div>
 
-    <div class="card" aria-labelledby="form-title">
-      <div id="form-title" style="display:flex;align-items:center;gap:10px">
-        <div style="background:var(--yellow);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#2a1a00;font-weight:800">★</div>
-        <div style="font-weight:900;font-size:18px">Komentar Pengunjung</div>
+    <div class="card">
+      <div class="summary">
+        <div>
+          <div class="avg" id="avgRating">- <small>★★★★★</small></div>
+          <div style="color:var(--muted);margin-top:6px" id="countReviews">(0 ulasan)</div>
+        </div>
+        <div>
+          <button onclick="location.href='/'" class="btn btn-reset" style="padding:10px 14px;border-radius:999px">← Kembali ke Toko</button>
+        </div>
       </div>
 
-      <div style="margin-top:14px">
+      <div>
         <label for="name">Nama</label>
         <input id="name" type="text" placeholder="Nama kamu (atau panggilan)" />
       </div>
 
       <div style="margin-top:12px">
         <label for="comment">Komentar</label>
-        <textarea id="comment" placeholder="Tulis pengalamanmu (contoh: pesan cepat & kualitas bagus)"></textarea>
+        <textarea id="comment" placeholder="Tulis pengalamanmu"></textarea>
       </div>
 
       <div style="margin-top:12px">
@@ -141,47 +137,45 @@
           <input id="file" type="file" accept="image/*" />
           <div class="file-info" id="file-name">Tidak ada file yang dipilih</div>
         </div>
-        <div class="progress-wrap">
-          <div id="progress" class="progress"></div>
-        </div>
+        <div class="progress-wrap"><div id="progress" class="progress"></div></div>
       </div>
 
-      <div class="row" style="margin-top:16px">
-        <button id="sendBtn" class="btn btn-primary">Kirim Komentar</button>
-        <button id="resetBtn" class="btn btn-ghost">Reset</button>
+      <div class="row">
+        <button id="sendBtn" class="btn btn-send">Kirim Komentar</button>
+        <button id="resetBtn" class="btn btn-reset">Reset</button>
         <div id="statusMsg" class="status"></div>
       </div>
     </div>
 
-    <div id="commentsArea" class="comments" aria-live="polite" style="margin-top:18px">
-      <!-- comments will render here -->
-    </div>
+    <div id="commentsContainer" class="comments" aria-live="polite"></div>
 
-    <div id="emptyNotice" class="notice" style="display:none">Belum ada komentar. Jadilah yang pertama!</div>
+    <div id="empty" class="notice" style="display:none">Belum ada komentar. Jadilah yang pertama!</div>
+
   </div>
 
 <script>
-/* ---------- UI behavior (keren & aman) ---------- */
+/* UI + logic */
 const stars = document.querySelectorAll('.star');
 let currentRating = 0;
 const ratingText = document.getElementById('rating-text');
-stars.forEach(s => s.addEventListener('click', ()=> {
+stars.forEach(s => s.addEventListener('click', () => {
   currentRating = Number(s.dataset.value);
   updateStars();
 }));
 function updateStars(){
-  stars.forEach(s=>{
-    if(Number(s.dataset.value) <= currentRating){ s.classList.add('active'); s.textContent='★'; }
+  stars.forEach(s => {
+    const v = Number(s.dataset.value);
+    if(v <= currentRating){ s.classList.add('active'); s.textContent='★'; }
     else { s.classList.remove('active'); s.textContent='☆'; }
   });
   ratingText.textContent = currentRating ? `Kamu memilih ${currentRating} bintang` : 'Klik satu bintang untuk memilih rating.';
 }
 
-/* file handling */
 const fileInput = document.getElementById('file');
 const fileNameEl = document.getElementById('file-name');
 const progressEl = document.getElementById('progress');
 let chosenFile = null;
+
 fileInput.addEventListener('change', e=>{
   const f = e.target.files[0];
   if(!f){ fileNameEl.textContent='Tidak ada file yang dipilih'; chosenFile=null; return; }
@@ -194,35 +188,36 @@ const sendBtn = document.getElementById('sendBtn');
 const resetBtn = document.getElementById('resetBtn');
 const statusMsg = document.getElementById('statusMsg');
 
-function setStatusHTML(html){
+function setStatus(html){
   statusMsg.innerHTML = html;
 }
 
-/* helper: read file to base64 */
+/* read file -> dataURL */
 function readFileAsDataURL(file){
-  return new Promise((res, rej)=>{
+  return new Promise((res, rej) => {
     const fr = new FileReader();
-    fr.onload = ()=> res(fr.result);
+    fr.onload = () => res(fr.result);
     fr.onerror = e => rej(e);
     fr.readAsDataURL(file);
   });
 }
 
-/* send comment */
+/* POST comment to /api/upload */
 async function sendComment(){
-  setStatusHTML('');
-  sendBtn.disabled = true; sendBtn.textContent='Mengirim...';
+  setStatus('');
+  sendBtn.disabled = true; sendBtn.textContent = 'Mengirim...';
 
   const name = (document.getElementById('name').value || '').trim() || 'Anon';
   const comment = (document.getElementById('comment').value || '').trim();
-  if(!comment){ alert('Tulis komentar dulu'); sendBtn.disabled=false; sendBtn.textContent='Kirim Komentar'; return; }
+  if(!comment){
+    alert('Tulis komentar dulu');
+    sendBtn.disabled = false; sendBtn.textContent = 'Kirim Komentar';
+    return;
+  }
 
   let fileBase64 = null, filename = null;
   if(chosenFile){
-    try{
-      fileBase64 = await readFileAsDataURL(chosenFile);
-      filename = chosenFile.name;
-    } catch(e){ console.error('file read err', e); }
+    try{ fileBase64 = await readFileAsDataURL(chosenFile); filename = chosenFile.name; } catch(e){ console.error(e); }
   }
 
   const payload = { name, comment, rating: currentRating, filename, fileBase64 };
@@ -233,91 +228,123 @@ async function sendComment(){
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(payload)
     });
-    const data = await resp.json().catch(()=>({ error: 'Invalid response' }));
+    const data = await resp.json().catch(()=>({ error: 'Invalid JSON response' }));
     if(!resp.ok || !data.ok){
-      console.error('post error', data);
-      setStatusHTML(`<div class="error">❌ Error koneksi: ${data && data.error ? data.error : 'Server error'}</div>`);
+      console.error('POST error', data);
+      setStatus(`<div style="color:${'white'};background:${'rgba(255,0,0,0.06)'};padding:8px;border-radius:8px">❌ Error koneksi: ${data && data.error ? data.error : 'Server error'}</div>`);
     } else {
-      setStatusHTML(`<div style="color:#083f2b;background:#bfffe9;padding:10px;border-radius:10px">✅ Komentar berhasil dikirim</div>`);
+      setStatus(`<div style="color:#05342e;background:#bfffe9;padding:8px;border-radius:8px">✅ Komentar berhasil dikirim</div>`);
       // reset form
       document.getElementById('comment').value=''; document.getElementById('name').value=''; fileInput.value=''; fileNameEl.textContent='Tidak ada file yang dipilih';
-      chosenFile=null; currentRating=0; updateStars(); await loadComments();
+      chosenFile = null; currentRating = 0; updateStars();
+      // reload comments
+      await loadComments();
     }
   } catch(err){
     console.error(err);
-    setStatusHTML(`<div class="error">❌ Error koneksi: ${err && err.message ? err.message : 'Server error'}</div>`);
+    setStatus(`<div style="color:#fff;background:rgba(255,0,0,0.06);padding:8px;border-radius:8px">❌ Error koneksi: ${err.message || 'Server error'}</div>`);
   } finally {
-    sendBtn.disabled=false; sendBtn.textContent='Kirim Komentar';
+    sendBtn.disabled = false; sendBtn.textContent = 'Kirim Komentar';
   }
 }
-
+sendBtn.addEventListener('click', sendComment);
 resetBtn.addEventListener('click', ()=>{
   document.getElementById('comment').value=''; document.getElementById('name').value=''; fileInput.value=''; fileNameEl.textContent='Tidak ada file yang dipilih';
-  chosenFile=null; currentRating=0; updateStars(); setStatusHTML('');
+  chosenFile=null; currentRating=0; updateStars(); setStatus('');
 });
-sendBtn.addEventListener('click', sendComment);
 
-/* load comments from API */
+/* load comments from /api/upload (GET) or fallback comments.json */
 async function loadComments(){
   try{
-    const r = await fetch('/api/upload?ts=' + Date.now());
-    const data = await r.json().catch(()=>({ error: 'Invalid JSON from server' }));
-    if(!r.ok || !data.ok){
-      console.error('load comments fail', data);
-      showEmptyNotice(`Tidak dapat memuat komentar. Pastikan endpoint /api/upload tersedia. (${data && data.error ? data.error : 'error'})`);
-      return;
+    // try API endpoint first
+    let r = await fetch('/api/upload?ts=' + Date.now());
+    if(r.ok){
+      const json = await r.json().catch(()=>({ error: 'Invalid JSON' }));
+      if(json && json.ok && Array.isArray(json.comments)){
+        renderComments(json.comments);
+        updateSummary(json.comments);
+        return;
+      }
+      // if returns ok:false, try fallback
     }
-    const comments = data.comments || [];
-    renderComments(comments);
+    // fallback to comments.json
+    let rf = await fetch('/comments.json?ts=' + Date.now());
+    if(rf.ok){
+      const jf = await rf.json().catch(()=>null);
+      if(Array.isArray(jf)){
+        renderComments(jf);
+        updateSummary(jf);
+        return;
+      }
+    }
+    // nothing
+    showEmpty();
   } catch(err){
-    console.error('load err', err);
-    showEmptyNotice('Gagal memuat komentar (koneksi).');
+    console.error(err);
+    showEmpty();
   }
 }
 
-function showEmptyNotice(msg){
-  const area = document.getElementById('commentsArea');
-  area.innerHTML = `<div class="notice">${escapeHtml(msg || 'Belum ada komentar. Jadilah yang pertama!')}</div>`;
+function showEmpty(){
+  document.getElementById('commentsContainer').innerHTML = '';
+  document.getElementById('empty').style.display = 'block';
+  document.getElementById('avgRating').innerHTML = '- <small>★★★★★</small>';
+  document.getElementById('countReviews').textContent = '(0 ulasan)';
 }
 
-function renderComments(arr){
-  const area = document.getElementById('commentsArea');
-  if(!arr || !arr.length){
-    area.innerHTML = `<div class="notice">Belum ada komentar. Jadilah yang pertama!</div>`;
+function updateSummary(list){
+  const c = list || [];
+  document.getElementById('empty').style.display = c.length ? 'none' : 'block';
+  if(!c.length){
+    document.getElementById('avgRating').innerHTML = '- <small>★★★★★</small>';
+    document.getElementById('countReviews').textContent = '(0 ulasan)';
     return;
   }
-  area.innerHTML = '';
-  for(const c of arr){
-    const wrapper = document.createElement('div');
-    wrapper.className = 'comment';
-    const imgHtml = c.photo ? `<img class="thumb" src="${escapeHtmlAttribute(c.photo)}" alt="foto"/>` : `<div class="thumb" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700">No</div>`;
-    wrapper.innerHTML = `
-      ${imgHtml}
+  // compute average
+  const sum = c.reduce((a,b)=>a + (Number(b.rating)||0), 0);
+  const avg = (sum / c.length) || 0;
+  document.getElementById('avgRating').innerHTML = `${avg.toFixed(2)} <small>★★★★★</small>`;
+  document.getElementById('countReviews').textContent = `(${c.length} ulasan)`;
+}
+
+function renderComments(list){
+  const container = document.getElementById('commentsContainer');
+  container.innerHTML = '';
+  if(!Array.isArray(list) || !list.length){ showEmpty(); return; }
+  for(const item of list){
+    const div = document.createElement('div');
+    div.className = 'comment';
+    const photo = item.photo || '';
+    const thumbHtml = photo ? `<img src="${escapeAttr(photo)}" alt="foto" class="thumb" />` : `<div class="thumb" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:800">MF</div>`;
+    const when = formatTime(item.timestamp || Date.now());
+    div.innerHTML = `
+      ${thumbHtml}
       <div class="meta">
-        <div class="cname">${escapeHtml(c.name || 'Anon')}</div>
-        <div class="crating">${renderStars(c.rating || 0)}</div>
-        <div style="margin-top:6px">${escapeHtml(c.comment || '')}</div>
-        <div class="ctime">${escapeHtml(formatTime(c.timestamp))}</div>
+        <div class="cname">${escapeHtml(item.name || 'Anon')}</div>
+        <div class="crating">${renderStars(Number(item.rating)||0)}</div>
+        <div style="margin-top:8px">${escapeHtml(item.comment || '')}</div>
+        <div class="ctime">${escapeHtml(when)}</div>
       </div>
     `;
-    area.appendChild(wrapper);
+    container.appendChild(div);
   }
 }
 
-/* small helpers */
 function renderStars(n){
-  let out='';
-  for(let i=0;i<5;i++) out += i < n ? '★' : '☆';
-  return `<span style="color:var(--yellow)">${out}</span>`;
-}
-function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-function escapeHtmlAttribute(s){ return (s||'').replace(/"/g,'&quot;'); }
-function formatTime(ts){
-  if(!ts) return '';
-  try{ const d = new Date(ts); return d.toLocaleString(); } catch(e){ return ts; }
+  let s='';
+  for(let i=0;i<5;i++) s += (i < n) ? '★' : '☆';
+  return `<span style="color:var(--yellow)">${s}</span>`;
 }
 
-/* initial load and polling */
+function formatTime(ts){
+  try{
+    const d = new Date(ts);
+    return d.toLocaleString();
+  }catch(e){ return ts; }
+}
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function escapeAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
+
 document.addEventListener('DOMContentLoaded', ()=>{
   updateStars();
   loadComments();
