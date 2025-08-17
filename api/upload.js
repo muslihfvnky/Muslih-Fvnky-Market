@@ -1,73 +1,73 @@
-import formidable from "formidable";
-import fs from "fs";
+// /api/upload.js
 import fetch from "node-fetch";
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Metode tidak diizinkan" });
   }
 
-  const form = formidable({ multiples: false });
+  try {
+    const { name, comment, file } = req.body;
 
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      return res.status(500).json({ error: "Error parsing form" });
+    if (!name || !comment || !file) {
+      return res.status(400).json({ error: "Data tidak lengkap" });
     }
 
-    try {
-      const { nama, komentar, rating } = fields;
-      const file = files.file;
-      let fileUrl = null;
+    const buffer = Buffer.from(file.split(",")[1], "base64");
+    const dropboxToken = process.env.DROPBOX_ACCESS_TOKEN;
 
-      if (file) {
-        const fileData = fs.readFileSync(file.filepath);
-        const dropboxPath = `/komentar-web/${Date.now()}_${file.originalFilename}`;
-
-        // Upload ke Dropbox
-        await fetch("https://content.dropboxapi.com/2/files/upload", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${process.env.DROPBOX_ACCESS_TOKEN}`,
-            "Dropbox-API-Arg": JSON.stringify({
-              path: dropboxPath,
-              mode: "add",
-              autorename: true,
-              mute: false,
-            }),
-            "Content-Type": "application/octet-stream",
-          },
-          body: fileData,
-        });
-
-        // Generate temporary link
-        const resp = await fetch("https://api.dropboxapi.com/2/files/get_temporary_link", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${process.env.DROPBOX_ACCESS_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ path: dropboxPath }),
-        });
-        const data = await resp.json();
-        fileUrl = data.link;
-      }
-
-      res.status(200).json({
-        success: true,
-        nama,
-        komentar,
-        rating,
-        fileUrl,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Upload gagal" });
+    if (!dropboxToken) {
+      return res.status(500).json({ error: "Token Dropbox tidak ditemukan di ENV" });
     }
-  });
+
+    // Simpan file ke Dropbox
+    const dropboxRes = await fetch("https://content.dropboxapi.com/2/files/upload", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${dropboxToken}`,
+        "Dropbox-API-Arg": JSON.stringify({
+          path: `/komentar-web/${Date.now()}-${name}.jpg`,
+          mode: "add",
+          autorename: true,
+          mute: false
+        }),
+        "Content-Type": "application/octet-stream",
+      },
+      body: buffer,
+    });
+
+    const dropboxData = await dropboxRes.json();
+
+    if (dropboxData.error) {
+      return res.status(500).json({ error: "Upload Dropbox gagal", detail: dropboxData });
+    }
+
+    // Simpan komentar jadi file JSON juga
+    const komentarData = {
+      name,
+      comment,
+      filePath: dropboxData.path_display,
+      createdAt: new Date().toISOString(),
+    };
+
+    await fetch("https://content.dropboxapi.com/2/files/upload", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${dropboxToken}`,
+        "Dropbox-API-Arg": JSON.stringify({
+          path: `/komentar-web/${Date.now()}-komentar.json`,
+          mode: "add",
+          autorename: true,
+          mute: false
+        }),
+        "Content-Type": "application/octet-stream",
+      },
+      body: Buffer.from(JSON.stringify(komentarData)),
+    });
+
+    res.status(200).json({ success: true, message: "Komentar berhasil disimpan!" });
+
+  } catch (err) {
+    res.status(500).json({ error: "Server error", detail: err.message });
+  }
 }
