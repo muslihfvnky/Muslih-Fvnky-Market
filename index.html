@@ -112,6 +112,23 @@
     }
     .glow-btn:hover { background: #0FFCBE; color: black; box-shadow: 0 10px 30px rgba(15,252,190,0.18); transform: translateY(-4px); }
 
+    /* comment special button (different accent) */
+    .comment-btn {
+      background: linear-gradient(90deg,#f97316,#fb7185);
+      border: 0;
+      color: white;
+      font-weight: 800;
+      padding: .9rem 1rem;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-block;
+      width: 100%;
+      text-align:center;
+      box-shadow: 0 8px 30px rgba(251,113,133,0.14);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .comment-btn:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(251,113,133,0.18); color: #000; }
+
     /* PRIMARY Testimoni button (highlight) */
     .primary-btn {
       position: relative;
@@ -158,9 +175,11 @@
       <p class="text-sm text-white/90">Tempat Jual Beli FLM Murah</p>
     </div>
 
-    <!-- quick link to Testimoni di kanan (dibuka di halaman yang sama sekarang) -->
+    <!-- quick links (Testimoni + Komentar) -->
     <div class="header-extra" aria-hidden="false">
-      <a href="testimoni.html" class="header-link" title="Lihat Testimoni">⭐ Testimoni</a>
+      <a href="testimoni.html" class="header-link" title="Lihat Testimoni">📸 Testimoni</a>
+      <!-- Komentar link -->
+      <a href="coments.html" class="header-link" title="Komentar & Rating">💬 Komentar</a>
     </div>
   </header>
 
@@ -184,6 +203,13 @@
           <a href="pemesanan-lagu.html" class="glow-btn">Pemesanan Lagu</a>
           <a href="jasa-mixing.html" class="glow-btn">Jasa Mixing & Mastering</a>
           <a href="jasa-chord-dan-bpm.html" class="glow-btn">Jasa Nyusun Chord & BPM</a>
+
+          <!-- Komentar & Rating (diperjelas dengan warna terpisah) -->
+          <div>
+            <a href="comments.html" class="comment-btn" aria-label="Buka halaman Komentar & Rating">
+              💬 Komentar & Rating
+            </a>
+          </div>
 
           <!-- Primary Testimoni button spans full width -->
           <div style="grid-column: 1 / -1;">
