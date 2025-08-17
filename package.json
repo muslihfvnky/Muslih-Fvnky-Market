@@ -1,12 +1,13 @@
 {
-  "name": "muslih-fvnky-market",
+  "name": "muslih-comments",
   "version": "1.0.0",
-  "private": true,
+  "main": "index.js",
   "scripts": {
-    "build": "echo \"Vercel handles build\"",
-    "start": "vercel dev"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
-    "formidable": "^3.5.1"
+    "dropbox": "^10.34.0"
   }
 }
