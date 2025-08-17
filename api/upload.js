@@ -1,210 +1,226 @@
 // api/upload.js
-import formidable from "formidable";
-import fs from "fs/promises";
+// Vercel Serverless (Node 18+) - handles GET (list comments) and POST (upload + append comment)
+// Requires env var DROPBOX_TOKEN
 
-/**
- * Vercel: disable automatic body parsing
- */
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+const DROPBOX_TOKEN = process.env.DROPBOX_TOKEN;
+const DROPBOX_UPLOAD_URL = "https://content.dropboxapi.com/2/files/upload";
+const DROPBOX_DOWNLOAD_URL = "https://content.dropboxapi.com/2/files/download";
+const DROPBOX_SHARE_URL = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings";
 
-const DROPBOX_API_CONTENT = "https://content.dropboxapi.com/2";
-const DROPBOX_API = "https://api.dropboxapi.com/2";
-
-/** helper: safe filename */
-function safeFilename(name = "") {
-  return name.replace(/\s+/g, "_").replace(/[^\w.\-()]/g, "");
+function setCorsHeaders(res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
 }
 
-/** helper: fetch JSON and throw on non-ok */
-async function fetchJson(url, opts = {}) {
-  const res = await fetch(url, opts);
-  const text = await res.text();
-  try {
-    const json = JSON.parse(text || "{}");
-    if (!res.ok) {
-      const err = new Error("HTTP " + res.status);
-      err.status = res.status;
-      err.body = json;
-      throw err;
-    }
-    return json;
-  } catch (e) {
-    // if not JSON, still throw
-    if (!res.ok) {
-      const err = new Error("HTTP " + res.status + " - " + text);
-      err.status = res.status;
-      err.body = text;
-      throw err;
-    }
-    // otherwise return text (rare)
-    return text;
-  }
+async function bufferToUint8Array(buf) {
+  return new Uint8Array(buf);
 }
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  const DROPBOX_TOKEN = process.env.DROPBOX_TOKEN;
-  if (!DROPBOX_TOKEN) {
-    return res.status(500).json({ error: "Dropbox token not configured (env DROPBOX_TOKEN)" });
-  }
-
-  // parse multipart form with formidable
-  const parsed = await new Promise((resolve, reject) => {
-    const form = formidable({
-      multiples: false,
-      // keep file extension and store in temp
-      keepExtensions: true,
-    });
-    form.parse(req, (err, fields, files) => {
-      if (err) return reject(err);
-      resolve({ fields, files });
-    });
-  });
-
+async function downloadCommentsFromDropbox() {
   try {
-    const { fields, files } = parsed;
-    const name = (fields.name || fields.nama || fields.username || "Anonim").toString();
-    const comment = (fields.comment || fields.komentar || fields.text || "").toString();
-    const rating = Number(fields.rating || 0);
-
-    // Basic validation
-    if (!name || !comment) {
-      return res.status(400).json({ error: "Nama dan komentar harus diisi" });
-    }
-    if (!rating || rating < 1 || rating > 5) {
-      // allow 0? but we require 1-5 in UI; so fallback 0 allowed
-    }
-
-    // We'll upload file if present
-    let imageUrl = null;
-    let imagePath = null;
-
-    if (files && files.file) {
-      const f = files.file;
-      // some formidable versions return array for files.file if multiple; handle that
-      const fileObj = Array.isArray(f) ? f[0] : f;
-
-      // read file buffer
-      const buffer = await fs.readFile(fileObj.filepath);
-      const nameSafe = safeFilename(fileObj.originalFilename || fileObj.newFilename || "upload");
-      imagePath = `/komentar-web/images/${Date.now()}_${nameSafe}`;
-
-      // upload bytes to Dropbox (content API)
-      const uploadRes = await fetch(`${DROPBOX_API_CONTENT}/files/upload`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${DROPBOX_TOKEN}`,
-          "Content-Type": "application/octet-stream",
-          "Dropbox-API-Arg": JSON.stringify({
-            path: imagePath,
-            mode: "add",
-            autorename: true,
-            mute: false,
-          }),
-        },
-        body: buffer,
-      });
-
-      if (!uploadRes.ok) {
-        const body = await uploadRes.text();
-        throw new Error(`Dropbox upload failed: ${uploadRes.status} ${body}`);
-      }
-
-      // get temporary link so browser can display image (valid for a short time)
-      const tempJson = await fetchJson(`${DROPBOX_API}/files/get_temporary_link`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${DROPBOX_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ path: imagePath }),
-      });
-
-      // tempJson.link contains link like https://...
-      imageUrl = tempJson.link || null;
-    }
-
-    // ---------- load existing comments.json ----------
-    const commentsPath = "/komentar-web/comments.json";
-    let comments = [];
-
-    try {
-      // download file content (content API files/download)
-      const dlRes = await fetch(`${DROPBOX_API_CONTENT}/files/download`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${DROPBOX_TOKEN}`,
-          "Dropbox-API-Arg": JSON.stringify({ path: commentsPath }),
-        },
-      });
-
-      if (dlRes.ok) {
-        const txt = await dlRes.text();
-        try {
-          comments = JSON.parse(txt || "[]");
-          if (!Array.isArray(comments)) comments = [];
-        } catch (e) {
-          // if parse error, fallback to empty array
-          comments = [];
-        }
-      } else {
-        // if not found (409), we'll create new
-        const txt = await dlRes.text();
-        // If it's not found, ignore. Otherwise log for debugging.
-        // console.warn('Download comments.json failed:', dlRes.status, txt);
-        comments = [];
-      }
-    } catch (e) {
-      // network or other problems -> fallback to empty list
-      comments = [];
-    }
-
-    // append new comment object
-    const newComment = {
-      name,
-      comment,
-      rating: Number.isFinite(rating) ? rating : 0,
-      imageUrl: imageUrl || null,   // temporary link (usable directly)
-      imagePath: imagePath || null, // path on dropbox for reference
-      createdAt: new Date().toISOString()
-    };
-
-    comments.unshift(newComment); // newest first
-
-    // upload back comments.json (overwrite)
-    const commentsBuffer = Buffer.from(JSON.stringify(comments, null, 2), "utf8");
-    const uploadCommentsRes = await fetch(`${DROPBOX_API_CONTENT}/files/upload`, {
+    const resp = await fetch(DROPBOX_DOWNLOAD_URL, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${DROPBOX_TOKEN}`,
-        "Content-Type": "application/octet-stream",
-        "Dropbox-API-Arg": JSON.stringify({
-          path: commentsPath,
-          mode: "overwrite",
-          autorename: false,
-          mute: false,
-        }),
+        "Dropbox-API-Arg": JSON.stringify({ path: "/comments/comments.json" }),
       },
-      body: commentsBuffer,
     });
 
-    if (!uploadCommentsRes.ok) {
-      const body = await uploadCommentsRes.text();
-      throw new Error(`Failed to upload comments.json: ${uploadCommentsRes.status} ${body}`);
+    if (!resp.ok) {
+      // file might not exist yet
+      throw new Error(`not found`);
     }
-
-    // success
-    return res.status(200).json({ success: true, comment: newComment });
+    const text = await resp.text();
+    return JSON.parse(text);
   } catch (err) {
-    console.error("upload.js error:", err);
-    return res.status(500).json({ error: err.message || "Server error", details: String(err) });
+    return []; // return empty list when not found or error
   }
 }
+
+async function uploadBytesToDropbox(path, bytes) {
+  const resp = await fetch(DROPBOX_UPLOAD_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${DROPBOX_TOKEN}`,
+      "Content-Type": "application/octet-stream",
+      "Dropbox-API-Arg": JSON.stringify({
+        path,
+        mode: "add",
+        autorename: true,
+        mute: false,
+      }),
+    },
+    body: bytes,
+  });
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`Upload failed: ${resp.status} ${txt}`);
+  }
+  return await resp.json(); // metadata
+}
+
+async function overwriteBytesToDropbox(path, bytes) {
+  // Overwrite mode for comments.json
+  const resp = await fetch(DROPBOX_UPLOAD_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${DROPBOX_TOKEN}`,
+      "Content-Type": "application/octet-stream",
+      "Dropbox-API-Arg": JSON.stringify({
+        path,
+        mode: "overwrite",
+        autorename: false,
+        mute: false,
+      }),
+    },
+    body: bytes,
+  });
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`Overwrite failed: ${resp.status} ${txt}`);
+  }
+  return await resp.json();
+}
+
+async function createSharedLink(path) {
+  try {
+    const resp = await fetch(DROPBOX_SHARE_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${DROPBOX_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ path, settings: { requested_visibility: "public" } }),
+    });
+
+    const data = await resp.json();
+    if (!resp.ok) {
+      // If already exists, Dropbox returns error; try to extract url text anyway
+      if (data && data.error && data.error.shared_link_already_exists && data.error.shared_link_already_exists.metadata && data.error.shared_link_already_exists.metadata.url) {
+        return data.error.shared_link_already_exists.metadata.url;
+      }
+      throw new Error(JSON.stringify(data));
+    }
+    return data.url;
+  } catch (err) {
+    throw err;
+  }
+}
+
+module.exports = async (req, res) => {
+  setCorsHeaders(res);
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    return res.end();
+  }
+
+  if (!DROPBOX_TOKEN) {
+    res.statusCode = 500;
+    return res.end(JSON.stringify({ error: "Server misconfigured: missing DROPBOX_TOKEN env var" }));
+  }
+
+  try {
+    if (req.method === "GET") {
+      // Return comments.json content (from Dropbox)
+      const comments = await downloadCommentsFromDropbox();
+      res.statusCode = 200;
+      return res.end(JSON.stringify({ ok: true, comments }));
+    }
+
+    if (req.method === "POST") {
+      // Collect body
+      let body = "";
+      for await (const chunk of req) body += chunk;
+      if (!body) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Empty request body" }));
+      }
+
+      let payload;
+      try {
+        payload = JSON.parse(body);
+      } catch (err) {
+        res.statusCode = 400;
+        return res.end(JSON.stringify({ error: "Invalid JSON" }));
+      }
+
+      const { name = "Anon", comment = "", rating = 0, filename = null, fileBase64 = null } = payload;
+      const timestamp = new Date().toISOString();
+
+      let photoUrl = null;
+
+      // If fileBase64 sent, upload it to Dropbox
+      if (fileBase64 && filename) {
+        // fileBase64 might include data:...;base64,strip that
+        const base64 = fileBase64.indexOf(",") >= 0 ? fileBase64.split(",")[1] : fileBase64;
+        const buffer = Buffer.from(base64, "base64");
+        const safePath = `/comments/${timestamp.replace(/[:.]/g, "-")}_${filename}`;
+
+        // upload bytes to Dropbox
+        await uploadBytesToDropbox(safePath, buffer);
+
+        // create shared link
+        let url;
+        try {
+          url = await createSharedLink(safePath);
+        } catch (err) {
+          // Try to ignore and continue (we can still serve via /2/files/get_temporary_link, but keep it simple)
+          // Try get_temporary_link as fallback
+          try {
+            const tmpResp = await fetch("https://api.dropboxapi.com/2/files/get_temporary_link", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${DROPBOX_TOKEN}`, "Content-Type": "application/json" },
+              body: JSON.stringify({ path: safePath }),
+            });
+            const tmpData = await tmpResp.json();
+            if (tmpResp.ok && tmpData && tmpData.link) url = tmpData.link;
+          } catch (er) {
+            // ignore
+          }
+        }
+
+        if (url) {
+          // transform to raw image if possible
+          if (url.includes("dl=0")) {
+            photoUrl = url.replace("dl=0", "raw=1");
+          } else if (url.includes("dl=1")) {
+            // already direct
+            photoUrl = url;
+          } else {
+            // add raw=1
+            photoUrl = url + (url.includes("?") ? "&raw=1" : "?raw=1");
+          }
+        }
+      }
+
+      // Load current comments (from Dropbox)
+      const comments = await downloadCommentsFromDropbox();
+
+      // Append new comment
+      const newComment = {
+        name,
+        comment,
+        rating: Number(rating) || 0,
+        photo: photoUrl,
+        timestamp,
+      };
+      comments.unshift(newComment); // newest first
+
+      // Save updated comments.json to Dropbox (overwrite)
+      await overwriteBytesToDropbox("/comments/comments.json", Buffer.from(JSON.stringify(comments, null, 2)));
+
+      res.statusCode = 200;
+      return res.end(JSON.stringify({ ok: true, comment: newComment }));
+    }
+
+    // Method not allowed
+    res.statusCode = 405;
+    return res.end(JSON.stringify({ error: "Method not allowed" }));
+  } catch (err) {
+    console.error("API error:", err);
+    res.statusCode = 500;
+    return res.end(JSON.stringify({ error: "Server error", details: String(err && err.message ? err.message : err) }));
+  }
+};
