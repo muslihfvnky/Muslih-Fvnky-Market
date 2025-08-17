@@ -8,11 +8,6 @@
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Firebase (modular SDK) -->
-  <script type="module">
-    // kosong: firebase di-load di bagian bawah (module) saat dibutuhkan
-  </script>
-
   <style>
     html,body { height:100%; margin:0; }
     body {
@@ -28,16 +23,12 @@
     .star { font-size: 1.6rem; cursor: pointer; user-select: none; transition: transform .12s ease; }
     .star:hover { transform: translateY(-3px); }
     .star.filled { color: #f6c94d; } /* gold */
-    .thumb { max-width: 140px; max-height: 110px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); }
+    .thumb { max-width: 120px; max-height: 90px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); }
     .progress { height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; }
     .progress > i { display: block; height: 100%; background: linear-gradient(90deg,#06b6d4,#3b82f6); width: 0%; transition: width .2s linear; }
     .muted { color: rgba(255,255,255,0.6); }
     .rating-large { font-size: 1.4rem; font-weight: 800; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-    /* small responsive tweaks */
-    @media (min-width: 768px) {
-      .thumb { max-width: 180px; max-height: 140px; }
-    }
   </style>
 </head>
 <body>
@@ -52,7 +43,7 @@
         </div>
       </header>
 
-      <!-- Stats -->
+      <!-- Stats (average + total) -->
       <section class="card p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <div class="text-xs text-white/70">Rata-rata rating</div>
@@ -78,7 +69,7 @@
 
           <div>
             <label class="block text-sm text-white/90 font-medium">Komentar</label>
-            <textarea id="comment" name="komentar" rows="3" required class="mt-1 w-full rounded-md p-2 text-black" placeholder="Tulis pengalamanmu (contoh: pesan cepat & kualitas bagus)"></textarea>
+            <textarea id="comment" name="komentar" rows="3" required class="mt-1 w-full rounded-md p-2 text-black" placeholder="Tulis pengalamanmu"></textarea>
           </div>
 
           <div>
@@ -91,6 +82,8 @@
               <span class="star" data-value="5" role="radio" aria-checked="false">☆</span>
             </div>
             <p id="ratingHint" class="text-xs text-white/60 mt-1">Klik satu bintang untuk memilih rating.</p>
+            <!-- hidden input to include rating when posting to /api/upload -->
+            <input type="hidden" name="rating" id="ratingInput" value="0" />
           </div>
 
           <div>
@@ -124,13 +117,15 @@
     </main>
   </div>
 
-  <!-- Scripts: Firebase + logic -->
+  <!-- Firebase + client logic -->
   <script type="module">
-    // ---------- Firestore setup (client) ----------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getFirestore, collection, addDoc, serverTimestamp,
+      query, orderBy, onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Gunakan firebaseConfig yang sudah kamu berikan sebelumnya
+    // ====== Firebase config (pakai milikmu) ======
     const firebaseConfig = {
       apiKey: "AIzaSyCzM4lTP69_lJq2KoaRLo_kGDgygSFQQ84",
       authDomain: "muslih-fvnky-shop.firebaseapp.com",
@@ -140,15 +135,17 @@
       appId: "1:339802914615:web:2dd129c915c69ef5db24b2",
       measurementId: "G-XFWTMC8P6R"
     };
+    // ============================================
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // ---------- DOM refs ----------
+    // DOM refs
     const form = document.getElementById('commentForm');
     const usernameEl = document.getElementById('username');
     const commentEl = document.getElementById('comment');
     const ratingStars = document.querySelectorAll('#ratingStars .star');
+    const ratingInput = document.getElementById('ratingInput');
     const commentsList = document.getElementById('commentsList');
     const totalCountDisplay = document.getElementById('totalCount');
     const avgRatingVisual = document.getElementById('avgRatingVisual');
@@ -166,10 +163,11 @@
     let selectedFile = null;
     const MAX_FILE_BYTES = 5 * 1024 * 1024; // 5MB
 
-    // star behaviors
+    // stars behaviour
     ratingStars.forEach(star => {
       star.addEventListener('click', () => {
         selectedRating = Number(star.getAttribute('data-value'));
+        ratingInput.value = String(selectedRating);
         updateStars(selectedRating);
       });
       star.addEventListener('mouseenter', () => {
@@ -221,23 +219,54 @@
       previewWrap.appendChild(img);
     });
 
-    // clear form
+    // clear
     clearBtn.addEventListener('click', () => {
       form.reset();
       selectedRating = 0;
       selectedFile = null;
       photoInput.value = '';
       previewWrap.innerHTML = '';
+      ratingInput.value = '0';
       updateStars(0);
     });
 
-    // ---------- Submit: upload to your server (Dropbox via /api/upload), then add to Firestore ----------
+    // helper: POST to our server /api/upload using XHR to get progress
+    function postToServerWithProgress(formData, onProgress) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/upload', true);
+
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable && onProgress) {
+            const pct = Math.round((e.loaded / e.total) * 100);
+            onProgress(pct);
+          }
+        };
+
+        xhr.onload = () => {
+          try {
+            const json = JSON.parse(xhr.responseText || '{}');
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(json);
+            } else {
+              reject(new Error(json.error || `Server returned ${xhr.status}`));
+            }
+          } catch (err) {
+            reject(err);
+          }
+        };
+
+        xhr.onerror = () => reject(new Error('Network error during upload to server.'));
+        xhr.send(formData);
+      });
+    }
+
+    // submit handler
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const nama = usernameEl.value.trim();
-      const komentar = commentEl.value.trim();
-
-      if (!nama || !komentar) {
+      const username = usernameEl.value.trim();
+      const comment = commentEl.value.trim();
+      if (!username || !comment) {
         alert('Isi nama & komentar terlebih dahulu.');
         return;
       }
@@ -250,74 +279,63 @@
       submitBtn.textContent = 'Mengirim...';
 
       try {
-        // Build FormData to send to server (server akan upload ke Dropbox)
-        const fd = new FormData();
-        fd.append('nama', nama);
-        fd.append('komentar', komentar);
-        fd.append('rating', String(selectedRating));
-        if (selectedFile) fd.append('file', selectedFile);
+        let imageUrl = null;
 
-        // Use XHR to show upload progress
-        const endpoint = 'https://muslihfvnkyshop.my.id/api/upload'; // sesuai permintaan domain
-        const responseData = await new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', endpoint, true);
+        if (selectedFile) {
+          // build formdata for server
+          const fd = new FormData();
+          fd.append('nama', username);
+          fd.append('komentar', comment);
+          fd.append('rating', String(selectedRating));
+          fd.append('file', selectedFile);
 
-          xhr.upload.onprogress = (ev) => {
-            if (ev.lengthComputable) {
-              const pct = Math.round((ev.loaded / ev.total) * 100);
-              uploadProgress.classList.remove('hidden');
-              progressBar.style.width = pct + '%';
-              progressText.textContent = pct + '%';
-            }
-          };
+          uploadProgress.classList.remove('hidden');
+          progressBar.style.width = '0%';
+          progressText.textContent = '0%';
 
-          xhr.onload = () => {
-            try {
-              const json = JSON.parse(xhr.responseText || '{}');
-              if (xhr.status >= 200 && xhr.status < 300) resolve(json);
-              else reject({ status: xhr.status, body: json });
-            } catch (err) {
-              reject(err);
-            }
-          };
+          // call server endpoint which uploads to Dropbox and returns fileUrl
+          const serverRes = await postToServerWithProgress(fd, (pct) => {
+            progressBar.style.width = pct + '%';
+            progressText.textContent = pct + '%';
+          });
 
-          xhr.onerror = () => reject(new Error('Network error saat upload'));
-          xhr.send(fd);
-        });
+          if (!serverRes || !serverRes.success) {
+            throw new Error(serverRes && serverRes.error ? serverRes.error : 'Server upload gagal');
+          }
 
-        // responseData diharapkan berisi fileUrl (link image di Dropbox) dan/atau info lain.
-        const fileUrl = responseData.fileUrl || responseData.link || null;
+          imageUrl = serverRes.fileUrl || null; // may be null if server could not create public link
+        }
 
-        // Simpan metadata komentar ke Firestore agar muncul di semua klien secara realtime
+        // simpan ke Firestore (terlepas dari upload sukses/gagal)
         await addDoc(collection(db, 'comments'), {
-          username: nama,
-          comment: komentar,
+          username,
+          comment,
           rating: selectedRating,
-          imageUrl: fileUrl || null,
+          imageUrl: imageUrl || null,
           createdAt: serverTimestamp()
         });
 
-        // Reset form UI
+        // sukses -> reset & notifikasi
         form.reset();
         selectedRating = 0;
         selectedFile = null;
+        photoInput.value = '';
         previewWrap.innerHTML = '';
         updateStars(0);
-        uploadProgress.classList.add('hidden');
-        progressBar.style.width = '0%';
-        progressText.textContent = '0%';
-        alert('Komentar berhasil dikirim — terima kasih!');
+        alert('Komentar berhasil dikirim. Terima kasih!');
       } catch (err) {
         console.error('Gagal mengirim komentar:', err);
-        alert('Gagal mengirim komentar. Lihat console untuk detail.');
+        alert('Gagal mengirim. Cek console (F12) untuk detail. Jika masalah token/server, pastikan /api/upload sudah deploy dan env var DROPBOX_ACCESS_TOKEN benar.');
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Kirim Komentar';
+        uploadProgress.classList.add('hidden');
+        progressBar.style.width = '0%';
+        progressText.textContent = '0%';
       }
     });
 
-    // ---------- realtime read and compute stats ----------
+    // realtime read and compute stats
     const q = query(collection(db, 'comments'), orderBy('createdAt', 'desc'));
     onSnapshot(q, (snapshot) => {
       if (snapshot.empty) {
@@ -335,8 +353,8 @@
       snapshot.forEach(doc => {
         const d = doc.data();
         const rating = d.rating || 0;
-        const username = d.username || d.name || 'Anonim';
-        const comment = d.comment || d.komentar || '';
+        const username = d.username || 'Anonim';
+        const comment = d.comment || '';
         const imageUrl = d.imageUrl || null;
         const createdAt = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate() : null;
 
@@ -346,20 +364,48 @@
         let timeStr = 'Baru saja';
         if (createdAt) timeStr = createdAt.toLocaleString();
 
-        // Build card markup
-        html += `
-          <div class="card p-4 flex gap-4 flex-col md:flex-row items-start">
-            ${imageUrl ? `<div style="flex:0 0 auto"><img src="${escapeHtml(imageUrl)}" alt="Foto testimoni" class="thumb"></div>` : ''}
-            <div style="flex:1">
-              <div class="flex items-center justify-between mb-2">
-                <div class="font-semibold">${escapeHtml(username)}</div>
-                <div class="text-yellow-400">${'★'.repeat(rating)}${'☆'.repeat(5-rating)}</div>
-              </div>
-              <div class="text-sm mt-1">${escapeHtml(comment)}</div>
-              <div class="text-xs text-white/60 mt-2">${escapeHtml(timeStr)}</div>
-            </div>
-          </div>
-        `;
+        // build card
+        const card = document.createElement('div');
+        card.className = 'card p-4 flex gap-4 flex-col md:flex-row items-start';
+
+        const left = document.createElement('div');
+        left.style.flex = '0 0 auto';
+        if (imageUrl) {
+          const img = document.createElement('img');
+          img.src = imageUrl;
+          img.alt = 'Foto testimoni';
+          img.className = 'thumb';
+          left.appendChild(img);
+        }
+
+        const right = document.createElement('div');
+        right.style.flex = '1';
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between mb-2';
+        const nameEl = document.createElement('div');
+        nameEl.className = 'font-semibold';
+        nameEl.textContent = username;
+        const ratingEl = document.createElement('div');
+        ratingEl.innerHTML = `<span class="text-yellow-400">${'★'.repeat(rating)}${'☆'.repeat(5-rating)}</span>`;
+        header.appendChild(nameEl);
+        header.appendChild(ratingEl);
+
+        const commentNode = document.createElement('div');
+        commentNode.className = 'text-sm mt-1';
+        commentNode.textContent = comment;
+
+        const timeNode = document.createElement('div');
+        timeNode.className = 'text-xs text-white/60 mt-2';
+        timeNode.textContent = timeStr;
+
+        right.appendChild(header);
+        right.appendChild(commentNode);
+        right.appendChild(timeNode);
+
+        if (imageUrl) card.appendChild(left);
+        card.appendChild(right);
+
+        html += card.outerHTML;
       });
 
       commentsList.innerHTML = html;
@@ -374,18 +420,7 @@
       commentsList.innerHTML = `<div class="card p-4 text-center text-red-400">Gagal mengambil komentar (lihat console).</div>`;
     });
 
-    // small helper to escape HTML (avoid XSS)
-    function escapeHtml(s) {
-      if (!s) return '';
-      return String(s)
-        .replaceAll('&','&amp;')
-        .replaceAll('<','&lt;')
-        .replaceAll('>','&gt;')
-        .replaceAll('"','&quot;')
-        .replaceAll("'",'&#39;');
-    }
-
-    // init visual stars
+    // init
     updateStars(0);
   </script>
 </body>
