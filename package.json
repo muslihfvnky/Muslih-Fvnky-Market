@@ -1,14 +1,10 @@
 {
   "name": "muslih-fvnky-market",
   "version": "1.0.0",
-  "type": "module",
-  "description": "Upload komentar + file ke Dropbox (serverless on Vercel)",
+  "private": true,
   "scripts": {
-    "start": "vercel dev",
-    "build": "echo \"Vercel handles build automatically\""
-  },
-  "engines": {
-    "node": ">=18"
+    "build": "echo \"Vercel handles build\"",
+    "start": "vercel dev"
   },
   "dependencies": {
     "formidable": "^3.5.1"
