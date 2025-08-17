@@ -28,6 +28,7 @@
     .progress > i { display: block; height: 100%; background: linear-gradient(90deg,#06b6d4,#3b82f6); width: 0%; transition: width .2s linear; }
     .muted { color: rgba(255,255,255,0.6); }
     .rating-large { font-size: 1.4rem; font-weight: 800; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
   </style>
 </head>
 <body>
@@ -60,7 +61,7 @@
 
       <!-- Form -->
       <section class="card p-5 mb-6">
-        <form id="commentForm" class="space-y-3">
+        <form id="commentForm" class="space-y-3" autocomplete="off">
           <div>
             <label class="block text-sm text-white/90 font-medium">Nama</label>
             <input id="username" type="text" required class="mt-1 w-full rounded-md p-2 text-black" placeholder="Nama kamu (atau panggilan)">
@@ -73,12 +74,12 @@
 
           <div>
             <label class="block text-sm text-white/90 font-medium mb-1">Rating</label>
-            <div id="ratingStars" class="flex gap-2">
-              <span class="star" data-value="1">☆</span>
-              <span class="star" data-value="2">☆</span>
-              <span class="star" data-value="3">☆</span>
-              <span class="star" data-value="4">☆</span>
-              <span class="star" data-value="5">☆</span>
+            <div id="ratingStars" class="flex gap-2" role="radiogroup" aria-label="Rating bintang">
+              <span class="star" data-value="1" role="radio" aria-checked="false">☆</span>
+              <span class="star" data-value="2" role="radio" aria-checked="false">☆</span>
+              <span class="star" data-value="3" role="radio" aria-checked="false">☆</span>
+              <span class="star" data-value="4" role="radio" aria-checked="false">☆</span>
+              <span class="star" data-value="5" role="radio" aria-checked="false">☆</span>
             </div>
             <p id="ratingHint" class="text-xs text-white/60 mt-1">Klik satu bintang untuk memilih rating.</p>
           </div>
@@ -90,7 +91,7 @@
               <div id="previewWrap" class="flex items-center gap-2"></div>
             </div>
 
-            <div id="uploadProgress" class="mt-2 hidden">
+            <div id="uploadProgress" class="mt-2 hidden" aria-hidden="true">
               <div class="progress"><i id="progressBar"></i></div>
               <div class="text-xs muted mt-1" id="progressText">0%</div>
             </div>
@@ -138,9 +139,9 @@
     const db = getFirestore(app);
 
     // ========= DROPBOX CONFIG =========
-    // ACCESS TOKEN yang kamu generate (jaga kerahasiaannya!)
+    // Access token & folder — sudah kamu berikan sebelumnya
     const DROPBOX_ACCESS_TOKEN = "sl.u.AF4bBl9_KhseZ1exdSm2eZcw0ulIfeuYGkHPFlj2IEkgr2DfObiJK6hHEFdRR_gJi7yrX7ufTQXcZllNeR-ItI63uC6sWIL2J_OiBcg4Ytx5j3FxaNgBemWVUmkUwpNkoJDXtuLjGzDsSCrIBhHji7qTEy7ZUTtKpemHvh48JqeH5V2I40gjZ2hOkyn_Ow7VtAGvc41YsjZtRvc98NAedjyU2Z2PwseHemtELEH-wH2OietSG70ozZN0lKYbyjjAChQROEPX45GMKSJnRD91e_S_BWrxLYkiCy2-6Bn8N96hg66dQYCcZkdPTQg52BfhKlY35bQqm4gqGyB19m9Gv3GCd0NJaS5Hj2LnUJ4wgBWTahL2b-nIWrJqBJon8_QLq8NFJVLA1WZ2u9oQhy-BAfdZK3d2Er-HqwlWaQahtBoolqPrI903wtNAeyNYfafvmGDtTf28GRBNIiEA-slRm-jE-UaZDguYaZ6DORvGOIN_S3pClkasNdXFWZ1ozNxZ6yBjZsv0FQE6ViyWa-2QCj407lnE9xipgR4yXR8CHYhC96j-rIammzJVrdVeeLRw6_W52kjkTmcqxy33B3jVx7p_0OWigLCSS1A9ZPk35anQ_34grif3SCRsLRoRTsRwLj-3h9JfXn2TFXzMVj0d9FM7uh_UYiBYR0brhGt9iZg1ZT1jb3Q8RTWOx1bdkAesTEDq-29zP4ypl0WF42B-o2E3oZ9v_4a7dfRNr_yhD1NmheMJE3LNm1QL3yqjMR5YNjhZKkaFfYWCHTMX7_maAG-yunGumbuyDRLgJjPz4mGGPzm9hsyZU31b6blYs-HIDh8e1oozmZzCdtkTbsxTB6Oceh2qQlHSSLrKukzdCzL7gsRRIdVN9zYE_JaJiCk7GLOX3KBN2TPozTQUZGFMkDYr8MucK3v4gLuFxbh5NJqx-QqD8Pj1t6Du1nohTd2ucGTVhP3AjXuVKBZKkMhXBZ2KeJ8SQWSAFuS9x-AV82_sXiFp1iuDkG71vR-Hdc9QFKLyDZfggJjJ6dEC6a5n-DprTkFVDwIYW1x7lYNOWEu1gDk17RVE6ixxaicYdjZ28ucYML3ZeMRoZSVBoi9o8AxT4f9tn8mCfEfOzDnomTNE_tZVcR_YZ9M-Xogm5TQLQ-Szij9e0GuvhJSy_Lbc7qzApGkysTaBaXPWZvBnj0r9QTzzaXwFlVe6MKGI09OiTOPzyILv91zUSxMi8HTWp0PXfwlqEt6p50YLmGpZ-rJVQggcsCOSb3DDC6Q_lnjMve-7MLaY8hMPV4tVnyGXhmTEutKrW4TsOsMg9mvCnGuWIlezYa8OJTZAzRUpahsKMqV4dZ1Ah3WniP0qTWTtMjXfduVS-1mJqmsn2S3C-4UEIjEJ14rAvTf0OeuPvQykkSehyQh3VF54LYOjBAqTRRaN14eVUBJogye5dny8B1z4Fw";
-    const DROPBOX_FOLDER = "/komentar-web"; // folder yang kamu pilih
+    const DROPBOX_FOLDER = "/komentar-web"; // pastikan ini sesuai app-folder kamu
 
     // DOM refs
     const form = document.getElementById('commentForm');
@@ -148,11 +149,10 @@
     const commentEl = document.getElementById('comment');
     const ratingStars = document.querySelectorAll('#ratingStars .star');
     const commentsList = document.getElementById('commentsList');
-    const totalCountEl = document.getElementById('totalCount');
+    const totalCountDisplay = document.getElementById('totalCount');
     const avgRatingVisual = document.getElementById('avgRatingVisual');
     const avgStarsEl = document.getElementById('avgStars');
     const ratingHint = document.getElementById('ratingHint');
-    const totalCountDisplay = document.getElementById('totalCount');
     const photoInput = document.getElementById('photoInput');
     const previewWrap = document.getElementById('previewWrap');
     const uploadProgress = document.getElementById('uploadProgress');
@@ -172,8 +172,7 @@
         updateStars(selectedRating);
       });
       star.addEventListener('mouseenter', () => {
-        const v = Number(star.getAttribute('data-value'));
-        highlightStars(v);
+        highlightStars(Number(star.getAttribute('data-value')));
       });
       star.addEventListener('mouseleave', () => {
         updateStars(selectedRating);
@@ -187,6 +186,7 @@
       ratingStars.forEach(s => {
         s.classList.toggle('filled', Number(s.getAttribute('data-value')) <= r);
         s.textContent = Number(s.getAttribute('data-value')) <= r ? '★' : '☆';
+        s.setAttribute('aria-checked', Number(s.getAttribute('data-value')) === r ? 'true' : 'false');
       });
       ratingHint.textContent = r ? `Kamu memilih ${r} bintang` : 'Klik satu bintang untuk memilih rating.';
     }
@@ -234,7 +234,7 @@
     function uploadFileToDropbox(file) {
       return new Promise((resolve, reject) => {
         const safeName = file.name.replace(/\s+/g, '_').replace(/[^\w\-.]/g, '');
-        const path = `${DROPBOX_FOLDER}/${Date.now()}_${safeName}`;
+        const path = `${DROPBOX_FOLDER}/${Date.now()}_${safeName}`; // e.g. /komentar-web/162..._file.jpg
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
@@ -253,6 +253,10 @@
         xhr.onload = async () => {
           if (xhr.status >= 200 && xhr.status < 300) {
             try {
+              // upload response may be JSON string
+              let uploaded;
+              try { uploaded = JSON.parse(xhr.responseText); } catch (e) { uploaded = null; }
+
               // try create shared link
               const createRes = await fetch('https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings', {
                 method: 'POST',
@@ -286,7 +290,7 @@
                 return;
               }
 
-              // as fallback, resolve without shared link (but UI expects imageUrl)
+              // fallback: resolve with null url but provide path
               resolve({ url: null, path });
             } catch (err) {
               reject(err);
@@ -331,9 +335,10 @@
           const res = await uploadFileToDropbox(selectedFile);
           imageUrl = res.url; // mungkin null jika shared link gagal
           imagePath = res.path;
-          // jika shared link gagal dan imageUrl null, kamu masih bisa menyimpan imagePath
+          console.log('Upload sukses:', res);
         }
 
+        // simpan ke Firestore
         await addDoc(collection(db, 'comments'), {
           username,
           comment,
@@ -343,6 +348,7 @@
           createdAt: serverTimestamp()
         });
 
+        // sukses -> reset form & UI
         form.reset();
         selectedRating = 0;
         selectedFile = null;
@@ -351,7 +357,7 @@
         updateStars(0);
       } catch (err) {
         console.error('Gagal kirim komentar:', err);
-        alert('Gagal mengirim komentar. Cek console untuk detail.');
+        alert('Gagal mengirim komentar. Buka console (F12) untuk detail error.');
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Kirim Komentar';
@@ -448,6 +454,28 @@
 
     // init
     updateStars(0);
+
+    // optional: quick token check (debug) — comment out in production
+    async function checkDropboxToken() {
+      try {
+        const res = await fetch('https://api.dropboxapi.com/2/users/get_current_account', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + DROPBOX_ACCESS_TOKEN }
+        });
+        if (!res.ok) {
+          console.warn('Dropbox token invalid/expired:', res.status, await res.text());
+          return false;
+        }
+        const info = await res.json();
+        console.log('Dropbox account:', info.email);
+        return true;
+      } catch (e) {
+        console.warn('Dropbox token check failed:', e);
+        return false;
+      }
+    }
+    // jalankan token check sekali untuk debugging
+    checkDropboxToken();
   </script>
 </body>
 </html>
