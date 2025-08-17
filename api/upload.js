@@ -1,73 +1,53 @@
-// /api/upload.js
-import fetch from "node-fetch";
+import { Dropbox } from "dropbox";
+import formidable from "formidable";
+import fs from "fs";
+
+// Biar Vercel tahu kalau kita mau handle form-data
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Metode tidak diizinkan" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
-  try {
-    const { name, comment, file } = req.body;
+  const form = formidable({ multiples: false });
 
-    if (!name || !comment || !file) {
-      return res.status(400).json({ error: "Data tidak lengkap" });
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.error("Formidable error:", err);
+      return res.status(500).json({ error: "Error parsing file" });
     }
 
-    const buffer = Buffer.from(file.split(",")[1], "base64");
-    const dropboxToken = process.env.DROPBOX_ACCESS_TOKEN;
-
-    if (!dropboxToken) {
-      return res.status(500).json({ error: "Token Dropbox tidak ditemukan di ENV" });
+    const file = files.file;
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
     }
 
-    // Simpan file ke Dropbox
-    const dropboxRes = await fetch("https://content.dropboxapi.com/2/files/upload", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${dropboxToken}`,
-        "Dropbox-API-Arg": JSON.stringify({
-          path: `/komentar-web/${Date.now()}-${name}.jpg`,
-          mode: "add",
-          autorename: true,
-          mute: false
-        }),
-        "Content-Type": "application/octet-stream",
-      },
-      body: buffer,
-    });
+    try {
+      // Ambil token dari env
+      const dbx = new Dropbox({ accessToken: process.env.DROPBOX_ACCESS_TOKEN });
 
-    const dropboxData = await dropboxRes.json();
+      // Baca file upload
+      const fileContent = fs.readFileSync(file.filepath);
 
-    if (dropboxData.error) {
-      return res.status(500).json({ error: "Upload Dropbox gagal", detail: dropboxData });
+      // Upload ke Dropbox (folder root)
+      const response = await dbx.filesUpload({
+        path: "/" + file.originalFilename,
+        contents: fileContent,
+        mode: { ".tag": "add" }, // biar ga overwrite
+      });
+
+      return res.status(200).json({
+        message: "Upload success!",
+        file: response.result,
+      });
+    } catch (uploadError) {
+      console.error("Dropbox error:", uploadError);
+      return res.status(500).json({ error: "Failed to upload to Dropbox" });
     }
-
-    // Simpan komentar jadi file JSON juga
-    const komentarData = {
-      name,
-      comment,
-      filePath: dropboxData.path_display,
-      createdAt: new Date().toISOString(),
-    };
-
-    await fetch("https://content.dropboxapi.com/2/files/upload", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${dropboxToken}`,
-        "Dropbox-API-Arg": JSON.stringify({
-          path: `/komentar-web/${Date.now()}-komentar.json`,
-          mode: "add",
-          autorename: true,
-          mute: false
-        }),
-        "Content-Type": "application/octet-stream",
-      },
-      body: Buffer.from(JSON.stringify(komentarData)),
-    });
-
-    res.status(200).json({ success: true, message: "Komentar berhasil disimpan!" });
-
-  } catch (err) {
-    res.status(500).json({ error: "Server error", detail: err.message });
-  }
+  });
 }
