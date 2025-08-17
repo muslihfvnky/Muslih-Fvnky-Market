@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "formidable": "^3.5.0",
+    "dropbox": "^10.34.0"
+  }
+}
