@@ -3,94 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Komentar & Rating - Muslih Fvnky Shop</title>
+  <title>Komentar Toko</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background-image: url('https://i.imgur.com/8wP8x8Z.jpg'); /* ganti link ini dengan background khas websitemu */
+      background-image: url("https://i.imgur.com/w1zjz4r.jpeg"); /* background dari spin.html */
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .bg-overlay {
-      background: rgba(0, 0, 0, 0.6); /* overlay supaya form lebih jelas */
+    .overlay {
+      background: rgba(0, 0, 0, 0.7);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem;
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center">
-  <div class="bg-overlay p-6 rounded-2xl shadow-xl w-full max-w-lg text-white">
-    <h1 class="text-2xl font-bold mb-4 text-center">💬 Berikan Komentar & Rating</h1>
-    <form id="commentForm" class="space-y-4" enctype="multipart/form-data" method="POST">
-      
-      <!-- Nama -->
-      <div>
-        <label for="nama" class="block mb-1">Nama:</label>
-        <input type="text" id="nama" name="nama" required
-          class="w-full p-2 rounded-lg text-black" />
-      </div>
+<body>
+  <div class="overlay w-full">
+    <div class="w-full max-w-lg bg-gray-800 p-6 rounded-2xl shadow-lg text-white">
+      <h1 class="text-2xl font-bold mb-4 text-center">💬 Tulis Komentar</h1>
+      <form id="commentForm" class="space-y-4">
+        <!-- Nama -->
+        <div>
+          <label class="block mb-1">Nama</label>
+          <input type="text" name="nama" required class="w-full p-2 rounded bg-gray-700 border border-gray-600" />
+        </div>
 
-      <!-- Komentar -->
-      <div>
-        <label for="komentar" class="block mb-1">Komentar:</label>
-        <textarea id="komentar" name="komentar" rows="3" required
-          class="w-full p-2 rounded-lg text-black"></textarea>
-      </div>
+        <!-- Komentar -->
+        <div>
+          <label class="block mb-1">Komentar</label>
+          <textarea name="komentar" required class="w-full p-2 rounded bg-gray-700 border border-gray-600"></textarea>
+        </div>
 
-      <!-- Rating -->
-      <div>
-        <label for="rating" class="block mb-1">Rating (1-5):</label>
-        <select id="rating" name="rating" required
-          class="w-full p-2 rounded-lg text-black">
-          <option value="1">⭐</option>
-          <option value="2">⭐⭐</option>
-          <option value="3">⭐⭐⭐</option>
-          <option value="4">⭐⭐⭐⭐</option>
-          <option value="5">⭐⭐⭐⭐⭐</option>
-        </select>
-      </div>
+        <!-- Rating -->
+        <div>
+          <label class="block mb-1">Rating (1-5)</label>
+          <select name="rating" required class="w-full p-2 rounded bg-gray-700 border border-gray-600">
+            <option value="5">⭐⭐⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="1">⭐</option>
+          </select>
+        </div>
 
-      <!-- File -->
-      <div>
-        <label for="file" class="block mb-1">Upload File (opsional):</label>
-        <input type="file" id="file" name="file"
-          class="w-full p-2 rounded-lg text-black bg-white" />
-      </div>
+        <!-- Upload Foto -->
+        <div>
+          <label class="block mb-1">Upload Foto (opsional, max 5MB)</label>
+          <input type="file" name="foto" accept="image/*" class="w-full text-gray-300" />
+        </div>
 
-      <!-- Tombol -->
-      <button type="submit"
-        class="w-full bg-pink-600 hover:bg-pink-700 transition p-2 rounded-lg font-bold">
-        Kirim
-      </button>
-    </form>
+        <!-- Tombol -->
+        <div class="flex space-x-2">
+          <button type="submit" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg">Kirim</button>
+          <button type="reset" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg">Reset</button>
+        </div>
+      </form>
 
-    <div id="responseMessage" class="mt-4 text-center"></div>
+      <!-- Status -->
+      <div id="status" class="mt-4 text-sm"></div>
+    </div>
   </div>
 
   <script>
-    document.getElementById("commentForm").addEventListener("submit", async (e) => {
+    const form = document.getElementById("commentForm");
+    const statusDiv = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const formData = new FormData(e.target);
+      statusDiv.textContent = "Mengirim...";
+
+      const formData = new FormData(form);
 
       try {
-        const res = await fetch("https://muslihfvnkyshop.my.id/api/upload", {
+        const res = await fetch("/api/upload", {
           method: "POST",
           body: formData,
         });
 
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById("responseMessage").innerHTML =
-            "<p class='text-green-400 font-semibold'>✅ Komentar berhasil dikirim!</p>";
-          e.target.reset();
-        } else {
-          document.getElementById("responseMessage").innerHTML =
-            "<p class='text-red-400 font-semibold'>❌ Gagal: " + (data.error || "Terjadi kesalahan") + "</p>";
+        if (!res.ok) {
+          throw new Error("Gagal mengirim (" + res.status + ")");
         }
+
+        const data = await res.json();
+        statusDiv.textContent = "✅ Berhasil: " + data.message;
+        form.reset();
       } catch (err) {
-        console.error(err);
-        document.getElementById("responseMessage").innerHTML =
-          "<p class='text-red-400 font-semibold'>⚠️ Error koneksi ke server.</p>";
+        statusDiv.textContent = "❌ Error: " + err.message;
       }
     });
   </script>
