@@ -3,128 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Komentar Pengunjung</title>
+  <title>Komentar & Rating - Muslih Fvnky Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      margin: 0;
-      padding: 20px;
+      background-image: url('https://i.imgur.com/8wP8x8Z.jpg'); /* ganti link ini dengan background khas websitemu */
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 5px;
-    }
-    input[type="text"],
-    textarea,
-    input[type="file"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: #007BFF;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    .message {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 6px;
-      display: none;
-    }
-    .success {
-      background: #d4edda;
-      color: #155724;
-    }
-    .error {
-      background: #f8d7da;
-      color: #721c24;
+    .bg-overlay {
+      background: rgba(0, 0, 0, 0.6); /* overlay supaya form lebih jelas */
     }
   </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+  <div class="bg-overlay p-6 rounded-2xl shadow-xl w-full max-w-lg text-white">
+    <h1 class="text-2xl font-bold mb-4 text-center">💬 Berikan Komentar & Rating</h1>
+    <form id="commentForm" class="space-y-4" enctype="multipart/form-data" method="POST">
+      
+      <!-- Nama -->
+      <div>
+        <label for="nama" class="block mb-1">Nama:</label>
+        <input type="text" id="nama" name="nama" required
+          class="w-full p-2 rounded-lg text-black" />
+      </div>
+
+      <!-- Komentar -->
+      <div>
+        <label for="komentar" class="block mb-1">Komentar:</label>
+        <textarea id="komentar" name="komentar" rows="3" required
+          class="w-full p-2 rounded-lg text-black"></textarea>
+      </div>
+
+      <!-- Rating -->
+      <div>
+        <label for="rating" class="block mb-1">Rating (1-5):</label>
+        <select id="rating" name="rating" required
+          class="w-full p-2 rounded-lg text-black">
+          <option value="1">⭐</option>
+          <option value="2">⭐⭐</option>
+          <option value="3">⭐⭐⭐</option>
+          <option value="4">⭐⭐⭐⭐</option>
+          <option value="5">⭐⭐⭐⭐⭐</option>
+        </select>
+      </div>
+
+      <!-- File -->
+      <div>
+        <label for="file" class="block mb-1">Upload File (opsional):</label>
+        <input type="file" id="file" name="file"
+          class="w-full p-2 rounded-lg text-black bg-white" />
+      </div>
+
+      <!-- Tombol -->
+      <button type="submit"
+        class="w-full bg-pink-600 hover:bg-pink-700 transition p-2 rounded-lg font-bold">
+        Kirim
+      </button>
+    </form>
+
+    <div id="responseMessage" class="mt-4 text-center"></div>
+  </div>
+
   <script>
-    async function submitComment(event) {
-      event.preventDefault();
-
-      const form = document.getElementById("commentForm");
-      const formData = new FormData(form);
-      const msgBox = document.getElementById("message");
-
-      msgBox.style.display = "block";
-      msgBox.className = "message";
-      msgBox.innerText = "Mengirim...";
+    document.getElementById("commentForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
 
       try {
         const res = await fetch("https://muslihfvnkyshop.my.id/api/upload", {
           method: "POST",
-          body: formData
+          body: formData,
         });
 
         const data = await res.json();
-
-        if (res.ok) {
-          msgBox.className = "message success";
-          msgBox.innerText = "✅ Komentar berhasil dikirim!";
-          form.reset();
+        if (data.success) {
+          document.getElementById("responseMessage").innerHTML =
+            "<p class='text-green-400 font-semibold'>✅ Komentar berhasil dikirim!</p>";
+          e.target.reset();
         } else {
-          msgBox.className = "message error";
-          msgBox.innerText = "❌ Gagal: " + (data.error || "Terjadi kesalahan");
+          document.getElementById("responseMessage").innerHTML =
+            "<p class='text-red-400 font-semibold'>❌ Gagal: " + (data.error || "Terjadi kesalahan") + "</p>";
         }
       } catch (err) {
-        msgBox.className = "message error";
-        msgBox.innerText = "⚠️ Error koneksi: " + err.message;
+        console.error(err);
+        document.getElementById("responseMessage").innerHTML =
+          "<p class='text-red-400 font-semibold'>⚠️ Error koneksi ke server.</p>";
       }
-    }
+    });
   </script>
-</head>
-<body>
-  <div class="container">
-    <h2>Komentar Pengunjung</h2>
-    <form id="commentForm" onsubmit="submitComment(event)" enctype="multipart/form-data">
-      <label for="nama">Nama:</label>
-      <input type="text" id="nama" name="nama" required />
-
-      <label for="komentar">Komentar:</label>
-      <textarea id="komentar" name="komentar" required></textarea>
-
-      <label for="rating">Rating (1-5):</label>
-      <input type="text" id="rating" name="rating" placeholder="Contoh: 5" />
-
-      <label for="file">Upload Gambar (opsional):</label>
-      <input type="file" id="file" name="file" />
-
-      <button type="submit">Kirim Komentar</button>
-    </form>
-    <div id="message"></div>
-  </div>
 </body>
 </html>
