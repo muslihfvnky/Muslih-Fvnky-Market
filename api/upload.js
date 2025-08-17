@@ -1,54 +1,51 @@
-import { Dropbox } from "dropbox";
-import formidable from "formidable";
-import fs from "fs";
-
-// pastikan body parser dimatikan karena kita pakai formidable
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// api/upload.js
+import fetch from "node-fetch";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const form = formidable({ multiples: false });
+  try {
+    const { fileName, fileContent } = req.body;
 
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      console.error("Form parse error:", err);
-      return res.status(500).json({ error: "Form parse error" });
+    if (!fileName || !fileContent) {
+      return res.status(400).json({ error: "fileName dan fileContent wajib ada" });
     }
 
-    try {
-      const name = fields.name || "Anonim";
-      const comment = fields.comment || "";
-      const file = files.file;
+    // akses token dropbox kamu
+    const DROPBOX_ACCESS_TOKEN = process.env.DROPBOX_ACCESS_TOKEN;
 
-      const dbx = new Dropbox({ accessToken: process.env.DROPBOX_TOKEN });
-
-      // Simpan komentar ke file txt di Dropbox
-      const textData = `Nama: ${name}\nKomentar: ${comment}\nTanggal: ${new Date().toISOString()}\n\n`;
-      await dbx.filesUpload({
-        path: `/komentar-web/${Date.now()}-comment.txt`,
-        contents: textData,
-      });
-
-      // Kalau ada file gambar, upload juga
-      if (file) {
-        const fileStream = fs.readFileSync(file.filepath);
-        await dbx.filesUpload({
-          path: `/komentar-web/${Date.now()}-${file.originalFilename}`,
-          contents: fileStream,
-        });
-      }
-
-      return res.status(200).json({ success: true, message: "Komentar berhasil dikirim!" });
-    } catch (uploadErr) {
-      console.error("Upload error:", uploadErr);
-      return res.status(500).json({ error: "Upload gagal" });
+    if (!DROPBOX_ACCESS_TOKEN) {
+      return res.status(500).json({ error: "Dropbox Access Token belum di-set di Vercel Environment Variables" });
     }
-  });
+
+    // Upload ke Dropbox
+    const response = await fetch("https://content.dropboxapi.com/2/files/upload", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${DROPBOX_ACCESS_TOKEN}`,
+        "Dropbox-API-Arg": JSON.stringify({
+          path: `/${fileName}`,
+          mode: "add",
+          autorename: true,
+          mute: false
+        }),
+        "Content-Type": "application/octet-stream"
+      },
+      body: Buffer.from(fileContent, "base64")
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      res.status(200).json({ success: true, data });
+    } else {
+      res.status(500).json({ error: data.error_summary || "Gagal upload ke Dropbox" });
+    }
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Terjadi kesalahan pada server" });
+  }
 }
