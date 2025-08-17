@@ -1,6 +1,16 @@
 {
+  "name": "muslih-fvnky-market",
+  "version": "1.0.0",
+  "description": "Upload komentar + file ke Dropbox",
+  "main": "index.js",
+  "scripts": {
+    "start": "vercel dev",
+    "build": "echo 'Vercel handles build automatically'"
+  },
   "dependencies": {
-    "formidable": "^3.5.0",
-    "dropbox": "^10.34.0"
+    "formidable": "^3.5.1",
+    "fs": "0.0.1-security",
+    "dropbox": "^11.0.0",
+    "node-fetch": "^3.3.2"
   }
 }
