@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pembayaran - Muslih Fvnky Shop</title>
+  <meta name="description" content="Halaman pembayaran Muslih Fvnky Shop. Pembayaran via QRIS dan e-wallet (Dana & Gopay).">
+  <meta name="author" content="Muslih Fvnky">
+  <link rel="icon" type="image/png" href="https://i.imgur.com/aRy9T88.png" sizes="512x512">
+  <meta property="og:title" content="Pembayaran - Muslih Fvnky Shop">
+  <meta property="og:description" content="Bayar mudah via QRIS atau e-wallet (Dana & Gopay).">
+  <meta property="og:image" content="https://i.imgur.com/4jIRft9.jpeg">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root{
+      --accent1: #06b6d4;
+      --accent2: #3b82f6;
+      --accent3: #9333ea;
+      --accent4: #ec4899;
+    }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body {
+      background: url('https://i.imgur.com/p0K2KQs.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: white;
+    }
+    .overlay { background-color: rgba(0,0,0,0.72); min-height: 100vh; padding: 2rem 0; }
+
+    .animated-gradient {
+      background: linear-gradient(-45deg, #106EBE, #0FFCBE, #106EBE, #0FFCBE);
+      background-size: 400% 400%;
+      animation: gradientMove 6s ease infinite;
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.45);
+      max-width: 1000px;
+      margin: 1rem auto;
+      position: relative;
+      z-index: 10;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .float-logo { width:56px; height:56px; border-radius:50%; box-shadow: 0 6px 20px rgba(0,0,0,0.5); object-fit:cover; flex-shrink:0; }
+    .header-extra { margin-left:auto; display:flex; gap:0.5rem; align-items:center; }
+    .header-link {
+      background: rgba(255,255,255,0.06);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      color: white;
+      display:inline-flex; gap:8px; align-items:center;
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: transform .18s ease, background .18s ease;
+      text-decoration: none;
+    }
+    .header-link:hover { transform: translateY(-3px); background: rgba(255,255,255,0.10); }
+
+    .glow-card {
+      background: rgba(16,110,190,0.65);
+      backdrop-filter: blur(8px);
+      border: 2px solid #0FFCBE;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    }
+
+    .primary-action {
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px; padding:0.9rem 1.1rem; border-radius:12px; font-weight:800;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color:#06121a; text-decoration:none; width:100%;
+      box-shadow: 0 10px 30px rgba(9,102,137,0.12);
+    }
+    .secondary-action {
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px; padding:0.75rem 1rem; border-radius:12px; font-weight:700;
+      background: rgba(255,255,255,0.06); color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,0.06);
+      width:100%;
+    }
+
+    footer small { color: rgba(255,255,255,0.75); }
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="animated-gradient" role="banner">
+    <img src="https://i.imgur.com/4jIRft9.jpeg" alt="Logo Muslih Fvnky" class="float-logo">
+    <div>
+      <h1 class="text-xl font-bold">Muslih Fvnky Shop</h1>
+      <p class="text-sm text-white/90">Halaman Pembayaran</p>
+    </div>
+
+    <div class="header-extra" aria-hidden="false">
+      <a href="index.html" class="header-link">🏠 Beranda</a>
+      <a href="testimoni.html" class="header-link">📸 Testimoni</a>
+      <a href="comments.html" class="header-link">💬 Komentar</a>
+    </div>
+  </header>
+
+  <div class="overlay">
+    <div class="max-w-3xl mx-auto p-4">
+
+      <!-- Judul -->
+      <section class="mb-6" style="animation: fadeSlide 0.8s ease-out;">
+        <h2 class="text-2xl font-bold mb-2">Metode Pembayaran</h2>
+        <p class="text-gray-200 text-sm">Gunakan QRIS atau e-wallet berikut. Setelah bayar, segera konfirmasi via WhatsApp.</p>
+      </section>
+
+      <!-- QRIS -->
+      <div class="glow-card" style="animation: fadeSlide 1s ease-out;">
+        <h3 class="text-lg font-semibold mb-3">QRIS (Scan untuk bayar)</h3>
+        <!-- Simpan gambar QR yang kamu kirim sebagai qris.png di folder yang sama -->
+        <div class="text-center">
+          <img src="qris.png" alt="QRIS Muslih Fvnky Shop" class="mx-auto rounded-lg shadow-lg" style="max-width:340px;width:100%;height:auto;">
+        </div>
+        <p class="text-sm text-gray-200 text-center mt-3">Bisa dibayar dengan Dana, Gopay, ShopeePay, dll.</p>
+      </div>
+
+      <!-- Tombol Bayar via Dana -->
+      <div class="glow-card" style="animation: fadeSlide 1.15s ease-out;">
+        <h3 class="text-lg font-semibold mb-3">Bayar langsung via Dana</h3>
+        <a class="primary-action" href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012012022011164159294" target="_blank" rel="noopener noreferrer" aria-label="Bayar via Dana">
+          🟣 Bayar via Dana
+        </a>
+        <p class="text-sm text-gray-200 mt-3">Pastikan nominal & catatan sesuai pesanan.</p>
+      </div>
+
+      <!-- E-Wallet (hanya Dana & Gopay) -->
+      <div class="glow-card" style="animation: fadeSlide 1.3s ease-out;">
+        <h3 class="text-lg font-semibold mb-3">E-Wallet</h3>
+        <ul class="text-sm text-gray-200 space-y-2">
+          <li>📱 <strong>Dana:</strong> 0838-2166-5970</li>
+          <li>📱 <strong>Gopay:</strong> 0838-2166-5970</li>
+        </ul>
+      </div>
+
+      <!-- Konfirmasi Pembayaran -->
+      <div class="glow-card" style="animation: fadeSlide 1.45s ease-out;">
+        <h3 class="text-lg font-semibold mb-3">Konfirmasi Pembayaran</h3>
+        <p class="text-sm text-gray-200">Setelah bayar, konfirmasi ke WhatsApp agar pesanan segera diproses. Lampirkan bukti transfer/screenshot.</p>
+        <a class="secondary-action mt-3" href="https://wa.me/6283821665970?text=Saya%20sudah%20transfer%20Rp.___%20untuk%20pesanan%20___.%20Nama:%20___" target="_blank" rel="noopener noreferrer">
+          💬 Konfirmasi via WhatsApp
+        </a>
+      </div>
+
+      <footer class="text-center text-gray-500 text-xs border-t border-gray-700 pt-4 mt-6">
+        <p>© 2025 Muslih Fvnky Shop. All rights reserved.</p>
+      </footer>
+
+    </div>
+  </div>
+
+</body>
+</html>
