@@ -16,11 +16,50 @@
   <link rel="canonical" href="https://muslihfvnkyshop.my.id/">
   <meta name="robots" content="index, follow">
 
-  <!-- Open Graph / Twitter -->
+  <!-- Open Graph / Twitter (ditambah og:url & site_name) -->
   <meta property="og:title" content="Muslih Fvnky Shop - FLM & Jasa Musik Murah">
   <meta property="og:description" content="Jual projek FL Studio Mobile (FLM), jasa mixing mastering, pemesanan lagu, dan nyusun chord & BPM. Harga terjangkau & fast respon.">
   <meta property="og:image" content="https://i.imgur.com/4jIRft9.jpeg">
+  <meta property="og:url" content="https://muslihfvnkyshop.my.id/">
+  <meta property="og:site_name" content="Muslih Fvnky Shop">
+  <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Muslih Fvnky Shop - FLM & Jasa Musik Murah">
+  <meta name="twitter:description" content="Jual projek FL Studio Mobile (FLM), jasa mixing mastering, pemesanan lagu, dan nyusun chord & BPM.">
+  <meta name="twitter:image" content="https://i.imgur.com/4jIRft9.jpeg">
+
+  <!-- Sitemap & alternate -->
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+  <link rel="alternate" hreflang="id" href="https://muslihfvnkyshop.my.id/">
+
+  <!-- JSON-LD Structured Data (Organization + WebSite) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://muslihfvnkyshop.my.id/#organization",
+        "name": "Muslih Fvnky Shop",
+        "url": "https://muslihfvnkyshop.my.id/",
+        "logo": "https://i.imgur.com/4jIRft9.jpeg",
+        "sameAs": [
+          "https://www.instagram.com/mslihh.wav",
+          "https://youtube.com/@muslihfvnky"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://muslihfvnkyshop.my.id/#website",
+        "url": "https://muslihfvnkyshop.my.id/",
+        "name": "Muslih Fvnky Shop",
+        "publisher": {
+          "@id": "https://muslihfvnkyshop.my.id/#organization"
+        }
+      }
+    ]
+  }
+  </script>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -164,6 +203,26 @@
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* Small visible nav for internal linking (keeps original layout intact) */
+    .site-nav {
+      max-width: 1000px;
+      margin: 0.5rem auto;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      padding: 0 1rem;
+    }
+    .site-nav a {
+      background: rgba(255,255,255,0.04);
+      color: #e6fff9;
+      padding: 6px 10px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .site-nav a:hover { background: rgba(255,255,255,0.08); color: #ffffff; transform: translateY(-2px); }
   </style>
 </head>
 <body>
@@ -185,6 +244,20 @@
       <a href="pembayaran2.html" class="header-link" title="Halaman Pembayaran">💳 Pembayaran</a>
     </div>
   </header>
+
+  <!-- Small internal navigation (menambah internal linking tanpa menghapus konten) -->
+  <nav class="site-nav" aria-label="Navigasi situs">
+    <a href="index.html">Beranda</a>
+    <a href="jual-flm.html">Jual FLM</a>
+    <a href="pemesanan-lagu.html">Pemesanan Lagu</a>
+    <a href="jasa-mixing.html">Jasa Mixing</a>
+    <a href="jasa-chord-dan-bpm.html">Jasa Chord & BPM</a>
+    <a href="pembayaran.html">Pembayaran</a>
+    <a href="pembayaran2.html">Pembayaran2</a>
+    <a href="request-flm.html">Request FLM</a>
+    <a href="testimoni.html">Testimoni</a>
+    <a href="comments.html">Komentar</a>
+  </nav>
 
   <div class="overlay">
     <div class="max-w-2xl mx-auto p-4">
