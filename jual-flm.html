@@ -316,7 +316,7 @@
           <div class="font-semibold leading-tight">FLM Style Candu</div>
           <div class="text-sm opacity-90">💲 Rp 82.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio6" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <button data-audio="audio6" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="candu" href="pembayaran.html?produk=FLM%20Style%20Candu" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
@@ -527,7 +527,7 @@
           <div class="font-semibold leading-tight">FLM Style Old</div>
           <div class="text-sm opacity-90">💲 Rp 50.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio20" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <button data-audio="audio20" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="styleold" href="pembayaran.html?produk=FLM%20Style%20Old" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
@@ -981,6 +981,16 @@
       renderPopular(5);
       // Re-render every 20s in case other tab changed localStorage
       setInterval(renderPopular, 20000);
+
+      // --- SET ORIGINAL INDEX (penting untuk urutan 27->1) ---
+      const produkGrid = document.getElementById('produk-grid');
+      if (produkGrid) {
+        const lis = Array.from(produkGrid.querySelectorAll('li'));
+        lis.forEach((li, idx) => {
+          // simpan index awal sebagai angka (1..N)
+          li.dataset.originalIndex = (idx + 1).toString();
+        });
+      }
     });
 
     // listen to storage events (update across tabs)
@@ -1017,6 +1027,12 @@
         return false;
       }
 
+      // helper: original index
+      function originalIndex(li){
+        const val = parseInt(li.dataset.originalIndex || '0', 10);
+        return isNaN(val) ? 0 : val;
+      }
+
       // Sort array of <li> by name asc/desc
       function sortListByName(arr, order){
         if(order === 'none') return arr; // keep original sequence
@@ -1029,6 +1045,15 @@
         });
       }
 
+      // Sort array of <li> by original index asc/desc
+      function sortByOriginalIndex(arr, direction){
+        return arr.slice().sort((A,B) => {
+          const a = originalIndex(A);
+          const b = originalIndex(B);
+          return direction === 'asc' ? (a - b) : (b - a);
+        });
+      }
+
       // Main reorder function
       function reorderProducts(){
         if(!produkGrid) return;
@@ -1038,33 +1063,36 @@
         const groupMode = groupSel.value; // 'all' | 'baru-top' | 'lama-top'
         const sortMode = sortSel.value;   // 'none' | 'az' | 'za'
 
-        // Partition into new & old
+        // Partition into new & old (preserve current DOM order in arrays)
         const newItems = [], oldItems = [];
         items.forEach(li => {
           if(isNewProduct(li)) newItems.push(li);
           else oldItems.push(li);
         });
 
-        // Sort within groups if needed
-        let sortedNew = newItems;
-        let sortedOld = oldItems;
-
-        if(sortMode !== 'none'){
-          sortedNew = sortListByName(newItems, sortMode);
-          sortedOld = sortListByName(oldItems, sortMode);
-        }
-
+        // If groupMode is baru-top or lama-top, follow the exact ordering rule requested:
+        // - Produk baru should be ordered by originalIndex DESC (27 -> 1)
+        // - Produk lama should be ordered by originalIndex ASC (1 -> 27)
+        // and vice versa for lama-top (old first asc, new second desc).
         let finalOrder = [];
+
         if(groupMode === 'baru-top'){
-          finalOrder = sortedNew.concat(sortedOld);
+          // new: descending original index; old: ascending original index
+          const newSorted = sortByOriginalIndex(newItems, 'desc');
+          const oldSorted = sortByOriginalIndex(oldItems, 'asc');
+          finalOrder = newSorted.concat(oldSorted);
         } else if(groupMode === 'lama-top'){
-          finalOrder = sortedOld.concat(sortedNew);
-        } else { // all
+          // old first asc, new second desc
+          const oldSorted = sortByOriginalIndex(oldItems, 'asc');
+          const newSorted = sortByOriginalIndex(newItems, 'desc');
+          finalOrder = oldSorted.concat(newSorted);
+        } else {
+          // groupMode === 'all'
           if(sortMode === 'none'){
-            // if default & all: preserve original DOM order
+            // preserve original DOM order (do nothing)
             finalOrder = items;
           } else {
-            // if sorting global, combine both and sort globally
+            // global alphabetical sort applied across all items
             const combined = items.slice();
             finalOrder = sortListByName(combined, sortMode);
           }
@@ -1080,9 +1108,11 @@
         reorderProducts();
       });
 
-      // optional: live changes when selects change
+      // immediate apply when group changes to reflect requested behavior quickly
       groupSel.addEventListener('change', () => reorderProducts());
-      sortSel.addEventListener('change', () => {/* don't auto-sort to avoid accidental changes; user can click Terapkan */});
+      // do not auto apply on sort change to avoid accidental reorders, user can click Terapkan
+      // but you can enable live sorting by uncommenting following line:
+      // sortSel.addEventListener('change', () => reorderProducts());
 
       // expose for debugging
       window.reorderProducts = reorderProducts;
