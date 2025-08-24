@@ -162,6 +162,18 @@
       #popular-grid { gap:10px; }
       .popular-card { min-width:200px; }
     }
+
+    /* Controls UI (small, non-intrusive) */
+    .product-controls {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin:0 0 18px 0;
+      flex-wrap:wrap;
+    }
+    .product-controls label { font-weight:700; margin-right:6px; color: #dffbf2; }
+    .product-controls select { background: rgba(255,255,255,0.03); color: #fff; border:1px solid rgba(255,255,255,0.06); padding:8px 10px; border-radius:8px; }
+    .glow-btn { transition: all 0.28s ease-in-out; border: 2px solid #0FFCBE; background: rgba(16,110,190,0.8); backdrop-filter: blur(6px); color: white; display: inline-block; width: auto; text-align: center; padding: .6rem .9rem; font-weight: 700; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.35); text-decoration: none; cursor: pointer;}
   </style>
 </head>
 <body class="text-white font-sans p-4 bg-black/70">
@@ -177,6 +189,31 @@
   </header>
 
   <main class="max-w-5xl mx-auto">
+
+    <!-- CONTROLS: sorting & grouping (baru ditambahkan, non-intrusive) -->
+    <div class="product-controls" style="margin-bottom:18px;">
+      <div>
+        <label for="groupSelect">Prioritaskan:</label>
+        <select id="groupSelect" aria-label="Prioritaskan produk">
+          <option value="all">Semua (default)</option>
+          <option value="baru-top">Produk Baru di Atas</option>
+          <option value="lama-top">Produk Lama di Atas</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="sortSelect">Urut:</label>
+        <select id="sortSelect" aria-label="Urutkan produk">
+          <option value="none">Default</option>
+          <option value="az">A - Z</option>
+          <option value="za">Z - A</option>
+        </select>
+      </div>
+
+      <div style="margin-left:auto;">
+        <button id="applySort" class="glow-btn">Terapkan</button>
+      </div>
+    </div>
 
     <!-- POPULAR SECTION -->
     <section id="popular-section" class="mb-6">
@@ -294,7 +331,7 @@
           <div class="font-semibold leading-tight">FLM HAPPY TEAM ORI</div>
           <div class="text-sm opacity-90">💲 Rp 75.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio7" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <button data-audio="audio7" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="happy" href="pembayaran.html?produk=FLM%20HAPPY%20TEAM%20ORI" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
@@ -484,7 +521,7 @@
 
       <!-- PRODUK BARU YANG KAMU KIRIM (DITAMBAHKAN) -->
       <!-- 20 -->
-      <li data-prod-id="styleold" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="styleold" data-is-new="true" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Old" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Old</div>
@@ -499,13 +536,13 @@
       </li>
 
       <!-- 21 -->
-      <li data-prod-id="stylerizieqsergio" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="stylerizieqsergio" data-is-new="true" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Rizieq Sergio" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Rizieq Sergio</div>
           <div class="text-sm opacity-90">💲 Rp 60.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio21" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <button data-audio="audio21" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="stylerizieqsergio" href="pembayaran.html?produk=FLM%20Style%20Rizieq%20Sergio" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
@@ -514,7 +551,7 @@
       </li>
 
       <!-- 22 -->
-      <li data-prod-id="stylejdmjawa" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="stylejdmjawa" data-is-new="true" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style JDM Jawa" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style JDM Jawa</div>
@@ -529,7 +566,7 @@
       </li>
 
       <!-- 23 -->
-      <li data-prod-id="stylebangway" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="stylebangway" data-is-new="true" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Bang Way" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Bang Way</div>
@@ -544,7 +581,7 @@
       </li>
 
       <!-- 24 -->
-      <li data-prod-id="styletrabas" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="styletrabas" data-is-new="true" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style DJ Trabas & Maspin RMX" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style DJ Trabas & Maspin RMX</div>
@@ -559,7 +596,7 @@
       </li>
 
       <!-- 25 -->
-      <li data-prod-id="stylenroktok" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="stylenroktok" data-is-new="true" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Middle Nroktok" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Middle Nroktok</div>
@@ -574,7 +611,7 @@
       </li>
 
       <!-- 26 -->
-      <li data-prod-id="styledjtopeng" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="styledjtopeng" data-is-new="true" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style DJ Topeng" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style DJ Topeng</div>
@@ -589,7 +626,7 @@
       </li>
 
       <!-- 27 -->
-      <li data-prod-id="stylenabihiko" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-prod-id="stylenabihiko" data-is-new="true" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Nabih Iko OLD" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Nabih Iko OLD</div>
@@ -630,16 +667,16 @@
       audio15: 28,
       audio16: 83,
       audio17: 46,
-      audio18:38,
-      audio19:32,
-      audio20:34,
-      audio21:24,
-      audio22:22,
-      audio23:32,
-      audio24:29,
-      audio25:49,
-      audio26:35,
-      audio27:44
+      audio18: 38,
+      audio19: 32,
+      audio20: 34,
+      audio21: 24,
+      audio22: 22,
+      audio23: 32,
+      audio24: 29,
+      audio25: 49,
+      audio26: 35,
+      audio27: 44
     };
 
     // Helper: format seconds -> mm:ss
@@ -959,5 +996,98 @@
       }
     });
   </script>
+
+  <!-- NEW: sorting/grouping script (reorders DOM nodes; does NOT remove products) -->
+  <script>
+    (function(){
+      const produkGrid = document.getElementById('produk-grid');
+      const groupSel = document.getElementById('groupSelect');
+      const sortSel = document.getElementById('sortSelect');
+      const applyBtn = document.getElementById('applySort');
+
+      // helper: extract product name text
+      function getName(li){
+        return (li.querySelector('.font-semibold')?.textContent || '').trim();
+      }
+      // helper: determine isNew from attribute or class
+      function isNewProduct(li){
+        const attr = li.getAttribute('data-is-new');
+        if (attr === 'true') return true;
+        if (li.classList.contains('is-new')) return true;
+        return false;
+      }
+
+      // Sort array of <li> by name asc/desc
+      function sortListByName(arr, order){
+        if(order === 'none') return arr; // keep original sequence
+        return arr.slice().sort((A,B) => {
+          const a = (getName(A) || '').toLowerCase();
+          const b = (getName(B) || '').toLowerCase();
+          if (a < b) return order === 'az' ? -1 : 1;
+          if (a > b) return order === 'az' ? 1 : -1;
+          return 0;
+        });
+      }
+
+      // Main reorder function
+      function reorderProducts(){
+        if(!produkGrid) return;
+        const items = Array.from(produkGrid.querySelectorAll('li'));
+        if(items.length === 0) return;
+
+        const groupMode = groupSel.value; // 'all' | 'baru-top' | 'lama-top'
+        const sortMode = sortSel.value;   // 'none' | 'az' | 'za'
+
+        // Partition into new & old
+        const newItems = [], oldItems = [];
+        items.forEach(li => {
+          if(isNewProduct(li)) newItems.push(li);
+          else oldItems.push(li);
+        });
+
+        // Sort within groups if needed
+        let sortedNew = newItems;
+        let sortedOld = oldItems;
+
+        if(sortMode !== 'none'){
+          sortedNew = sortListByName(newItems, sortMode);
+          sortedOld = sortListByName(oldItems, sortMode);
+        }
+
+        let finalOrder = [];
+        if(groupMode === 'baru-top'){
+          finalOrder = sortedNew.concat(sortedOld);
+        } else if(groupMode === 'lama-top'){
+          finalOrder = sortedOld.concat(sortedNew);
+        } else { // all
+          if(sortMode === 'none'){
+            // if default & all: preserve original DOM order
+            finalOrder = items;
+          } else {
+            // if sorting global, combine both and sort globally
+            const combined = items.slice();
+            finalOrder = sortListByName(combined, sortMode);
+          }
+        }
+
+        // Append in order (this moves nodes, doesn't recreate)
+        finalOrder.forEach(node => produkGrid.appendChild(node));
+      }
+
+      // initial bind
+      applyBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        reorderProducts();
+      });
+
+      // optional: live changes when selects change
+      groupSel.addEventListener('change', () => reorderProducts());
+      sortSel.addEventListener('change', () => {/* don't auto-sort to avoid accidental changes; user can click Terapkan */});
+
+      // expose for debugging
+      window.reorderProducts = reorderProducts;
+    })();
+  </script>
+
 </body>
 </html>
