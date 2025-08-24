@@ -209,11 +209,18 @@
       </div>
     </section>
 
+    <!-- FILTER CONTROLS (tidak mengubah gaya utama, hanya tombol kecil) -->
+    <div class="flex gap-2 items-center mb-4">
+      <button id="btn-new" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black font-semibold">Produk Baru</button>
+      <button id="btn-old" class="px-3 py-2 rounded-xl bg-[#106EBE] text-white font-semibold">Produk Lama</button>
+      <div class="text-sm text-gray-300 ml-3"> (Klik untuk urutkan. Produk tidak disembunyikan, hanya diurutkan.)</div>
+    </div>
+
     <!-- GRID CARD PRODUK -->
     <ul id="produk-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-      <!-- NOTE: setiap <li> sekarang punya data-prod-id untuk identifikasi -->
+      <!-- NOTE: saya tidak mengubah isi card selain menambahkan data-uid untuk menjaga urutan asli -->
       <!-- 1 -->
-      <li data-prod-id="rully" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="1" data-prod-id="rully" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM RULLY FVNKY" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM RULLY FVNKY</div>
@@ -228,7 +235,7 @@
       </li>
 
       <!-- 2 -->
-      <li data-prod-id="kondang" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="2" data-prod-id="kondang" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM KONDANG" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM KONDANG</div>
@@ -243,7 +250,7 @@
       </li>
 
       <!-- 4 -->
-      <li data-prod-id="hipdut" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="3" data-prod-id="hipdut" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM HIPDUT LAMUNAN" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM HIPDUT LAMUNAN</div>
@@ -258,7 +265,7 @@
       </li>
 
       <!-- 5 -->
-      <li data-prod-id="maman" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="4" data-prod-id="maman" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM MAMAN FVNDY" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM MAMAN FVNDY</div>
@@ -273,7 +280,7 @@
       </li>
 
       <!-- 6 -->
-      <li data-prod-id="candu" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="5" data-prod-id="candu" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Candu" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Candu</div>
@@ -288,7 +295,7 @@
       </li>
 
       <!-- 7 -->
-      <li data-prod-id="happy" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="6" data-prod-id="happy" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM HAPPY TEAM ORI" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM HAPPY TEAM ORI</div>
@@ -303,7 +310,7 @@
       </li>
 
       <!-- 8 -->
-      <li data-prod-id="arif" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="7" data-prod-id="arif" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Arif Sopan" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Arif Sopan</div>
@@ -318,7 +325,7 @@
       </li>
 
       <!-- 9 -->
-      <li data-prod-id="lambada" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="8" data-prod-id="lambada" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Lambada" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Lambada</div>
@@ -333,14 +340,14 @@
       </li>
 
       <!-- 10 -->
-      <li data-prod-id="angga" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="9" data-prod-id="angga" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Angga Fvnky" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Angga Fvnky</div>
           <div class="text-sm opacity-90">💲 Rp 83.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio10" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="angga" href=epamoldamoldembayaran.html?produk=FLM%20Angga%20Fvnky" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="angga" href="pembayaran.html?produk=FLM%20Angga%20Fvnky" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -348,7 +355,7 @@
       </li>
 
       <!-- 11 -->
-      <li data-prod-id="enaff" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="10" data-prod-id="enaff" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Enaff V1" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Enaff V1</div>
@@ -363,7 +370,7 @@
       </li>
 
       <!-- 12 -->
-      <li data-prod-id="febri" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="11" data-prod-id="febri" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Febri Remix" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Febri Remix</div>
@@ -378,7 +385,7 @@
       </li>
 
       <!-- 13 -->
-      <li data-prod-id="jawa1" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="12" data-prod-id="jawa1" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride</div>
@@ -393,7 +400,7 @@
       </li>
 
       <!-- 14 -->
-      <li data-prod-id="jawa2" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="13" data-prod-id="jawa2" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride V2" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride V2</div>
@@ -408,7 +415,7 @@
       </li>
 
       <!-- 15 -->
-      <li data-prod-id="jawa3" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="14" data-prod-id="jawa3" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Jawa Pride V3" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Jawa Pride V3</div>
@@ -423,7 +430,7 @@
       </li>
 
       <!-- 16 -->
-      <li data-prod-id="jdm" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="15" data-prod-id="jdm" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM JDM KT" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM JDM KT</div>
@@ -438,7 +445,7 @@
       </li>
 
       <!-- 17 -->
-      <li data-prod-id="epamold" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="16" data-prod-id="epamold" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM EPAM ESTETOD OLD" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM EPAM ESTETOD OLD</div>
@@ -453,7 +460,7 @@
       </li>
 
       <!-- 18 -->
-      <li data-prod-id="FLM BREAKBEAT SERANA" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="17" data-prod-id="FLM BREAKBEAT SERANA" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM BREAKBEAT SERANA" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM BREAKBEAT SERANA</div>
@@ -468,14 +475,14 @@
       </li>
 
       <!-- 19 -->
-      <li data-prod-id="FLM VELOCITY RADYA VERSION" class="overlay-carderlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="18" data-prod-id="FLM VELOCITY RADYA VERSION" class="overlay-carderlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM VELOCITY RADYA VERSION" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM VELOCITY RADYA VERSION</div>
           <div class="text-sm opacity-90">💲 Rp 110.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio19" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="FLM VELOCITY RADYA VERSIoverlay-cardmbayaran.html?produk=FLM%20VELOCITY%20RADYA%20VERSION" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="FLM VELOCITY RADYA VERSION" href="pembayaran.html?produk=FLM%20VELOCITY%20RADYA%20VERSION" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -484,7 +491,7 @@
 
       <!-- PRODUK BARU YANG KAMU KIRIM (DITAMBAHKAN) -->
       <!-- 20 -->
-      <li data-prod-id="styleold" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="19" data-prod-id="styleold" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Old" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Old</div>
@@ -499,13 +506,13 @@
       </li>
 
       <!-- 21 -->
-      <li data-prod-id="stylerizieqsergio" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="20" data-prod-id="stylerizieqsergio" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Rizieq Sergio" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Rizieq Sergio</div>
           <div class="text-sm opacity-90">💲 Rp 60.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio21" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
+            <button data-audio="audio21" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="stylerizieqsergio" href="pembayaran.html?produk=FLM%20Style%20Rizieq%20Sergio" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
           </div>
           <div class="player-controls-container"></div>
@@ -514,7 +521,7 @@
       </li>
 
       <!-- 22 -->
-      <li data-prod-id="stylejdmjawa" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="21" data-prod-id="stylejdmjawa" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style JDM Jawa" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style JDM Jawa</div>
@@ -529,7 +536,7 @@
       </li>
 
       <!-- 23 -->
-      <li data-prod-id="stylebangway" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="22" data-prod-id="stylebangway" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Bang Way" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Bang Way</div>
@@ -544,7 +551,7 @@
       </li>
 
       <!-- 24 -->
-      <li data-prod-id="styletrabas" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="23" data-prod-id="styletrabas" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style DJ Trabas & Maspin RMX" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style DJ Trabas & Maspin RMX</div>
@@ -559,7 +566,7 @@
       </li>
 
       <!-- 25 -->
-      <li data-prod-id="stylenroktok" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="24" data-prod-id="stylenroktok" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Middle Nroktok" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Middle Nroktok</div>
@@ -574,7 +581,7 @@
       </li>
 
       <!-- 26 -->
-      <li data-prod-id="styledjtopeng" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="25" data-prod-id="styledjtopeng" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style DJ Topeng" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style DJ Topeng</div>
@@ -589,7 +596,7 @@
       </li>
 
       <!-- 27 -->
-      <li data-prod-id="stylenabihiko" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="26" data-prod-id="stylenabihiko" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Nabih Iko OLD" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Nabih Iko OLD</div>
@@ -604,7 +611,7 @@
       </li>
 
       <!-- 28 (PRODUK TERBARU YANG BARU KAMU KIRIM) -->
-      <li data-prod-id="bootleg28" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="27" data-prod-id="bootleg28" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Bootleg Kila Fvnky" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Bootleg Kila Fvnky</div>
@@ -645,17 +652,17 @@
       audio15: 28,
       audio16: 83,
       audio17: 46,
-      audio18:38,
-      audio19:32,
-      audio20:34,
-      audio21:24,
-      audio22:22,
-      audio23:32,
-      audio24:29,
-      audio25:49,
-      audio26:35,
-      audio27:44,
-      audio28:99
+      audio18: 38,
+      audio19: 32,
+      audio20: 34,
+      audio21: 24,
+      audio22: 22,
+      audio23: 32,
+      audio24: 29,
+      audio25: 49,
+      audio26: 35,
+      audio27: 44,
+      audio28: 99
     };
 
     // Helper: format seconds -> mm:ss
@@ -668,7 +675,6 @@
 
     // Create player controls markup inside container for each card
     function createControls(container, audio) {
-      // if already exists return it
       let existing = container.querySelector('.player-controls');
       if (existing) return existing;
 
@@ -688,16 +694,13 @@
       const durationEl = controls.querySelector('.duration');
       const skipButtons = controls.querySelectorAll('.skip-btn');
 
-      // If we have a known duration from durationMap, use it immediately
       const known = durationMap[audio.id];
       if (known && typeof known === 'number' && known > 0) {
         durationEl.textContent = formatTime(known);
         progress.max = known;
-        // set initial background to 0%
         progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
       }
 
-      // when metadata loaded, if we didn't have known duration, use audio.duration
       audio.addEventListener('loadedmetadata', () => {
         if (!known || isNaN(known)) {
           if (!isNaN(audio.duration) && audio.duration > 0) {
@@ -709,7 +712,6 @@
         }
       });
 
-      // update on timeupdate
       audio.addEventListener('timeupdate', () => {
         if (!isNaN(audio.currentTime)) {
           const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? 0 : audio.duration);
@@ -721,14 +723,12 @@
         }
       });
 
-      // when ended reset UI
       audio.addEventListener('ended', () => {
         progress.value = 0;
         currentTimeEl.textContent = '0:00';
         progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
       });
 
-      // Seek on input (works for mobile touch and mouse)
       progress.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value);
         const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? null : audio.duration);
@@ -744,7 +744,6 @@
         }
       });
 
-      // Skip buttons (±3s)
       skipButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
           const skip = parseFloat(btn.getAttribute('data-skip')) || 0;
@@ -798,7 +797,6 @@
       localStorage.setItem(POP_KEY, JSON.stringify(obj));
     }
 
-    // incrementPopularity now uses amount default 1 (per request)
     function incrementPopularity(prodId, amount = 1){
       if (!prodId) return;
       const obj = loadPopularity();
@@ -807,12 +805,11 @@
       renderPopular(); // update UI immediately
     }
 
-    // Render popular grid — fixed to show Rully then Maman (if exist)
     function renderPopular(n = 5){
       const grid = document.getElementById('popular-grid');
       if (!grid) return;
       const pop = loadPopularity();
-      // Grab source items from produk-grid by prod-id
+
       const getItem = (id) => {
         const li = document.querySelector(`#produk-grid > li[data-prod-id="${id}"]`);
         if (!li) return null;
@@ -823,11 +820,9 @@
         return { id, title, price, img, count, li };
       };
 
-      // Order explicitly: first rully then maman, then fill with others by descending count
       const fixedOrder = ['rully', 'maman'];
       const fixedItems = fixedOrder.map(getItem).filter(Boolean);
 
-      // Remaining items (exclude fixed ones)
       const allItems = Array.from(document.querySelectorAll('#produk-grid > li')).map(li => {
         const id = li.getAttribute('data-prod-id') || '';
         const title = li.querySelector('.font-semibold')?.textContent?.trim() || 'Produk';
@@ -837,13 +832,10 @@
         return { id, title, price, img, count, li };
       }).filter(it => !fixedOrder.includes(it.id));
 
-      // sort remaining by count desc
       allItems.sort((a,b) => b.count - a.count);
 
-      // build final list: fixedItems first, then top of allItems until n reached
       const finalList = [...fixedItems, ...allItems].slice(0, Math.min(n, (fixedItems.length + allItems.length)));
 
-      // render
       grid.innerHTML = '';
       finalList.forEach(item => {
         const card = document.createElement('div');
@@ -875,24 +867,19 @@
     // PLAY-BTN & BUY interaction wiring
     // --------------------
 
-    // Play buttons: DO NOT increment popularity (per request)
+    // Play buttons wiring (these will attach immediately because script is after markup)
     document.querySelectorAll('.play-btn').forEach(btn => {
       btn.addEventListener('click', async function () {
         const audioId = btn.getAttribute('data-audio');
         const audio = document.getElementById(audioId);
         if (!audio) return;
 
-        // Determine container to place controls (closest .player-controls-container)
         const container = btn.closest('li')?.querySelector('.player-controls-container') || btn.closest('div')?.querySelector('.player-controls-container');
         if (!container) return;
 
-        // create controls if not exist
         createControls(container, audio);
-
-        // pause other audios
         pauseOthers(audio);
 
-        // toggle play/pause
         if (audio.paused) {
           try {
             await audio.play();
@@ -907,11 +894,9 @@
           btn.textContent = '▶ Play Preview';
         }
 
-        // ensure controls reflect state (in case metadata was loaded after play)
         const controls = container.querySelector('.player-controls');
         const progress = controls.querySelector('.progress');
 
-        // when audio ends -> reset button
         audio.onended = () => {
           btn.textContent = '▶ Play Preview';
           progress.value = 0;
@@ -920,18 +905,18 @@
       });
     });
 
-    // Buy links: increment popularity by 1 (per latest request)
+    // Buy links: increment popularity by 1
     document.querySelectorAll('a[data-buy]').forEach(a => {
       a.addEventListener('click', (e) => {
         const id = a.getAttribute('data-buy');
         if (id) {
-          incrementPopularity(id, 1); // now 1 point per purchase
+          incrementPopularity(id, 1);
         }
         // allow navigation to pembayaran.html
       });
     });
 
-    // preview buttons in popular section (delegated): trigger origin preview (doesn't increment)
+    // preview buttons in popular section (delegated)
     document.getElementById('popular-grid').addEventListener('click', (e) => {
       const pb = e.target.closest('button[data-preview]');
       if (!pb) return;
@@ -941,24 +926,76 @@
       if (originBtn) originBtn.click();
     });
 
+    // --------------------
+    // Sorting (FILTER) LOGIC
+    // --------------------
+    (function setupSorting(){
+      const list = document.getElementById('produk-grid');
+      if (!list) return;
+      // capture original order on page load
+      const items = Array.from(list.children);
+      // map UID -> index (original)
+      const origIndex = {};
+      items.forEach((li, i) => {
+        // data-uid already set in markup; fallback to position if missing
+        const uid = li.dataset.uid ?? String(i);
+        origIndex[uid] = i;
+        // ensure li has dataset.uid for reliable sorting later
+        li.dataset.uid = uid;
+      });
+
+      function sortNewFirst() {
+        const current = Array.from(list.children);
+        current.sort((a,b) => {
+          // newer = higher original index => put first
+          return origIndex[b.dataset.uid] - origIndex[a.dataset.uid];
+        });
+        // append in new order
+        current.forEach(node => list.appendChild(node));
+      }
+
+      function sortOldFirst() {
+        const current = Array.from(list.children);
+        current.sort((a,b) => {
+          return origIndex[a.dataset.uid] - origIndex[b.dataset.uid];
+        });
+        current.forEach(node => list.appendChild(node));
+      }
+
+      // wire buttons
+      const btnNew = document.getElementById('btn-new');
+      const btnOld = document.getElementById('btn-old');
+      btnNew?.addEventListener('click', () => {
+        sortNewFirst();
+        // small visual feedback
+        btnNew.classList.add('ring-2','ring-[#0FFCBE]'); 
+        btnOld.classList.remove('ring-2','ring-[#0FFCBE]');
+      });
+      btnOld?.addEventListener('click', () => {
+        sortOldFirst();
+        btnOld.classList.add('ring-2','ring-[#0FFCBE]');
+        btnNew.classList.remove('ring-2','ring-[#0FFCBE]');
+      });
+
+      // default: keep current (original) order (which is old-first),
+      // but if you want to default to new-first, call sortNewFirst() here.
+    })();
+
     // when DOM ready
     document.addEventListener('DOMContentLoaded', () => {
       // ensure default starting popularity (only set when missing)
-      const defaults = { rully: 7, maman: 5 }; // updated defaults per request
+      const defaults = { rully: 7, maman: 5 };
       const pop = loadPopularity();
       let changed = false;
       for (const k in defaults) {
         if (!Object.prototype.hasOwnProperty.call(pop, k)) {
           pop[k] = defaults[k];
           changed = true;
-        } else {
-          // if stored but smaller than defaults, keep stored (do not override)
         }
       }
       if (changed) savePopularity(pop);
 
       renderPopular(5);
-      // Re-render every 20s in case other tab changed localStorage
       setInterval(renderPopular, 20000);
     });
 
