@@ -175,6 +175,41 @@
     #filter-panel label { display:block; margin:6px 0; color:#dffbf2; font-weight:600; }
     #filter-panel input[type="radio"], #filter-panel input[type="checkbox"] { margin-right:8px; }
 
+    /* CART PANEL */
+    #cart-toggle { position:relative; }
+    #cart-badge {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: #ff4d6d;
+      color: white;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 0.75rem;
+    }
+    #cart-panel {
+      position: fixed;
+      right: 14px;
+      top: 360px;
+      width: 320px;
+      max-width: calc(100% - 40px);
+      background: rgba(0,0,0,0.85);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      border: 1px solid rgba(15,252,190,0.12);
+      backdrop-filter: blur(6px);
+      z-index: 1300;
+      display: none;
+      color: #e6fff7;
+    }
+    #cart-panel h4 { font-weight:800; margin-bottom:8px; }
+    #cart-items { max-height: 260px; overflow:auto; margin-bottom:8px; }
+    .cart-item { display:flex; gap:8px; align-items:center; justify-content:space-between; padding:6px 4px; border-bottom:1px solid rgba(255,255,255,0.03); }
+    .cart-item .meta { flex:1; }
+    .qty-controls button { padding:4px 8px; border-radius:6px; background:#0FFCBE; color:#001827; font-weight:700; margin-left:6px; }
+
     /* small responsive tweak */
     @media (max-width: 480px) {
       .player-controls .time { min-width: 40px; font-size: 0.75rem; }
@@ -183,6 +218,7 @@
       #popular-grid { gap:10px; }
       .popular-card { min-width:200px; }
       #filter-panel { right: 10px; top: 120px; width: 220px; }
+      #cart-panel { right: 10px; top: 420px; width: 260px; }
     }
   </style>
 </head>
@@ -231,10 +267,15 @@
       </div>
     </section>
 
-    <!-- FILTER CONTROLS (diganti jadi 1 tombol filter) -->
+    <!-- FILTER CONTROLS (diganti jadi 1 tombol filter) + CART -->
     <div class="flex gap-2 items-center mb-4">
       <button id="filter-toggle" class="px-3 py-2 rounded-xl bg-[#106EBE] text-white font-semibold">Filter</button>
-      <!-- NOTE: tombol Baru/Lama dihapus sesuai permintaan -->
+
+      <!-- tombol keranjang -->
+      <button id="cart-toggle" class="px-3 py-2 rounded-xl bg-[#0FFCBE] text-black font-semibold relative">
+        Keranjang
+        <span id="cart-badge" style="display:none">0</span>
+      </button>
     </div>
 
     <!-- FILTER PANEL (muncul ketika klik Filter) -->
@@ -254,6 +295,27 @@
       <label><input type="checkbox" class="filter-cat" value="indobass"> Indobass</label>
     </aside>
 
+    <!-- CART PANEL -->
+    <aside id="cart-panel" aria-hidden="true" role="dialog" aria-label="Keranjang belanja">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <h4>Keranjang Belanja</h4>
+        <button id="close-cart" class="px-2 py-1 rounded-md bg-[#106EBE] text-sm">Tutup</button>
+      </div>
+      <div id="cart-items" class="mt-2">
+        <!-- item akan dirender di sini -->
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+        <div>
+          <div class="text-sm opacity-90">Total</div>
+          <div class="font-semibold text-lg">Rp <span id="cart-total">0</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <button id="btn-checkout" class="px-3 py-2 rounded-xl bg-[#106EBE] text-sm">Checkout</button>
+          <button id="btn-clear-cart" class="px-3 py-2 rounded-xl bg-[#ff4d6d] text-sm">Bersihkan</button>
+        </div>
+      </div>
+    </aside>
+
     <!-- GRID CARD PRODUK -->
     <ul id="produk-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
       <!-- NOTE: setiap li sekarang punya data-price dan data-category sesuai mapping yang kamu kirim -->
@@ -266,6 +328,8 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio1" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a data-buy="rully" href="pembayaran.html?produk=FLM%20RULLY%20FVNKY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <!-- tambah keranjang -->
+            <button data-cart="rully" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -281,6 +345,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio2" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a data-buy="kondang" href="pembayaran.html?produk=FLM%20KONDANG" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="kondang" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -295,7 +360,8 @@
           <div class="text-sm opacity-90">💲 Rp 112.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio4" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
-            <a data-buy="hipdut" href="pembayaran.html?produk=FLM%20HIPDUT%20LAMUNAN" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="hipdut" href="pembayaran.html?produk=FLM%20HIPDUT%20LAMUNAN" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="hipdut" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -311,6 +377,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio5" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a data-buy="maman" href="pembayaran.html?produk=FLM%20MAMAN%20FVNDY" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="maman" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -326,6 +393,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio6" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition">▶ Play Preview</button>
             <a data-buy="candu" href="pembayaran.html?produk=FLM%20Style%20Candu" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="candu" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -341,6 +409,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio7" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="happy" href="pembayaran.html?produk=FLM%20HAPPY%20TEAM%20ORI" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="happy" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -356,6 +425,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio8" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="arif" href="pembayaran.html?produk=FLM%20Arif%20Sopan" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="arif" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -371,6 +441,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio9" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="lambada" href="pembayaran.html?produk=FLM%20Lambada" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="lambada" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -386,6 +457,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio10" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="angga" href="pembayaran.html?produk=FLM%20Angga%20Fvnky" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="angga" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -401,6 +473,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio11" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="enaff" href="pembayaran.html?produk=FLM%20Enaff%20V1" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="enaff" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -416,6 +489,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio12" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="febri" href="pembayaran.html?produk=FLM%20Febri%20Remix" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="febri" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -431,6 +505,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio13" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="jawa1" href="pembayaran.html?produk=FLM%20Jawa%20Pride" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="jawa1" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -446,6 +521,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio14" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="jawa2" href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V2" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="jawa2" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -461,6 +537,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio15" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="jawa3" href="pembayaran.html?produk=FLM%20Jawa%20Pride%20V3" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="jawa3" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -476,6 +553,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio16" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="jdm" href="pembayaran.html?produk=FLM%20JDM%20KT" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="jdm" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -491,6 +569,7 @@
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio17" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
             <a data-buy="epamold" href="pembayaran.html?produk=FLM%20EPAM%20ESTETOD%20OLD" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="epamold" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -498,14 +577,15 @@
       </li>
 
       <!-- 18 -->
-      <li data-uid="17" data-prod-id="FLM BREAKBEAT SERANA" data-price="115000" data-category="indobass" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="17" data-prod-id="breakbeat" data-price="115000" data-category="indobass" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM BREAKBEAT SERANA" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM BREAKBEAT SERANA</div>
           <div class="text-sm opacity-90">💲 Rp 115.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio18" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="epamold" href="pembayaran.html?produk=FLM%20BREAKBEAT%20SERANA" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="breakbeat" href="pembayaran.html?produk=FLM%20BREAKBEAT%20SERANA" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="breakbeat" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -513,30 +593,31 @@
       </li>
 
       <!-- 19 -->
-      <li data-uid="18" data-prod-id="FLM VELOCITY RADYA VERSION" data-price="110000" data-category="indobass" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
+      <li data-uid="18" data-prod-id="velocity" data-price="110000" data-category="indobass" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM VELOCITY RADYA VERSION" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM VELOCITY RADYA VERSION</div>
           <div class="text-sm opacity-90">💲 Rp 110.000</div>
           <div class="mt-2 flex gap-2 items-center">
             <button data-audio="audio19" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="FLM VELOCITY RADYA VERSION" href="pembayaran.html?produk=FLM%20VELOCITY%20RADYA%20VERSION" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <a data-buy="velocity" href="pembayaran.html?produk=FLM%20VELOCITY%20RADYA%20VERSION" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="velocity" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
         <audio id="audio19" src="https://raw.githubusercontent.com/muslihfvnky/Muslih-Fvnky-Market/main/orang.mp3" preload="metadata"></audio>
       </li>
 
-      <!-- PRODUK BARU YANG KAMU KIRIM (DITAMBAHKAN) -->
       <!-- 20 -->
       <li data-uid="19" data-prod-id="styleold" data-price="50000" data-category="slow" class="overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow">
         <img src="https://i.imgur.com/ghNd4So.jpeg" alt="FLM Style Old" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
         <div class="flex-1">
           <div class="font-semibold leading-tight">FLM Style Old</div>
-          <div class="text-sm opacity-90">💲 Rp 45.000</div>
+          <div class="text-sm opacity-90">💲 Rp 50.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio20" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="styleold" href="pembayaran.html?produk=FLM%20Style%20Old" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio20" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="styleold" href="pembayaran.html?produk=FLM%20Style%20Old" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="styleold" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -550,8 +631,9 @@
           <div class="font-semibold leading-tight">FLM Style Rizieq Sergio</div>
           <div class="text-sm opacity-90">💲 Rp 60.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio21" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="stylerizieqsergio" href="pembayaran.html?produk=FLM%20Style%20Rizieq%20Sergio" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio21" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="stylerizieqsergio" href="pembayaran.html?produk=FLM%20Style%20Rizieq%20Sergio" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="stylerizieqsergio" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -565,8 +647,9 @@
           <div class="font-semibold leading-tight">FLM Style JDM Jawa</div>
           <div class="text-sm opacity-90">💲 Rp 80.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio22" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="stylejdmjawa" href="pembayaran.html?produk=FLM%20Style%20JDM%20Jawa" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio22" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="stylejdmjawa" href="pembayaran.html?produk=FLM%20Style%20JDM%20Jawa" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="stylejdmjawa" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -580,8 +663,9 @@
           <div class="font-semibold leading-tight">FLM Style Bang Way</div>
           <div class="text-sm opacity-90">💲 Rp 80.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio23" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="stylebangway" href="pembayaran.html?produk=FLM%20Style%20Bang%20Way" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio23" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="stylebangway" href="pembayaran.html?produk=FLM%20Style%20Bang%20Way" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="stylebangway" class="add-cart-btn px-3 py-2 rounded-2xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -595,8 +679,9 @@
           <div class="font-semibold leading-tight">FLM Style DJ Trabas & Maspin RMX</div>
           <div class="text-sm opacity-90">💲 Rp 92.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio24" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="styletrabas" href="pembayaran.html?produk=FLM%20Style%20DJ%20Trabas%20%26%20Maspin%20RMX" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio24" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="styletrabas" href="pembayaran.html?produk=FLM%20Style%20DJ%20Trabas%20%26%20Maspin%20RMX" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="styletrabas" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -610,8 +695,9 @@
           <div class="font-semibold leading-tight">FLM Style Middle Nroktok</div>
           <div class="text-sm opacity-90">💲 Rp 110.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio25" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="stylenroktok" href="pembayaran.html?produk=FLM%20Style%20Middle%20Nroktok" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio25" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="stylenroktok" href="pembayaran.html?produk=FLM%20Style%20Middle%20Nroktok" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="stylenroktok" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -625,8 +711,9 @@
           <div class="font-semibold leading-tight">FLM Style DJ Topeng</div>
           <div class="text-sm opacity-90">💲 Rp 120.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio26" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="styledjtopeng" href="pembayaran.html?produk=FLM%20Style%20DJ%20Topeng" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio26" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="styledjtopeng" href="pembayaran.html?produk=FLM%20Style%20DJ%20Topeng" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="styledjtopeng" class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -640,8 +727,9 @@
           <div class="font-semibold leading-tight">FLM Style Nabih Iko OLD</div>
           <div class="text-sm opacity-90">💲 Rp 60.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio27" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="stylenabihiko" href="pembayaran.html?produk=FLM%20Style%20Nabih%20Iko%20OLD" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio27" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="stylenabihiko" href="pembayaran.html?produk=FLM%20Style%20Nabih%20Iko%20OLD" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="stylenabihiko" class="add-cart-btn px-3 py-2 rounded-2xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -655,8 +743,9 @@
           <div class="font-semibold leading-tight">FLM Bootleg Kila Fvnky</div>
           <div class="text-sm opacity-90">💲 Rp 95.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio28" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="bootleg28" href="pembayaran.html?produk=FLM%20Bootleg%20Kila%20Fvnky" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio28" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="bootleg28" href="pembayaran.html?produk=FLM%20Bootleg%20Kila%20Fvnky" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="bootleg28" class="add-cart-btn px-3 py-2 rounded-2xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -670,8 +759,9 @@
           <div class="font-semibold leading-tight">Trapp Nrotok Bass Blayer</div>
           <div class="text-sm opacity-90">💲 Rp 130.000</div>
           <div class="mt-2 flex gap-2 items-center">
-            <button data-audio="audio29" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
-            <a data-buy="trapp_pepass" href="pembayaran.html?produk=Trapp%20Nrotok%20Bass%20Blayer" class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-audio="audio29" class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover-bg-[#106EBE] hover=text-white transition">▶ Play Preview</button>
+            <a data-buy="trapp_pepass" href="pembayaran.html?produk=Trapp%20Nrotok%20Bass%20Blayer" class="px-3 py-2 rounded-xl bg-[#106EBE] hover-bg-[#0FFCBE] hover=text-black font-medium transition">🛒 Beli</a>
+            <button data-cart="trapp_pepass" class="add-cart-btn px-3 py-2 rounded-2xl bg-[#ffd24d] text-black font-semibold">Tambah ke Keranjang</button>
           </div>
           <div class="player-controls-container"></div>
         </div>
@@ -691,7 +781,6 @@
     const durationMap = {
       audio1: 51,
       audio2: 23,
-      // audio3 (Request) preview dihapus
       audio4: 13,
       audio5: 69,
       audio6: 60,
@@ -923,52 +1012,65 @@
     // --------------------
 
     // Play buttons wiring (these will attach immediately because script is after markup)
-    document.querySelectorAll('.play-btn').forEach(btn => {
-      btn.addEventListener('click', async function () {
-        const audioId = btn.getAttribute('data-audio');
-        const audio = document.getElementById(audioId);
-        if (!audio) return;
+    function wirePlayButtons(){
+      document.querySelectorAll('.play-btn').forEach(btn => {
+        btn.removeEventListener('click', btn._clicker);
+        const clicker = async function () {
+          const audioId = btn.getAttribute('data-audio');
+          const audio = document.getElementById(audioId);
+          if (!audio) return;
 
-        const container = btn.closest('li')?.querySelector('.player-controls-container') || btn.closest('div')?.querySelector('.player-controls-container');
-        if (!container) return;
+          const container = btn.closest('li')?.querySelector('.player-controls-container') || btn.closest('div')?.querySelector('.player-controls-container');
+          if (!container) return;
 
-        createControls(container, audio);
-        pauseOthers(audio);
+          createControls(container, audio);
+          pauseOthers(audio);
 
-        if (audio.paused) {
-          try {
-            await audio.play();
-            btn.textContent = '⏸ Pause Preview';
-          } catch (err) {
-            console.warn('play failed', err);
-            alert('Audio tidak bisa diputar otomatis. Silakan tekan lagi untuk memulai.');
-            return;
+          if (audio.paused) {
+            try {
+              await audio.play();
+              btn.textContent = '⏸ Pause Preview';
+            } catch (err) {
+              console.warn('play failed', err);
+              alert('Audio tidak bisa diputar otomatis. Silakan tekan lagi untuk memulai.');
+              return;
+            }
+          } else {
+            audio.pause();
+            btn.textContent = '▶ Play Preview';
           }
-        } else {
-          audio.pause();
-          btn.textContent = '▶ Play Preview';
-        }
 
-        const controls = container.querySelector('.player-controls');
-        const progress = controls.querySelector('.progress');
+          const controls = container.querySelector('.player-controls');
+          const progress = controls.querySelector('.progress');
 
-        audio.onended = () => {
-          btn.textContent = '▶ Play Preview';
-          progress.value = 0;
-          progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
+          audio.onended = () => {
+            btn.textContent = '▶ Play Preview';
+            progress.value = 0;
+            progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
+          };
         };
+        btn.addEventListener('click', clicker);
+        btn._clicker = clicker;
       });
-    });
+    }
 
-    // Buy links: increment popularity by 1
-    document.querySelectorAll('a[data-buy]').forEach(a => {
-      a.addEventListener('click', (e) => {
+    // Buy links: increment popularity by 1 AND set single-item keranjang when clicked (so pembayaran.html picks it)
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-buy]');
+      if (a) {
         const id = a.getAttribute('data-buy');
-        if (id) {
-          incrementPopularity(id, 1);
+        if (id) incrementPopularity(id, 1);
+
+        // prepare single-item cart for langsung beli
+        const li = document.querySelector(`#produk-grid > li[data-prod-id="${id}"]`);
+        if (li) {
+          const name = li.querySelector('.font-semibold')?.textContent?.trim() || id;
+          const price = Number(li.dataset.price || li.getAttribute('data-price') || 0);
+          const single = [{ id, nama: name, harga: price, qty: 1 }];
+          localStorage.setItem('keranjang', JSON.stringify(single));
         }
-        // allow navigation to pembayaran.html
-      });
+        // allow navigation to pembayaran.html as link is natural
+      }
     });
 
     // preview buttons in popular section (delegated)
@@ -1068,6 +1170,190 @@
       return { applyFilters };
     }
 
+    // --------------------
+    // CART (localStorage key: 'keranjang')
+    // --------------------
+    const CART_KEY = 'keranjang';
+
+    function loadCart(){
+      try {
+        return JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      } catch(e){
+        return [];
+      }
+    }
+    function saveCart(cart){
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      renderCart();
+    }
+
+    function getCartCount(cart){
+      return cart.reduce((s,i)=>s + (i.qty||0), 0);
+    }
+
+    function addToCart(prodId, name, price, qty = 1){
+      const cart = loadCart();
+      const idx = cart.findIndex(it => it.id === prodId);
+      if (idx >= 0){
+        cart[idx].qty = (cart[idx].qty || 0) + qty;
+      } else {
+        cart.push({ id: prodId, nama: name, harga: Number(price), qty: qty });
+      }
+      saveCart(cart);
+    }
+
+    function removeFromCart(prodId){
+      let cart = loadCart();
+      cart = cart.filter(it => it.id !== prodId);
+      saveCart(cart);
+    }
+
+    function changeQty(prodId, newQty){
+      const cart = loadCart();
+      const idx = cart.findIndex(it => it.id === prodId);
+      if (idx >= 0){
+        cart[idx].qty = Math.max(0, Number(newQty));
+        if (cart[idx].qty === 0) cart.splice(idx,1);
+        saveCart(cart);
+      }
+    }
+
+    function clearCart(){
+      localStorage.removeItem(CART_KEY);
+      renderCart();
+    }
+
+    function renderCart(){
+      const panel = document.getElementById('cart-panel');
+      const itemsWrap = document.getElementById('cart-items');
+      const totalEl = document.getElementById('cart-total');
+      const badge = document.getElementById('cart-badge');
+
+      const cart = loadCart();
+      itemsWrap.innerHTML = '';
+      if (cart.length === 0){
+        itemsWrap.innerHTML = '<div class="text-sm opacity-80">Keranjang kosong.</div>';
+        totalEl.textContent = '0';
+        badge.style.display = 'none';
+        badge.textContent = '0';
+        return;
+      }
+
+      let total = 0;
+      cart.forEach(item => {
+        total += item.harga * (item.qty||1);
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <div class="meta">
+            <div style="font-weight:800">${escapeHtml(item.nama)}</div>
+            <div style="font-size:0.9rem;opacity:0.9">Rp ${Number(item.harga).toLocaleString()} x ${item.qty}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="qty-controls">
+              <button data-inc="${item.id}" title="Tambah">+</button>
+              <button data-dec="${item.id}" title="Kurangi">-</button>
+            </div>
+            <button data-remove="${item.id}" title="Hapus" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:#ffd;">Hapus</button>
+          </div>
+        `;
+        itemsWrap.appendChild(div);
+      });
+
+      totalEl.textContent = total.toLocaleString();
+      badge.style.display = 'inline-block';
+      badge.textContent = getCartCount(cart);
+
+      // wire qty/inc/dec/remove
+      itemsWrap.querySelectorAll('button[data-inc]').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.getAttribute('data-inc');
+          const cart = loadCart();
+          const it = cart.find(x=>x.id===id);
+          if (it){ it.qty = (it.qty||0) + 1; saveCart(cart); }
+        });
+      });
+      itemsWrap.querySelectorAll('button[data-dec]').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.getAttribute('data-dec');
+          const cart = loadCart();
+          const it = cart.find(x=>x.id===id);
+          if (it){ it.qty = Math.max(0, (it.qty||1) - 1); if (it.qty===0) removeFromCart(id); else saveCart(cart); }
+        });
+      });
+      itemsWrap.querySelectorAll('button[data-remove]').forEach(b => {
+        b.addEventListener('click', () => {
+          const id = b.getAttribute('data-remove');
+          if (confirm('Hapus item dari keranjang?')) removeFromCart(id);
+        });
+      });
+    }
+
+    // wire add-to-cart buttons
+    function wireAddCartButtons(){
+      document.querySelectorAll('.add-cart-btn').forEach(btn => {
+        btn.removeEventListener('click', btn._cartClick);
+        const handler = (e) => {
+          const prodId = btn.getAttribute('data-cart') || btn.closest('li')?.dataset.prodId;
+          const li = document.querySelector(`li[data-prod-id="${prodId}"]`);
+          if (!li) return;
+          const name = li.querySelector('.font-semibold')?.textContent?.trim() || prodId;
+          const price = Number(li.dataset.price || li.getAttribute('data-price') || 0);
+          addToCart(prodId, name, price, 1);
+
+          // small feedback
+          btn.textContent = '✓ Ditambahkan';
+          setTimeout(()=> btn.textContent = 'Tambah ke Keranjang', 900);
+        };
+        btn.addEventListener('click', handler);
+        btn._cartClick = handler;
+      });
+    }
+
+    // Cart panel open/close
+    function setupCartPanel(){
+      const cartToggle = document.getElementById('cart-toggle');
+      const cartPanel = document.getElementById('cart-panel');
+      const closeCart = document.getElementById('close-cart');
+      const btnClear = document.getElementById('btn-clear-cart');
+      const btnCheckout = document.getElementById('btn-checkout');
+
+      cartToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (cartPanel.style.display === 'block') {
+          cartPanel.style.display = 'none';
+        } else {
+          renderCart();
+          cartPanel.style.display = 'block';
+        }
+      });
+
+      closeCart.addEventListener('click', () => cartPanel.style.display = 'none');
+
+      document.addEventListener('click', (e) => {
+        if (!cartPanel.contains(e.target) && e.target !== cartToggle) {
+          cartPanel.style.display = 'none';
+        }
+      });
+
+      btnClear.addEventListener('click', () => {
+        if (confirm('Bersihkan seluruh keranjang?')) clearCart();
+      });
+
+      // Checkout: simply open pembayaran.html (pembayaran.html akan read localStorage 'keranjang' to produce WA message)
+      btnCheckout.addEventListener('click', () => {
+        const cart = loadCart();
+        if (!cart || cart.length === 0) {
+          alert('Keranjang kosong.');
+          return;
+        }
+        // ensure stored (already stored) then navigate to pembayaran.html
+        localStorage.setItem('keranjang', JSON.stringify(cart));
+        // open pembayaran page (same tab)
+        window.location.href = 'pembayaran.html';
+      });
+    }
+
     // when DOM ready
     document.addEventListener('DOMContentLoaded', () => {
       // ensure default starting popularity (only set when missing)
@@ -1087,13 +1373,24 @@
 
       // setup filters
       const f = setupFilters();
-      // optional: apply default filter state
       f.applyFilters();
+
+      // wire players
+      wirePlayButtons();
+
+      // wire cart
+      wireAddCartButtons();
+      setupCartPanel();
+      renderCart();
+
+      // also wire buy links that were added dynamically (if any)
+      // (they are normal anchor links; click handler above stores single item in localStorage)
     });
 
     // listen to storage events (update across tabs)
     window.addEventListener('storage', (e) => {
       if (e.key === POP_KEY) renderPopular();
+      if (e.key === CART_KEY) renderCart();
     });
 
     // stop all audio when leaving page or switching tab (helps mobile)
