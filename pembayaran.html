@@ -40,13 +40,14 @@
       background-color: rgba(16, 110, 190, 0.92);
       padding: 20px;
       border-radius: 10px;
-      max-width: 440px;
+      max-width: 640px;
       margin: auto;
       border: 2px solid #0FFCBE;
       box-shadow: 0 0 18px rgba(15, 252, 190, 0.7);
       color: #e8fff8;
+      text-align: left;
     }
-    label { display:block; text-align:left; margin-top:10px; font-weight:700; }
+    label { display:block; margin-top:10px; font-weight:700; color:#e6fff7; }
     input, select, button, a, .link-btn {
       width: calc(100% - 4px);
       padding: 12px;
@@ -66,9 +67,7 @@
       cursor: pointer;
       border: 2px solid #0FFCBE;
     }
-    button:hover {
-      background-color: #0b5ca0;
-    }
+    button:hover { background-color: #0b5ca0; }
     .btn-dana {
       background-color: #0FFCBE;
       color: #002028;
@@ -77,9 +76,7 @@
       cursor: pointer;
       border: 2px solid #106EBE;
     }
-    .btn-dana:hover {
-      background-color: #14e4a8;
-    }
+    .btn-dana:hover { background-color: #14e4a8; }
     .qr-img {
       width: 240px;
       border-radius: 10px;
@@ -105,15 +102,18 @@
     .receipt-meta { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
     .receipt-actions { display:flex; gap:8px; margin-top:8px; }
 
-    .small {
-      font-size: 12px;
-      opacity: 0.9;
-    }
+    .small { font-size: 12px; opacity: 0.9; color:#e6fff7; }
 
     .copy-btn { background:#ffd24d; color:#001827; border:2px solid rgba(0,0,0,0.06); font-weight:800; padding:10px; border-radius:8px; }
     .copy-btn:hover { filter:brightness(0.98); }
 
     .note { margin-top:8px; font-size:13px; color:#d9fbe9; opacity:0.9; }
+
+    /* cart list (if keranjang ditemukan) */
+    .cart-list { background: rgba(0,0,0,0.18); padding:8px; border-radius:8px; margin-top:8px; }
+    .cart-item { display:flex; justify-content:space-between; gap:8px; padding:6px 4px; border-bottom:1px solid rgba(255,255,255,0.03); }
+    .btn-clear-cart { background:#ff4d6d; border:2px solid rgba(255,255,255,0.06); color:#fff; font-weight:800; padding:10px; border-radius:8px; }
+    .btn-clear-cart:hover { filter:brightness(0.95); }
 
     @media (max-width:480px){
       .box { padding:14px; width:92%; }
@@ -129,6 +129,18 @@
     <p style="margin:6px 0 4px 0"><strong>Nomor DANA:</strong> <span style="color:#001827;background:#0FFCBE;padding:4px 8px;border-radius:6px;font-weight:900">083821665970</span></p>
 
     <img src="https://i.imgur.com/vxI5p9w.png" alt="Qris" class="qr-img" />
+
+    <!-- Keranjang (jika ada) -->
+    <div id="cart-found" style="display:none">
+      <label>Keranjang Anda:</label>
+      <div id="cart-list" class="cart-list small">
+        <!-- rendered by JS -->
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button id="clear-cart" class="btn-clear-cart" type="button">Bersihkan Keranjang</button>
+        <button id="refresh-cart" class="btn" type="button">Muat Ulang</button>
+      </div>
+    </div>
 
     <label for="produk">Jenis Produk:</label>
     <input type="text" id="produk" placeholder="Contoh: FLM Trabas" />
@@ -147,191 +159,288 @@
     <button id="btnWA">Kirim ke WhatsApp</button>
 
     <div id="receipt" class="receipt-preview" aria-hidden="true">
-      <!-- preview akan diisi JS -->
       <div id="receipt-html"></div>
       <div class="receipt-actions">
-        <button id="copyReceipt" class="copy-btn">Copy Pesan</button>
-        <button id="openWA" class="btn" style="background:#0b8bd1;border:2px solid #0FFCBE">Kirim ke WA</button>
+        <button id="copyReceipt" class="copy-btn" type="button">Copy Pesan</button>
+        <button id="openWA" class="btn" style="background:#0b8bd1;border:2px solid #0FFCBE" type="button">Kirim ke WA</button>
       </div>
-      <div class="note small">Pastikan kirim *screenshot* bukti transfer setelah melakukan pembayaran.</div>
+      <div class="note small">Pastikan kirim <strong>screenshot</strong> bukti transfer setelah melakukan pembayaran.</div>
     </div>
 
   </div>
 
   <script>
-    // Nomor WA tujuan (ganti jika perlu)
+    /* Integrasi keranjang + pesan WA sesuai permintaan.
+       - Membaca localStorage['keranjang'] (harus berupa JSON array dengan objek {id,nama,harga,qty} atau serupa)
+       - Jika keranjang ada: tampilkan isinya, autofill nominal = total
+       - Jika tidak ada tetapi ada ?produk=... maka isi field produk dari query param
+       - Tombol Bayar via DANA: buka DANA link + tampil preview + open WA (user initiated)
+       - Tombol Kirim WA: tampil preview + open WA
+       - Tombol Salin Pesan: salin teks pesan ke clipboard
+    */
+
     const WA_NUMBER = '6283821665970';
-
-    // DANA link (sesuaikan bila perlu)
     const DANA_LINK = 'https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012012022011164159294';
+    const CART_KEY = 'keranjang'; // key yang digunakan di jual-flm.html
 
-    // ambil param ?produk=...
-    window.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const produk = urlParams.get('produk');
-      if (produk) {
-        document.getElementById('produk').value = produk;
-      }
-    });
-
-    // util: format number ke Rupiah sederhana
+    // helper
+    function q(sel){ return document.querySelector(sel); }
     function formatRupiah(num){
-      if (!num && num !== 0) return '';
+      if (num === null || num === undefined || num === '') return '';
       const n = Number(num);
       if (isNaN(n)) return String(num);
       return n.toLocaleString('id-ID');
     }
-
-    // generate ID transaksi
-    function generateTxID() {
-      return 'MF-' + (Math.floor(100000 + Math.random() * 900000));
-    }
-
-    // ambil waktu & tanggal terformat
-    function getTimeDate() {
+    function escapeHtml(s){ return (''+s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    function genTxID(){ return 'MF-' + Math.floor(100000 + Math.random()*900000); }
+    function getTimeDate(){
       const now = new Date();
-      const jam = now.toTimeString().split(' ')[0]; // HH:MM:SS
+      const jam = now.toTimeString().split(' ')[0];
       const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
       const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
       const tanggal = `${hari[now.getDay()]}, ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
-      return { jam, tanggal, raw: now };
+      return { jam, tanggal };
     }
 
-    // build pesan untuk WA (teks dengan markdown WA: *bold*)
-    function buildWaMessage(tx) {
-      // tx: {id, produk, nominal, metode, jam, tanggal}
-      const pes = [
-        '*Website Pembayaran - Muslih Fvnky*',
-        '',
-        `📌 *ID Transaksi* : ${tx.id}`,
-        `🛒 *Produk*       : ${tx.produk}`,
-        `💰 *Nominal*      : Rp${formatRupiah(tx.nominal)}`,
-        `💳 *Metode*       : ${tx.metode}`,
-        `⏰ *Jam*          : ${tx.jam} WIB`,
-        `📅 *Tanggal*      : ${tx.tanggal}`,
-        '',
-        '_Harap kirim screenshot transaksi_'
-      ].join('\n');
-      return pes;
+    // load cart (safe)
+    function loadCart(){
+      try {
+        const raw = localStorage.getItem(CART_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed;
+      } catch(e){
+        console.warn('gagal parse keranjang', e);
+        return [];
+      }
     }
 
-    // build HTML preview that looks like WA bubble
-    function buildPreviewHtml(tx) {
-      return `
-        <div class="receipt-meta">
-          <div style="font-weight:900;font-size:14px">Website Pembayaran - Muslih Fvnky</div>
-        </div>
-        <div class="line muted">📌 ID Transaksi : <strong>${tx.id}</strong></div>
-        <div class="line muted">🛒 Produk       : <strong>${escapeHtml(tx.produk)}</strong></div>
-        <div class="line muted">💰 Nominal      : <strong>Rp ${formatRupiah(tx.nominal)}</strong></div>
-        <div class="line muted">💳 Metode       : <strong>${tx.metode}</strong></div>
-        <div class="line muted">⏰ Jam          : <strong>${tx.jam} WIB</strong></div>
-        <div class="line muted">📅 Tanggal      : <strong>${tx.tanggal}</strong></div>
-      `;
+    function calcTotal(cart){
+      return cart.reduce((s,it)=>{
+        const harga = Number(it.harga ?? it.price ?? it.data_price ?? 0);
+        const qty = Number(it.qty ?? it.quantity ?? 1);
+        return s + (isNaN(harga) ? 0 : harga) * (isNaN(qty) ? 1 : qty);
+      }, 0);
     }
 
-    // escape html for preview
-    function escapeHtml(s){
-      return (''+s).replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]);
+    function renderCartIfAny(){
+      const cart = loadCart();
+      const cartFound = q('#cart-found');
+      const cartList = q('#cart-list');
+      if (cart && cart.length > 0) {
+        cartFound.style.display = 'block';
+        cartList.innerHTML = cart.map(it=>{
+          const name = escapeHtml(it.nama ?? it.title ?? it.name ?? it.id ?? 'Produk');
+          const harga = Number(it.harga ?? it.price ?? it.data_price ?? 0);
+          const qty = Number(it.qty ?? it.quantity ?? 1);
+          const sub = (isNaN(harga) ? 0 : harga) * (isNaN(qty) ? 1 : qty);
+          return `<div class="cart-item"><div><div style="font-weight:800">${name}</div><div class="small">Rp ${formatRupiah(harga)} × ${qty}</div></div><div style="text-align:right;font-weight:800">Rp ${formatRupiah(sub)}</div></div>`;
+        }).join('');
+        // autofill nominal berdasarkan total jika nominal kosong / zero
+        const total = calcTotal(cart);
+        const nomEl = q('#nominal');
+        if (!nomEl.value || Number(nomEl.value) === 0) nomEl.value = total;
+      } else {
+        cartFound.style.display = 'none';
+      }
     }
 
-    // show preview block with tx data
-    function showReceipt(tx) {
-      const r = document.getElementById('receipt');
-      const h = document.getElementById('receipt-html');
-      h.innerHTML = buildPreviewHtml(tx);
-      r.style.display = 'block';
-      r.setAttribute('aria-hidden', 'false');
+    // read query param
+    function getQueryParam(k){
+      const p = new URLSearchParams(window.location.search);
+      return p.get(k);
     }
 
-    // create tx object from inputs
-    function createTransaction() {
-      const produk = (document.getElementById('produk').value || '').trim();
-      const nominalRaw = document.getElementById('nominal').value;
-      const metode = document.getElementById('metode').value || 'DANA';
-      if (!produk) {
-        alert('Mohon isi jenis produk.');
+    // build WA text message (style: kemarin2)
+    function buildWAMessage(tx){
+      // tx: { id, produkArr OR produkSingle, nominal, metode, jam, tanggal }
+      const lines = [];
+      lines.push('*Website Pembayaran - Muslih Fvnky*');
+      lines.push('');
+      lines.push(`*📌 ID Transaksi : ${tx.id}*`);
+      lines.push('*🛒 Produk         :*');
+
+      if (Array.isArray(tx.produkArr) && tx.produkArr.length > 0){
+        tx.produkArr.forEach(it=>{
+          lines.push(`- ${it.name} × ${it.qty} = Rp${formatRupiah(it.sub)}`);
+        });
+      } else {
+        // single product
+        lines.push(`- ${tx.produkSingle || 'Produk manual'} × 1 = Rp${formatRupiah(tx.nominal)}`);
+      }
+
+      lines.push('');
+      lines.push(`*💰 Nominal        : Rp${formatRupiah(tx.nominal)}*`);
+      lines.push(`*💳 Metode         : ${tx.metode}*`);
+      lines.push(`*🕒 Jam               : ${tx.jam} WIB*`);
+      lines.push(`*📅 Tanggal        : ${tx.tanggal}*`);
+      lines.push('> *Harap kirim screenshot transaksi*');
+
+      return lines.join('\n');
+    }
+
+    function buildTxObjectFromInputs(){
+      const produkInput = (q('#produk').value || '').trim();
+      const nominalRaw = q('#nominal').value;
+      const metode = q('#metode').value || 'DANA';
+      if (!produkInput && (!loadCart() || loadCart().length === 0)) {
+        alert('Mohon isi jenis produk atau isi keranjang terlebih dahulu.');
         return null;
       }
-      if (!nominalRaw || isNaN(Number(nominalRaw)) || Number(nominalRaw) <= 0) {
-        alert('Mohon isi nominal transfer yang valid.');
-        return null;
+      const nominal = Math.floor(Number(nominalRaw) || 0);
+      if (nominal <= 0) {
+        if (loadCart() && loadCart().length > 0) {
+          // allow nominal from cart total
+        } else {
+          alert('Mohon isi nominal transfer yang valid.');
+          return null;
+        }
       }
-      const nominal = Math.floor(Number(nominalRaw));
+
       const { jam, tanggal } = getTimeDate();
-      const id = generateTxID();
-      return { id, produk, nominal, metode, jam, tanggal };
+      const id = genTxID();
+      const cart = loadCart();
+      let produkArr = [];
+      if (cart.length > 0){
+        produkArr = cart.map(it => {
+          const name = it.nama ?? it.title ?? it.name ?? it.id ?? 'Produk';
+          const harga = Number(it.harga ?? it.price ?? it.data_price ?? 0);
+          const qty = Number(it.qty ?? it.quantity ?? 1);
+          const sub = (isNaN(harga)?0:harga) * (isNaN(qty)?1:qty);
+          return { name, harga, qty, sub };
+        });
+      }
+      return {
+        id,
+        produkArr: produkArr.length ? produkArr : null,
+        produkSingle: produkArr.length ? null : (produkInput || getQueryParam('produk') || 'Produk manual'),
+        nominal: (produkArr.length ? calcTotal(cart) : (nominal || 0)),
+        metode,
+        jam,
+        tanggal
+      };
     }
 
-    // open WA with message
-    function openWhatsApp(message) {
-      const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+    // show receipt preview area
+    function showPreview(tx){
+      const r = q('#receipt');
+      const h = q('#receipt-html');
+      // build HTML preview mirip WA bubble
+      let html = `<div class="receipt-meta"><div style="font-weight:900;font-size:14px">Website Pembayaran - Muslih Fvnky</div></div>`;
+      html += `<div class="line muted">📌 ID Transaksi : <strong>${tx.id}</strong></div>`;
+      if (tx.produkArr && tx.produkArr.length){
+        html += `<div class="line muted">🛒 Produk : </div>`;
+        tx.produkArr.forEach(it=>{
+          html += `<div class="muted" style="margin-left:8px">- ${escapeHtml(it.name)} × ${it.qty} = Rp ${formatRupiah(it.sub)}</div>`;
+        });
+      } else {
+        html += `<div class="line muted">🛒 Produk : <strong>${escapeHtml(tx.produkSingle)}</strong></div>`;
+      }
+      html += `<div class="line muted">💰 Nominal : <strong>Rp ${formatRupiah(tx.nominal)}</strong></div>`;
+      html += `<div class="line muted">💳 Metode : <strong>${escapeHtml(tx.metode)}</strong></div>`;
+      html += `<div class="line muted">⏰ Jam : <strong>${tx.jam} WIB</strong></div>`;
+      html += `<div class="line muted">📅 Tanggal : <strong>${tx.tanggal}</strong></div>`;
+
+      h.innerHTML = html;
+      r.style.display = 'block';
+      r.setAttribute('aria-hidden','false');
+    }
+
+    // open WA
+    function openWAWithText(text){
+      const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
       window.open(url, '_blank');
     }
 
-    // --- wiring tombol ---
-    const btnDana = document.getElementById('btnDana');
-    const btnWA = document.getElementById('btnWA');
-    const openWAbtn = document.getElementById('openWA');
-    const copyBtn = document.getElementById('copyReceipt');
-
-    // When user clicks "Bayar via DANA" -> validate, open DANA link, show preview, and open WA
-    btnDana.addEventListener('click', (e) => {
-      e.preventDefault();
-      const tx = createTransaction();
-      if (!tx) return;
-
-      // show preview
-      showReceipt(tx);
-
-      // open DANA in new tab (user still initiated click so browsers usually allow)
-      window.open(DANA_LINK, '_blank');
-
-      // build WA message and open WA (in new tab)
-      const pesan = buildWaMessage(tx);
-      // open wa in separate tab (user initiated click)
-      openWhatsApp(pesan);
-    });
-
-    // "Kirim ke WhatsApp" button (manual)
-    btnWA.addEventListener('click', (e) => {
-      e.preventDefault();
-      const tx = createTransaction();
-      if (!tx) return;
-      showReceipt(tx);
-      const pesan = buildWaMessage(tx);
-      openWhatsApp(pesan);
-    });
-
-    // button inside preview: open WA again (uses last shown preview)
-    openWAbtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      // read preview values
-      const html = document.getElementById('receipt-html').innerText || '';
-      // better to reconstruct tx from inputs to ensure correctness
-      const tx = createTransaction();
-      if (!tx) return;
-      const pesan = buildWaMessage(tx);
-      openWhatsApp(pesan);
-    });
-
-    // copy receipt text to clipboard (WA message format)
-    copyBtn.addEventListener('click', async () => {
-      const tx = createTransaction();
-      if (!tx) return;
-      const pesan = buildWaMessage(tx);
-      try {
-        await navigator.clipboard.writeText(pesan);
-        copyBtn.textContent = 'Tersalin ✓';
-        setTimeout(()=> copyBtn.textContent = 'Copy Pesan', 2000);
-      } catch (err) {
-        alert('Gagal menyalin. Silakan salin manual pesan yang tampil di preview.');
+    // events wiring
+    document.addEventListener('DOMContentLoaded', () => {
+      // prefill produk from query if present
+      const qprod = getQueryParam('produk');
+      if (qprod && (!q('#produk').value || q('#produk').value.trim() === '')) {
+        try { q('#produk').value = decodeURIComponent(qprod); } catch(e){ q('#produk').value = qprod; }
       }
-    });
 
-    // optional: fill inputs from query params (produk already handled above)
-    // disable form autocomplete quirks on mobile
-    document.addEventListener('touchstart', ()=>{}, {passive:true});
+      // prefill nominal if query param nominal exists
+      const qnom = getQueryParam('nominal');
+      if (qnom && (!q('#nominal').value || Number(q('#nominal').value) === 0)) {
+        q('#nominal').value = qnom;
+      }
+
+      // render cart if any
+      renderCartIfAny();
+
+      // btnDana: validate inputs, show preview, open DANA & WA
+      q('#btnDana').addEventListener('click', (e) => {
+        e.preventDefault();
+        const tx = buildTxObjectFromInputs();
+        if (!tx) return;
+        // show preview
+        showPreview(tx);
+        // open DANA (new tab)
+        window.open(DANA_LINK, '_blank');
+        // build message and open WA
+        const msg = buildWAMessage(tx);
+        // open WA in new tab (user initiated click)
+        openWAWithText(msg);
+      });
+
+      // btnWA: just open WA (validate + preview)
+      q('#btnWA').addEventListener('click', (e) => {
+        e.preventDefault();
+        const tx = buildTxObjectFromInputs();
+        if (!tx) return;
+        showPreview(tx);
+        const msg = buildWAMessage(tx);
+        openWAWithText(msg);
+      });
+
+      // openWA inside preview (rebuild to ensure correctness)
+      q('#openWA').addEventListener('click', (e) => {
+        e.preventDefault();
+        const tx = buildTxObjectFromInputs();
+        if (!tx) return;
+        const msg = buildWAMessage(tx);
+        openWAWithText(msg);
+      });
+
+      // copy message
+      q('#copyReceipt').addEventListener('click', async () => {
+        const tx = buildTxObjectFromInputs();
+        if (!tx) return;
+        const msg = buildWAMessage(tx);
+        try {
+          await navigator.clipboard.writeText(msg);
+          q('#copyReceipt').textContent = 'Tersalin ✓';
+          setTimeout(() => q('#copyReceipt').textContent = 'Copy Pesan', 1800);
+        } catch (err) {
+          alert('Gagal menyalin otomatis. Silakan salin manual pesan dari preview.');
+        }
+      });
+
+      // clear cart
+      q('#clear-cart').addEventListener('click', () => {
+        if (!confirm('Yakin mau mengosongkan keranjang?')) return;
+        localStorage.removeItem(CART_KEY);
+        renderCartIfAny();
+        q('#nominal').value = '';
+        q('#receipt').style.display = 'none';
+      });
+
+      // refresh cart
+      q('#refresh-cart').addEventListener('click', () => {
+        renderCartIfAny();
+      });
+
+      // keep nominal preview updated when user edits nominal manually
+      q('#nominal').addEventListener('input', () => {
+        // if receipt visible, update nominal shown there by rebuilding preview from current inputs
+        if (q('#receipt').style.display === 'block') {
+          const tx = buildTxObjectFromInputs();
+          if (tx) showPreview(tx);
+        }
+      });
+    });
   </script>
 </body>
 </html>
