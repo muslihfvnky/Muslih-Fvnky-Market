@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Halaman Sedang Maintenance</title>
+  <title>Muslih Fvnky Shop - Maintenance</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
@@ -11,19 +13,99 @@
       background-color: #000;
       color: #fff;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      font-family: Arial, sans-serif;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+    }
+    img.logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease-in-out infinite alternate;
     }
     h1 {
-      font-size: 1.8rem;
-      font-weight: bold;
-      text-align: center;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+    p {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+    .socials a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    .socials a:hover {
+      color: #00ffcc;
+    }
+
+    /* Loading dots */
+    .loading {
+      display: flex;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      margin: 0 4px;
+      background: #fff;
+      border-radius: 50%;
+      animation: bounce 1.5s infinite;
+    }
+    .dot:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+    .dot:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    /* Animasi */
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0.5; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.6); }
+      40% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <h1>Halaman Sedang<br>Maintenance 🙏</h1>
+  <!-- Logo -->
+  <img src="https://i.imgur.com/ghNd4So.jpeg" alt="Logo Muslih Fvnky" class="logo">
+
+  <!-- Judul -->
+  <h1>Halaman Sedang Maintenance 🙏</h1>
+
+  <!-- Pesan -->
+  <p>Kami sedang melakukan perbaikan sistem.<br>Silakan cek kembali beberapa saat lagi.</p>
+
+  <!-- Loading animation -->
+  <div class="loading">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <!-- Sosial Media -->
+  <div class="socials">
+    <a href="https://www.instagram.com/mslihh.wav?igsh=MTBpdm9heTVuNjgyOA==" target="_blank">Instagram</a> |
+    <a href="https://youtube.com/@muslihfvnky" target="_blank">YouTube</a> |
+    <a href="https://wa.me/6281234567890" target="_blank">WhatsApp</a>
+  </div>
 </body>
 </html>
