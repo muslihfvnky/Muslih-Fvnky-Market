@@ -66,15 +66,14 @@
 
   <style>
     :root{
-      --mint:#0FFCBE;
-      --blue:#106EBE;
       --accent1: #06b6d4;
       --accent2: #3b82f6;
       --accent3: #9333ea;
       --accent4: #ec4899;
     }
 
-    html, body { height: 100%; margin: 0; padding: 0; -webkit-font-smoothing:antialiased; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+
     body {
       background: url('https://i.imgur.com/p0K2KQs.png') no-repeat center center fixed;
       background-size: cover;
@@ -87,15 +86,15 @@
       padding: 2rem 0;
     }
 
-    /* Header gradient card */
+    /* Header gradient card: allow wrap so extra link won't push layout */
     .animated-gradient {
-      background: linear-gradient(-45deg, var(--blue), var(--mint), var(--blue), var(--mint));
+      background: linear-gradient(-45deg, #106EBE, #0FFCBE, #106EBE, #0FFCBE);
       background-size: 400% 400%;
       animation: gradientMove 6s ease infinite;
       padding: 1rem 1.25rem;
       border-radius: 12px;
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: wrap; /* <-- penting supaya tidak mendorong layout */
       align-items: center;
       gap: 1rem;
       box-shadow: 0 6px 30px rgba(0,0,0,0.45);
@@ -104,10 +103,18 @@
       position: relative;
       z-index: 10;
     }
-    @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
+    /* logo style (ensures consistent size & no layout jump) */
     .float-logo { width:56px; height:56px; border-radius:50%; box-shadow: 0 6px 20px rgba(0,0,0,0.5); object-fit:cover; flex-shrink:0; }
+
     .header-extra { margin-left:auto; display:flex; gap:0.5rem; align-items:center; }
+
+    /* nav quick link */
     .header-link {
       background: rgba(255,255,255,0.06);
       padding: 6px 10px;
@@ -121,13 +128,15 @@
     }
     .header-link:hover { transform: translateY(-3px); background: rgba(255,255,255,0.10); }
 
+    /* Buttons grid (responsive) */
     .btn-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
     @media (min-width: 640px) { .btn-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
     @media (min-width: 1024px) { .btn-grid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
 
+    /* neutral button style (kept) */
     .glow-btn {
       transition: all 0.28s ease-in-out;
-      border: 2px solid var(--mint);
+      border: 2px solid #0FFCBE;
       background: rgba(16,110,190,0.8);
       backdrop-filter: blur(6px);
       color: white;
@@ -140,11 +149,27 @@
       box-shadow: 0 6px 20px rgba(0,0,0,0.35);
       text-decoration: none;
     }
-    .glow-btn:hover { background: var(--mint); color: black; box-shadow: 0 10px 30px rgba(15,252,190,0.18); transform: translateY(-4px); }
+    .glow-btn:hover { background: #0FFCBE; color: black; box-shadow: 0 10px 30px rgba(15,252,190,0.18); transform: translateY(-4px); }
 
-    .comment-btn { transition: all 0.28s ease-in-out; border: 2px solid var(--mint); background: rgba(16,110,190,0.8); backdrop-filter: blur(6px); color: white; display: inline-block; width: 100%; text-align: center; padding: .9rem 1rem; font-weight: 700; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.35); text-decoration: none; }
-    .comment-btn:hover { background: var(--mint); color: black; box-shadow: 0 10px 30px rgba(15,252,190,0.18); transform: translateY(-4px); }
+    /* comment special button - updated to match look & color of other buttons */
+    .comment-btn {
+      transition: all 0.28s ease-in-out;
+      border: 2px solid #0FFCBE;
+      background: rgba(16,110,190,0.8);
+      backdrop-filter: blur(6px);
+      color: white;
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      padding: .9rem 1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+      text-decoration: none;
+    }
+    .comment-btn:hover { background: #0FFCBE; color: black; box-shadow: 0 10px 30px rgba(15,252,190,0.18); transform: translateY(-4px); }
 
+    /* PRIMARY Testimoni button (highlight) */
     .primary-btn {
       position: relative;
       display: inline-flex;
@@ -162,61 +187,22 @@
       width: 100%;
     }
     .primary-btn:hover { transform: translateY(-6px) scale(1.01); }
+
     .primary-icon { width:38px; height:38px; border-radius:10px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; }
-    .badge { position: absolute; top: -10px; right: -10px; background: #ff4d6d; color:#fff; font-weight:800; font-size:12px; padding: 6px 8px; border-radius:999px; box-shadow: 0 8px 22px rgba(255,77,109,0.18); }
+
+    .badge {
+      position: absolute; top: -10px; right: -10px;
+      background: #ff4d6d; color:#fff; font-weight:800; font-size:12px;
+      padding: 6px 8px; border-radius:999px; box-shadow: 0 8px 22px rgba(255,77,109,0.18);
+    }
 
     footer small { color: rgba(255,255,255,0.75); }
 
-    /* ---------- Jumat Berkah (Flash) styles - mint/blue theme ---------- */
-    .jb-wrap { margin-top: 1.25rem; max-width: 1000px; margin-left:auto; margin-right:auto; border-radius: 12px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.45); }
-    .jb-banner {
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; padding:14px 16px;
-      background: linear-gradient(90deg, rgba(16,110,190,0.95), rgba(11,201,173,0.95));
-      color: #031018;
-    }
-    .jb-title { font-weight:900; font-size:1.02rem; display:flex; align-items:center; gap:10px; color:#001827; }
-    .jb-timer {
-      background: rgba(255,255,255,0.16);
-      color: #fff;
-      padding:6px 10px;
-      border-radius:999px;
-      font-weight:800;
-      font-size:0.92rem;
-      color:#001827;
-    }
-    .jb-content {
-      display:flex; gap:14px; padding: 14px;
-      background: linear-gradient(180deg, rgba(0,0,0,0.38), rgba(0,0,0,0.46));
-      overflow:auto; scroll-snap-type: x mandatory;
-    }
-    .jb-card {
-      min-width: 230px; flex: 0 0 230px; scroll-snap-align: start;
-      background: linear-gradient(180deg, rgba(11,201,173,0.06), rgba(16,110,190,0.05));
-      border-radius: 12px; padding:12px; display:flex; flex-direction:column; gap:8px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.45);
-      border: 1px solid rgba(255,255,255,0.04);
-    }
-    .jb-card h4 { margin:0; font-weight:900; color: #e6f9f4; font-size:0.98rem; }
-    .jb-sub { color: rgba(255,255,255,0.85); font-size:0.85rem; }
-    .jb-price { font-weight:900; color: #ffd24d; font-size:1.05rem; margin-top:6px; }
-    .jb-cta { margin-top:auto; }
-    .jb-cta a {
-      display:block; padding:10px; border-radius:10px; text-align:center; font-weight:900; text-decoration:none;
-      background: var(--blue); color:white;
-    }
-    .jb-cta a:hover { background: var(--mint); color:black; }
-
-    /* remove "detail" button: we only show Beli */
-    .jb-card .detail { display:none; }
-
-    /* responsive */
-    @media (max-width:640px) {
-      .jb-card { min-width: 200px; }
-    }
-
     /* fadeSlide keyframes used by inline script */
-    @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -229,51 +215,20 @@
       <p class="text-sm text-white/90">Tempat Jual Beli FLM Murah</p>
     </div>
 
-    <!-- quick links -->
+    <!-- quick links (Testimoni + Komentar + Pembayaran) -->
     <div class="header-extra" aria-hidden="false">
       <a href="testimoni.html" class="header-link" title="Lihat Testimoni">📸 Testimoni</a>
+      <!-- Komentar link -->
       <a href="comments.html" class="header-link" title="Komentar & Rating">💬 Komentar</a>
+      <!-- Pembayaran link added -->
       <a href="pembayaran2.html" class="header-link" title="Halaman Pembayaran">💳 Pembayaran</a>
+      <!-- Blog link (ditambahkan, buka di tab baru) -->
       <a href="https://muslihfvnky.blogspot.com/?m=1" class="header-link" title="Kunjungi Blog" target="_blank" rel="noopener noreferrer">📝 Blog</a>
     </div>
   </header>
 
   <div class="overlay">
     <div class="max-w-2xl mx-auto p-4">
-
-      <!-- ===== Jumat Berkah (di sini, dekat atas) ===== -->
-      <section id="jumat-berkah" class="jb-wrap" aria-live="polite" style="display:none;">
-        <div class="jb-banner">
-          <div class="jb-title">✨ Jumat Berkah — Diskon Spesial Hari Ini</div>
-          <div class="jb-timer" id="jb-timer">--:--:--</div>
-        </div>
-
-        <div class="jb-content" id="jb-content" role="list">
-          <!-- Card 1 -->
-          <div class="jb-card" role="listitem" data-produk="FLM RULLY FVNKY" data-nominal="55000">
-            <h4>FLM RULLY FVNKY</h4>
-            <div class="jb-sub">Special Jumat</div>
-            <div class="jb-price">Rp 55.000</div>
-            <div class="jb-cta">
-              <a href="#" class="jb-buy" data-produk="FLM RULLY FVNKY" data-nominal="55000">Beli</a>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="jb-card" role="listitem" data-produk="FLM HIPDUT LAMUNAN" data-nominal="65000">
-            <h4>FLM HIPDUT LAMUNAN</h4>
-            <div class="jb-sub">Jumat Berkah</div>
-            <div class="jb-price">Rp 65.000</div>
-            <div class="jb-cta">
-              <a href="#" class="jb-buy" data-produk="FLM HIPDUT LAMUNAN" data-nominal="65000">Beli</a>
-            </div>
-          </div>
-
-          <!-- (Tambahkan card lain di sini bila perlu) -->
-
-        </div>
-      </section>
-      <!-- ===== end Jumat Berkah ===== -->
 
       <!-- Welcome -->
       <section class="mb-8" style="animation: fadeSlide 0.9s ease-out forwards; animation-delay: 0.2s;">
@@ -293,28 +248,25 @@
           <a href="jasa-mixing.html" class="glow-btn">Jasa Mixing & Mastering</a>
           <a href="jasa-chord-dan-bpm.html" class="glow-btn">Jasa Nyusun Chord & BPM</a>
 
-          <!-- Pembayaran button -->
+          <!-- Pembayaran button added and points to pembayaran2.html -->
           <a href="pembayaran2.html" class="glow-btn">💳 Pembayaran</a>
 
-          <!-- Komentar & Rating -->
+          <!-- Komentar & Rating (style now matches the other buttons) -->
           <div>
-            <a href="comments.html" class="comment-btn" aria-label="Buka halaman Komentar & Rating">💬 Komentar & Rating</a>
+            <a href="comments.html" class="comment-btn" aria-label="Buka halaman Komentar & Rating">
+              💬 Komentar & Rating
+            </a>
           </div>
 
-          <!-- Blog -->
+          <!-- Blog button (ditambahkan, buka di tab baru) -->
           <a href="https://muslihfvnky.blogspot.com/?m=1" class="glow-btn" target="_blank" rel="noopener noreferrer">📝 Blog</a>
 
-          <!-- Subscribe WA -->
+          <!-- Tambahan tombol Subscribe via WA (sesuai permintaan) -->
           <a href="https://wa.me/6283821665970?text=Halo%20saya%20mau%20subscribe%20untuk%20dapat%20informasi%20produk%20terbaru" class="glow-btn" target="_blank" rel="noopener noreferrer">📩 Dapatkan Informasi Produk Terbaru</a>
 
-          <!-- Shortcut ke Jumat Berkah -->
-          <a href="#jumat-berkah" id="flashShortcut" class="glow-btn" style="background: linear-gradient(90deg,#0FFCBE,#106EBE); border-color:#ffd24d;">
-            ⚡ Jumat Berkah
-          </a>
-
-          <!-- Primary Testimoni -->
+          <!-- Primary Testimoni button spans full width -->
           <div style="grid-column: 1 / -1;">
-            <a href="testimoni.html" class="primary-btn" aria-label="Buka halaman Testimoni">
+            <a href="testimoni.html" class="primary-btn" aria-label="Buka halaman Testimoni di halaman yang sama">
               <span class="primary-icon" aria-hidden="true">📸</span>
               <span>Lihat Semua Testimoni</span>
               <span class="badge" aria-hidden="true">9</span>
@@ -349,67 +301,5 @@
     </div>
   </div>
 
-  <script>
-    // ---------- Jumat Berkah visibility & countdown ----------
-    (function(){
-      const urlParams = new URLSearchParams(window.location.search);
-      const force = urlParams.get('forceFlash') === '1'; // for testing
-      const today = new Date().getDay(); // 0=Sun ... 5=Fri
-      const isFriday = (today === 5);
-      const jbSection = document.getElementById('jumat-berkah');
-      const flashShortcut = document.getElementById('flashShortcut');
-
-      if (force || isFriday) {
-        jbSection.style.display = 'block';
-        if (flashShortcut) flashShortcut.style.display = 'block';
-      } else {
-        jbSection.style.display = 'none';
-        if (flashShortcut) flashShortcut.style.display = 'none';
-        return;
-      }
-
-      // countdown to end of Friday (23:59:59 local time)
-      const timerEl = document.getElementById('jb-timer');
-      function updateTimer() {
-        const now = new Date();
-        const end = new Date();
-        end.setHours(23,59,59,999);
-        const diff = end - now;
-        if (diff <= 0) {
-          timerEl.textContent = 'Berakhir';
-          setTimeout(()=> { jbSection.style.display = 'none'; if (flashShortcut) flashShortcut.style.display = 'none'; }, 1500);
-          return;
-        }
-        const hh = String(Math.floor(diff / (1000*60*60))).padStart(2,'0');
-        const mm = String(Math.floor((diff % (1000*60*60)) / (1000*60))).padStart(2,'0');
-        const ss = String(Math.floor((diff % (1000*60)) / 1000)).padStart(2,'0');
-        timerEl.textContent = `${hh}:${mm}:${ss}`;
-      }
-      updateTimer();
-      setInterval(updateTimer, 1000);
-
-      // Beli -> open pembayaran.html with product & nominal
-      document.querySelectorAll('.jb-buy').forEach(btn => {
-        btn.addEventListener('click', function(e){
-          e.preventDefault();
-          const produk = this.dataset.produk || this.getAttribute('data-produk') || '';
-          const nominal = this.dataset.nominal || this.getAttribute('data-nominal') || '';
-          const target = `pembayaran.html?produk=${encodeURIComponent(produk)}&nominal=${encodeURIComponent(nominal)}`;
-          window.location.href = target;
-        });
-      });
-    })();
-
-    // smooth-scroll for internal anchors
-    document.querySelectorAll('a[href^="#"]').forEach(a=>{
-      a.addEventListener('click', function(e){
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({behavior: 'smooth', block: 'center'});
-        }
-      });
-    });
-  </script>
 </body>
 </html>
