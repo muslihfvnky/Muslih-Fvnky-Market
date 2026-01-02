@@ -318,6 +318,18 @@
         </div>
       </div>
     </aside>
+    
+    <!-- SEARCH / PENCARIAN PRODUK -->
+<div class="mb-4">
+  <input
+    id="search"
+    type="search"
+    placeholder="Cari nama, kategori, atau harga (contoh: rully / FYP / 89000)"
+    class="w-full px-4 py-3 rounded-xl bg-white/10 placeholder-white/70 text-white outline-none border border-white/10"
+    style="box-shadow:0 6px 14px rgba(0,0,0,0.25);"
+    autocomplete="off"
+  />
+</div>
 
     <!-- GRID CARD PRODUK -->
     <ul id="produk-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -1658,6 +1670,150 @@
         document.querySelectorAll('.play-btn').forEach(b => b.textContent = '▶ Play Preview');
       }
     });
+    
+(function(){
+  // simple debounce
+  const debounce = (fn, ms = 120) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
+
+  // helpers
+  const qs = (s, root=document) => root.querySelector(s);
+  const qsa = (s, root=document) => Array.from(root.querySelectorAll(s));
+  const norm = s => (s||'').toString().replace(/\s+/g,' ').trim().toLowerCase();
+
+  // find elements
+  const input = document.getElementById('search');
+  const container = document.getElementById('produk-grid');
+  const catCheckboxes = qsa('.filter-cat');
+  const sortRadios = qsa('input[name="sort"]');
+
+  if(!input) { console.warn('[Search] #search tidak ditemukan.'); return; }
+  if(!container) { console.warn('[Search] #produk-grid tidak ditemukan.'); return; }
+
+  // read items
+  function buildIndex(){
+    const items = qsa('li', container);
+    return items.map(el => {
+      const titleEl = el.querySelector('.font-semibold') || el.querySelector('div') || null;
+      const titleText = titleEl ? titleEl.innerText.trim() : '';
+      const prodId = el.dataset && el.dataset.prodId ? el.dataset.prodId : '';
+      const category = el.dataset && el.dataset.category ? el.dataset.category : '';
+      const price = el.dataset && el.dataset.price ? Number(String(el.dataset.price).replace(/\D/g,'')) : (
+        (el.innerText.match(/\d[\d\.,]*/g) || []).join('') ? Number((el.innerText.match(/\d[\d\.,]*/g)||[])[0].toString().replace(/[^\d]/g,'')) : 0
+      );
+      const imgs = qsa('img', el).map(i => (i.alt||i.title||'')).join(' ');
+      const text = norm([titleText, prodId, category, imgs, el.innerText].join(' '));
+      if(titleEl && !titleEl.dataset.orig) titleEl.dataset.orig = titleEl.innerText;
+      return { el, titleEl, titleText, prodId, category, price, text, uid: Number(el.dataset.uid||0) };
+    });
+  }
+
+  let index = buildIndex();
+  console.info('[Search] indexed', index.length, 'produk');
+
+  // highlight helper
+  const escapeRegExp = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  function highlight(el, tokens){
+    if(!el) return;
+    const orig = el.dataset.orig || el.innerText;
+    if(!tokens || tokens.length === 0){ el.innerHTML = orig; return; }
+    const sorted = tokens.slice().sort((a,b)=> b.length - a.length).map(escapeRegExp);
+    const rx = new RegExp('(' + sorted.join('|') + ')', 'ig');
+    el.innerHTML = orig.replace(rx, '<mark style="background:rgba(255,255,0,0.25);padding:0 4px;border-radius:3px;color:inherit">$1</mark>');
+  }
+
+  // read selected categories (any-match)
+  function selectedCategories(){
+    return catCheckboxes.filter(i => i.checked).map(i => norm(i.value));
+  }
+  function selectedSort(){
+    const r = sortRadios.find(i=>i.checked);
+    return r ? r.value : '';
+  }
+
+  // main filter & render
+  function applyFilter(){
+    const q = norm(input.value);
+    const tokens = q ? q.split(/\s+/).filter(Boolean) : [];
+    const cats = selectedCategories();
+    const sort = selectedSort();
+
+    // filter
+    let visible = index.filter(item => {
+      // category filter: if any category checked, must match at least one
+      if(cats.length){
+        const itemCats = item.category ? item.category.split(',').map(c=>norm(c)) : [];
+        const matchCat = itemCats.some(ic => cats.includes(ic));
+        if(!matchCat) return false;
+      }
+
+      // tokens match
+      if(tokens.length === 0) return true;
+
+      // numeric token => try match price or number in text
+      return tokens.every(t => {
+        if(/\d/.test(t)){
+          const digits = t.replace(/\D/g,'');
+          if(digits && item.price && String(item.price).indexOf(digits) !== -1) return true;
+          return item.text.indexOf(t) !== -1;
+        } else {
+          return item.text.indexOf(t) !== -1;
+        }
+      });
+    });
+
+    // sort visible items if requested
+    if(sort){
+      if(sort === 'murah') visible.sort((a,b)=> (a.price||0) - (b.price||0));
+      else if(sort === 'mahal') visible.sort((a,b)=> (b.price||0) - (a.price||0));
+      else if(sort === 'baru') visible.sort((a,b)=> (b.uid||0) - (a.uid||0));
+      else if(sort === 'lama') visible.sort((a,b)=> (a.uid||0) - (b.uid||0));
+    }
+
+    // render: hide all first, then append visible in order and show
+    index.forEach(i => {
+      i.el.style.display = 'none';
+      highlight(i.titleEl, []);
+    });
+
+    visible.forEach(v => {
+      // append in order to container (kehilangan event listeners? not an issue)
+      container.appendChild(v.el);
+      v.el.style.display = '';
+      // highlight title for tokens that appear in title
+      const titleLower = norm(v.titleText);
+      const tokensInTitle = tokens.filter(t => titleLower.indexOf(t) !== -1);
+      highlight(v.titleEl, tokensInTitle);
+    });
+
+    // small UX: if nothing found, optionally show first message (not implemented here)
+  }
+
+  const debouncedApply = debounce(applyFilter, 140);
+  // events
+  input.addEventListener('input', debouncedApply);
+  catCheckboxes.forEach(cb => cb.addEventListener('change', debouncedApply));
+  sortRadios.forEach(r => r.addEventListener('change', debouncedApply));
+
+  // re-index if product list changes dynamically
+  const mo = new MutationObserver(debounce((mut)=>{
+    index = buildIndex();
+    console.info('[Search] product list changed — reindexed', index.length);
+    applyFilter();
+  }, 250));
+  mo.observe(container, { childList: true, subtree: true });
+
+  // initial apply (in case user opens with query param)
+  applyFilter();
+
+  // enter to scroll to first visible
+  input.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){
+      const first = index.find(i => i.el.style.display !== 'none');
+      if(first) first.el.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  });
+
+})();
   </script>
 </body>
 </html>
