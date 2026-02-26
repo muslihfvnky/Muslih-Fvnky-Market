@@ -248,10 +248,37 @@
       box-shadow: 0 10px 30px rgba(15,252,190,0.10), inset 0 -3px 0 rgba(255,255,255,0.06);
       cursor: pointer;
       transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      position: relative;
+      overflow: hidden;
     }
     .jb-play:hover { transform: translateY(-3px); box-shadow: 0 16px 42px rgba(15,252,190,0.18); filter: saturate(1.05); }
     .jb-play:active { transform: translateY(-1px) scale(.995); }
     .jb-play:focus { outline: 3px solid rgba(15,252,190,0.18); outline-offset: 2px; }
+
+    /* spinner inside the play button */
+    .jb-play .spinner {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(4,18,26,0.12);
+      border-top-color: rgba(4,18,26,0.6);
+      margin-right: 8px;
+      display: none;
+      vertical-align: middle;
+      transform-origin: center;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* when loading, show spinner and loading label */
+    .jb-play.loading {
+      pointer-events: none;
+      opacity: 0.95;
+    }
+    .jb-play.loading .spinner { display: inline-block; }
+    .jb-play .label { display: inline-block; }
 
     /* ensure any generic .jb-cta a fallback not override our new .jb-buy (keeps compatibility) */
     .jb-cta > a { text-decoration: none; }
@@ -312,8 +339,11 @@
 
             <div class="jb-cta">
               <a href="#" class="jb-buy" data-produk="Style Elart Rmx">🛒 Beli</a>
-              <!-- Play button added -->
-              <button class="jb-play" type="button" data-audio-id="audio1">▶ Play Preview</button>
+              <!-- Play button added with spinner + label -->
+              <button class="jb-play" type="button" data-audio-id="audio1" aria-live="polite" aria-busy="false">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="label">▶ Play Preview</span>
+              </button>
               <audio id="audio1" src="45.mp3" preload="none"></audio>
             </div>
           </div>
@@ -330,8 +360,10 @@
 
             <div class="jb-cta">
               <a href="#" class="jb-buy" data-produk="JDM ALONE KT">🛒 Beli</a>
-              <!-- Play button added -->
-              <button class="jb-play" type="button" data-audio-id="audio2">▶ Play Preview</button>
+              <button class="jb-play" type="button" data-audio-id="audio2" aria-live="polite" aria-busy="false">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="label">▶ Play Preview</span>
+              </button>
               <audio id="audio2" src="40.mp3" preload="none"></audio>
             </div>
           </div>
@@ -348,8 +380,10 @@
 
             <div class="jb-cta">
               <a href="#" class="jb-buy" data-produk="STYLE CANDU">🛒 Beli</a>
-              <!-- Play button added -->
-              <button class="jb-play" type="button" data-audio-id="audio3">▶ Play Preview</button>
+              <button class="jb-play" type="button" data-audio-id="audio3" aria-live="polite" aria-busy="false">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="label">▶ Play Preview</span>
+              </button>
               <audio id="audio3" src="Style Candu Contoh.mp3" preload="none"></audio>
             </div>
           </div>
@@ -366,8 +400,10 @@
 
             <div class="jb-cta">
               <a href="#" class="jb-buy" data-produk="Enaff V1">🛒 Beli</a>
-              <!-- Play button added -->
-              <button class="jb-play" type="button" data-audio-id="audio4">▶ Play Preview</button>
+              <button class="jb-play" type="button" data-audio-id="audio4" aria-live="polite" aria-busy="false">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="label">▶ Play Preview</span>
+              </button>
               <audio id="audio4" src="Style Enaff V1.mp3" preload="none"></audio>
             </div>
           </div>
@@ -384,8 +420,10 @@
 
             <div class="jb-cta">
               <a href="#" class="jb-buy" data-produk="JJ ASOY">🛒 Beli</a>
-              <!-- Play button added -->
-              <button class="jb-play" type="button" data-audio-id="audio5">▶ Play Preview</button>
+              <button class="jb-play" type="button" data-audio-id="audio5" aria-live="polite" aria-busy="false">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="label">▶ Play Preview</span>
+              </button>
               <audio id="audio5" src="39.mp3" preload="none"></audio>
             </div>
           </div>
@@ -579,59 +617,179 @@
     });
   </script>
 
-  <!-- ===== tambahan script Play Preview (tidak mengubah logic asli) ===== -->
+  <!-- ===== tambahan script Play Preview dengan loading animation ===== -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       let currentAudio = null;
       let currentBtn = null;
 
-      // attach to all .jb-play buttons
+      // helper: reset button visuals
+      function resetBtn(btn) {
+        if (!btn) return;
+        btn.classList.remove('loading');
+        btn.setAttribute('aria-busy', 'false');
+        const spinner = btn.querySelector('.spinner');
+        if (spinner) spinner.style.display = 'none';
+        const label = btn.querySelector('.label');
+        if (label) label.textContent = '▶ Play Preview';
+        btn.disabled = false;
+      }
+
+      // helper: set loading visuals
+      function setLoading(btn) {
+        if (!btn) return;
+        btn.classList.add('loading');
+        btn.setAttribute('aria-busy', 'true');
+        const spinner = btn.querySelector('.spinner');
+        if (spinner) spinner.style.display = 'inline-block';
+        const label = btn.querySelector('.label');
+        if (label) label.textContent = 'Loading...';
+        btn.disabled = true;
+      }
+
+      // pause all other audios and reset their buttons
+      function pauseOthers(exceptAudio, exceptBtn) {
+        document.querySelectorAll('audio').forEach(a => {
+          if (a !== exceptAudio) {
+            try { a.pause(); a.currentTime = 0; } catch(e){}
+          }
+        });
+        document.querySelectorAll('.jb-play').forEach(b => {
+          if (b !== exceptBtn) resetBtn(b);
+        });
+      }
+
+      // attach to each play button
       document.querySelectorAll('.jb-play').forEach(btn => {
         const audioId = btn.getAttribute('data-audio-id');
         const audio = audioId ? document.getElementById(audioId) : (btn.nextElementSibling && btn.nextElementSibling.tagName === 'AUDIO' ? btn.nextElementSibling : null);
         if (!audio) return;
 
-        const handler = async (e) => {
+        let canplaythroughHandler = null;
+        let canplayHandler = null;
+        let errorHandler = null;
+        let timeoutId = null;
+        const MAX_WAIT = 8000; // ms
+
+        async function attemptStartPlay() {
+          try {
+            await audio.play();
+            const label = btn.querySelector('.label');
+            if (label) label.textContent = '⏸ Pause';
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.setAttribute('aria-busy', 'false');
+            const spinner = btn.querySelector('.spinner');
+            if (spinner) spinner.style.display = 'none';
+            currentAudio = audio;
+            currentBtn = btn;
+          } catch (err) {
+            console.warn('play failed', err);
+            resetBtn(btn);
+            alert('Audio tidak bisa diputar otomatis. Silakan tekan lagi untuk memulai.');
+          }
+        }
+
+        function cleanupListeners() {
+          if (canplaythroughHandler) audio.removeEventListener('canplaythrough', canplaythroughHandler);
+          if (canplayHandler) audio.removeEventListener('canplay', canplayHandler);
+          if (errorHandler) audio.removeEventListener('error', errorHandler);
+          if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
+        }
+
+        const clickHandler = async (e) => {
           e.preventDefault();
 
-          // pause others and reset their buttons
-          if (currentAudio && currentAudio !== audio) {
-            try { currentAudio.pause(); currentAudio.currentTime = 0; } catch(e){/*ignore*/ }
-            if (currentBtn) currentBtn.textContent = '▶ Play Preview';
+          // if this audio is currently playing -> pause & reset
+          if (!audio.paused) {
+            audio.pause();
+            audio.currentTime = 0;
+            resetBtn(btn);
+            if (currentAudio === audio) { currentAudio = null; currentBtn = null; }
+            cleanupListeners();
+            return;
           }
 
-          if (audio.paused) {
-            try {
-              await audio.play();
-              btn.textContent = '⏸ Pause';
-              currentAudio = audio;
-              currentBtn = btn;
-            } catch (err) {
-              console.warn('play failed', err);
-              alert('Audio tidak bisa diputar otomatis. Silakan tekan lagi untuk memulai.');
-            }
-          } else {
-            audio.pause();
-            btn.textContent = '▶ Play Preview';
-            if (currentAudio === audio) { currentAudio = null; currentBtn = null; }
+          // else start: pause others
+          pauseOthers(audio, btn);
+
+          // if already buffered enough, start immediately
+          if (audio.readyState >= 3) { // HAVE_FUTURE_DATA / HAVE_ENOUGH_DATA
+            await attemptStartPlay();
+            return;
           }
+
+          // show loading UI
+          setLoading(btn);
+
+          let attempted = false;
+
+          canplaythroughHandler = async () => {
+            if (attempted) return;
+            attempted = true;
+            cleanupListeners();
+            await attemptStartPlay();
+          };
+
+          canplayHandler = async () => {
+            if (attempted) return;
+            attempted = true;
+            cleanupListeners();
+            await attemptStartPlay();
+          };
+
+          errorHandler = (ev) => {
+            cleanupListeners();
+            console.warn('audio error', ev);
+            resetBtn(btn);
+            alert('Gagal memuat audio. Coba lagi nanti.');
+          };
+
+          audio.addEventListener('canplaythrough', canplaythroughHandler);
+          audio.addEventListener('canplay', canplayHandler);
+          audio.addEventListener('error', errorHandler);
+
+          // request load (some browsers require play call or load to start fetching)
+          try { audio.load(); } catch(e){ /* ignore */ }
+
+          // fallback timeout: after MAX_WAIT try to play if some data exists, else abort
+          timeoutId = setTimeout(async () => {
+            if (attempted) return;
+            attempted = true;
+            cleanupListeners();
+            if (audio.readyState > 0) {
+              try {
+                await attemptStartPlay();
+              } catch (err) {
+                resetBtn(btn);
+                alert('Gagal memutar audio setelah menunggu. Coba cek koneksi.');
+              }
+            } else {
+              resetBtn(btn);
+              alert('Lambat memuat audio — coba lagi atau periksa koneksi internet.');
+            }
+          }, MAX_WAIT);
         };
 
-        btn.addEventListener('click', handler);
+        btn.addEventListener('click', clickHandler);
 
-        // when audio ends reset button
+        // when audio ends, reset button
         audio.addEventListener('ended', () => {
-          btn.textContent = '▶ Play Preview';
+          resetBtn(btn);
           if (currentAudio === audio) { currentAudio = null; currentBtn = null; }
+          cleanupListeners();
         });
 
-        // if audio paused externally, sync button
+        // if audio paused externally (not ended), sync label
         audio.addEventListener('pause', () => {
-          if (currentAudio === audio && !audio.ended) {
-            btn.textContent = '▶ Play Preview';
-            currentAudio = null;
-            currentBtn = null;
-          }
+          if (!audio.ended) resetBtn(btn);
+          cleanupListeners();
+        });
+
+        // cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+          try { audio.pause(); audio.currentTime = 0; } catch(e){}
+          cleanupListeners();
         });
       });
     });
