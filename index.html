@@ -206,19 +206,63 @@
     .disc-price { font-weight:900; color: #ffd24d; font-size:1.05rem; }
     .percent-badge { background: var(--mint); color:#001827; font-weight:900; padding:4px 8px; border-radius:8px; font-size:0.8rem; }
 
-    .jb-cta { margin-top:auto; }
-    .jb-cta a {
-      display:block; padding:10px; border-radius:10px; text-align:center; font-weight:900; text-decoration:none;
-      background: var(--blue); color:white;
+    /* ===== alignment: make Buy dan Play sejajar dan konsisten ===== */
+    .jb-cta {
+      margin-top: auto;
+      display: flex;
+      gap: 8px;
+      align-items: center;      /* vert center */
+      flex-wrap: wrap;          /* responsive: akan pindah bila sempit */
     }
-    .jb-cta a:hover { background: var(--mint); color:black; }
+    /* main buy button (kehilangan previous generic selector so we keep control) */
+    .jb-cta > a.jb-buy {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 .9rem;
+      background: var(--blue);
+      color: white;
+      font-weight: 900;
+      border-radius: 10px;
+      text-decoration: none;
+      border: none;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+    }
+    .jb-cta > a.jb-buy:hover { background: var(--mint); color: black; transform: translateY(-3px); }
+
+    /* Play button (green) made same height and aligned */
+    .jb-play {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 .9rem;
+      background: linear-gradient(90deg, var(--mint), #a7ffe7);
+      color: #04121a;
+      font-weight: 900;
+      border-radius: 12px;
+      border: 2px solid rgba(2,18,25,0.06);
+      box-shadow: 0 10px 30px rgba(15,252,190,0.10), inset 0 -3px 0 rgba(255,255,255,0.06);
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+    .jb-play:hover { transform: translateY(-3px); box-shadow: 0 16px 42px rgba(15,252,190,0.18); filter: saturate(1.05); }
+    .jb-play:active { transform: translateY(-1px) scale(.995); }
+    .jb-play:focus { outline: 3px solid rgba(15,252,190,0.18); outline-offset: 2px; }
+
+    /* ensure any generic .jb-cta a fallback not override our new .jb-buy (keeps compatibility) */
+    .jb-cta > a { text-decoration: none; }
 
     /* remove "detail" button: we only show Beli */
     .jb-card .detail { display:none; }
 
-    /* responsive */
-    @media (max-width:640px) {
-      .jb-card { min-width: 200px; }
+    /* responsive: on very small screens stack buttons vertically (full width) */
+    @media (max-width: 420px) {
+      .jb-cta { flex-direction: column; align-items: stretch; }
+      .jb-cta > a.jb-buy, .jb-play { width: 100%; justify-content: center; }
     }
 
     /* fadeSlide keyframes used by inline script */
@@ -255,7 +299,7 @@
         </div>
 
         <div class="jb-content" id="jb-content" role="list">
-          <!-- Card 1: we include original price and discount-percent attributes -->
+          <!-- Card 1: -->
           <div class="jb-card" role="listitem"
                data-produk="Style Elart Rmx"
                data-original="90000"
@@ -267,41 +311,50 @@
             <div class="jb-price-wrap" aria-hidden="true"></div>
 
             <div class="jb-cta">
-              <a href="#" class="jb-buy" data-produk="Style Elart Rmx">Beli</a>
+              <a href="#" class="jb-buy" data-produk="Style Elart Rmx">🛒 Beli</a>
+              <!-- Play button added -->
+              <button class="jb-play" type="button" data-audio-id="audio1">▶ Play Preview</button>
+              <audio id="audio1" src="45.mp3" preload="none"></audio>
             </div>
           </div>
 
-          <!-- Card 2 -->
+          <!-- Card 2: -->
           <div class="jb-card" role="listitem"
-               data-produk="Breakfunk Gen 1"
-               data-original="95000"
-               data-discount-percent="35">
-            <h4>Breakfunk Gen 1</h4>
+               data-produk="JDM ALONE KT"
+               data-original="95500"
+               data-discount-percent="25">
+            <h4>JDM ALONE KT</h4>
             <div class="jb-sub">Jumat FLM Baru</div>
 
             <div class="jb-price-wrap" aria-hidden="true"></div>
 
             <div class="jb-cta">
-              <a href="#" class="jb-buy" data-produk="Breakfunk Gen 1">Beli</a>
+              <a href="#" class="jb-buy" data-produk="JDM ALONE KT">🛒 Beli</a>
+              <!-- Play button added -->
+              <button class="jb-play" type="button" data-audio-id="audio2">▶ Play Preview</button>
+              <audio id="audio2" src="40.mp3" preload="none"></audio>
             </div>
           </div>
           
           <!-- Card 3 -->
           <div class="jb-card" role="listitem"
-               data-produk="JDM Plat KT"
-               data-original="95000"
-               data-discount-percent="23">
-            <h4>JDM Plat KT</h4>
+               data-produk="STYLE CANDU"
+               data-original="82000"
+               data-discount-percent="30">
+            <h4>STYLE CANDU</h4>
             <div class="jb-sub">Jumat Berkah</div>
 
             <div class="jb-price-wrap" aria-hidden="true"></div>
 
             <div class="jb-cta">
-              <a href="#" class="jb-buy" data-produk="JDM Plat KT">Beli</a>
+              <a href="#" class="jb-buy" data-produk="STYLE CANDU">🛒 Beli</a>
+              <!-- Play button added -->
+              <button class="jb-play" type="button" data-audio-id="audio3">▶ Play Preview</button>
+              <audio id="audio4" src="Style Candu Contoh.mp3" preload="none"></audio>
             </div>
           </div>
           
-           <!-- Card 4 -->
+           <!-- Card 4:-->
           <div class="jb-card" role="listitem"
                data-produk="Enaff V1"
                data-original="95000"
@@ -312,22 +365,28 @@
             <div class="jb-price-wrap" aria-hidden="true"></div>
 
             <div class="jb-cta">
-              <a href="#" class="jb-buy" data-produk="Enaff V1">Beli</a>
+              <a href="#" class="jb-buy" data-produk="Enaff V1">🛒 Beli</a>
+              <!-- Play button added -->
+              <button class="jb-play" type="button" data-audio-id="audio4">▶ Play Preview</button>
+              <audio id="audio4" src="Style Enaff V1.mp3" preload="none"></audio>
             </div>
           </div>
           
            <!-- Card 5 -->
           <div class="jb-card" role="listitem"
-               data-produk="Lambada"
-               data-original="92000"
+               data-produk="JJ ASOY"
+               data-original="95000"
                data-discount-percent="28">
-            <h4>Lambada</h4>
+            <h4>JJ ASOY</h4>
             <div class="jb-sub">Jumat Berkah</div>
 
             <div class="jb-price-wrap" aria-hidden="true"></div>
 
             <div class="jb-cta">
-              <a href="#" class="jb-buy" data-produk="Lambada">Beli</a>
+              <a href="#" class="jb-buy" data-produk="JJ ASOY">🛒 Beli</a>
+              <!-- Play button added -->
+              <button class="jb-play" type="button" data-audio-id="audio5">▶ Play Preview</button>
+              <audio id="audio5" src=".mp3" preload="none"></audio>
             </div>
           </div>
 
@@ -516,6 +575,64 @@
           e.preventDefault();
           target.scrollIntoView({behavior: 'smooth', block: 'center'});
         }
+      });
+    });
+  </script>
+
+  <!-- ===== tambahan script Play Preview (tidak mengubah logic asli) ===== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let currentAudio = null;
+      let currentBtn = null;
+
+      // attach to all .jb-play buttons
+      document.querySelectorAll('.jb-play').forEach(btn => {
+        const audioId = btn.getAttribute('data-audio-id');
+        const audio = audioId ? document.getElementById(audioId) : (btn.nextElementSibling && btn.nextElementSibling.tagName === 'AUDIO' ? btn.nextElementSibling : null);
+        if (!audio) return;
+
+        const handler = async (e) => {
+          e.preventDefault();
+
+          // pause others and reset their buttons
+          if (currentAudio && currentAudio !== audio) {
+            try { currentAudio.pause(); currentAudio.currentTime = 0; } catch(e){/*ignore*/ }
+            if (currentBtn) currentBtn.textContent = '▶ Play Preview';
+          }
+
+          if (audio.paused) {
+            try {
+              await audio.play();
+              btn.textContent = '⏸ Pause';
+              currentAudio = audio;
+              currentBtn = btn;
+            } catch (err) {
+              console.warn('play failed', err);
+              alert('Audio tidak bisa diputar otomatis. Silakan tekan lagi untuk memulai.');
+            }
+          } else {
+            audio.pause();
+            btn.textContent = '▶ Play Preview';
+            if (currentAudio === audio) { currentAudio = null; currentBtn = null; }
+          }
+        };
+
+        btn.addEventListener('click', handler);
+
+        // when audio ends reset button
+        audio.addEventListener('ended', () => {
+          btn.textContent = '▶ Play Preview';
+          if (currentAudio === audio) { currentAudio = null; currentBtn = null; }
+        });
+
+        // if audio paused externally, sync button
+        audio.addEventListener('pause', () => {
+          if (currentAudio === audio && !audio.ended) {
+            btn.textContent = '▶ Play Preview';
+            currentAudio = null;
+            currentBtn = null;
+          }
+        });
       });
     });
   </script>
