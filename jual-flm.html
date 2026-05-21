@@ -1851,5 +1851,66 @@
 
 })();
   </script>
+  
+  <!-- ======================
+     DISKON OTOMATIS
+     ====================== -->
+<script>
+
+// 🔥 SETTING DISKON (ubah ini aja)
+const DISKON = 12; 
+// contoh: 10 = 10%, 50 = 50%
+
+// 📅 Hari diskon
+// 5 = Jumat, 0 = Minggu
+const HARI_DISKON = [5, 0];
+
+// ======================
+
+const hariIni = new Date().getDay();
+
+if (HARI_DISKON.includes(hariIni)) {
+
+  document.querySelectorAll('#produk-grid li').forEach(produk => {
+
+    const hargaAsli = Number(produk.dataset.price);
+    if (!hargaAsli) return;
+
+    const hargaDiskon = Math.floor(
+      hargaAsli - (hargaAsli * DISKON / 100)
+    );
+
+    const hargaEl = produk.querySelector('.text-sm');
+    if (!hargaEl) return;
+
+    hargaEl.innerHTML = `
+      <span style="text-decoration:line-through;opacity:.6;">
+        Rp ${hargaAsli.toLocaleString('id-ID')}
+      </span>
+
+      <br>
+
+      <span style="color:#0FFCBE;font-weight:bold;">
+        🔥 Rp ${hargaDiskon.toLocaleString('id-ID')}
+      </span>
+
+      <span style="
+        background:red;
+        color:white;
+        padding:2px 6px;
+        border-radius:999px;
+        font-size:11px;
+        margin-left:6px;
+      ">
+        -${DISKON}%
+      </span>
+    `;
+
+  });
+
+}
+
+</script>
+  
 </body>
 </html>
