@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logowebbundar.webp" sizes="512x512">
+  <title>Katalog Pack FLM - Muslih Fvnky Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --mint: #0FFCBE;
+      --blue: #106EBE;
+    }
+    body {
+      background: url('backgroundweb.webp') no-repeat center center fixed;
+      background-size: cover;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: white;
+    }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.4); /* Lebih terang */
+      min-height: 100vh;
+    }
+    .pack-card {
+      background: linear-gradient(180deg, rgba(16, 110, 190, 0.15), rgba(0, 0, 0, 0.6));
+      border: 1px solid rgba(15, 252, 190, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+    }
+    .pack-card:hover {
+      border-color: var(--mint);
+      box-shadow: 0 12px 30px rgba(15, 252, 190, 0.15);
+    }
+    .btn-buy {
+      background: linear-gradient(90deg, var(--blue), #3b82f6);
+      color: white;
+      font-weight: 800;
+      transition: all 0.25s ease;
+    }
+    .btn-buy:hover {
+      background: var(--mint);
+      color: #001827;
+      transform: translateY(-2px);
+    }
+    .btn-cart {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(15, 252, 190, 0.4);
+      color: var(--mint);
+      font-weight: 700;
+      transition: all 0.25s ease;
+    }
+    .btn-cart:hover {
+      background: rgba(15, 252, 190, 0.15);
+      border-color: var(--mint);
+    }
+    .floating-cart {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 40;
+      background: rgba(16, 110, 190, 0.95);
+      border: 2px solid var(--mint);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 15px rgba(15, 252, 190, 0.5);
+    }
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #0FFCBE;
+      color: #001827;
+      text-align: center;
+      border-radius: 8px;
+      padding: 12px;
+      position: fixed;
+      z-index: 60;
+      left: 50%;
+      bottom: 100px;
+      transform: translateX(-50%);
+      font-weight: 800;
+      font-size: 13px;
+      box-shadow: 0 4px 15px rgba(15, 252, 190, 0.4);
+    }
+    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+    @keyframes fadein { from { bottom: 70px; opacity: 0; } to { bottom: 100px; opacity: 1; } }
+    @keyframes fadeout { from { bottom: 100px; opacity: 1; } to { bottom: 70px; opacity: 0; } }
+  </style>
+</head>
+<body>
+
+  <div class="overlay py-12 px-4 relative">
+    <button onclick="bukaModalKeranjang()" class="floating-cart p-4 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition active:scale-95 duration-200">
+      <span class="text-xl">🛒</span>
+      <span id="floating-cart-count" class="absolute -top-1 -right-1 bg-[#ffd24d] text-[#001827] text-xs font-black min-w-[20px] h-[20px] flex items-center justify-center rounded-full px-1 border border-black shadow">0</span>
+    </button>
+
+    <div class="max-w-md mx-auto text-center mb-10">
+      <h1 class="text-3xl font-extrabold tracking-wide mb-2">Muslih Fvnky Shop</h1>
+      <p class="text-gray-300 text-sm">Pilih paket hemat terbaikmu di bawah ini</p>
+      <div id="promo-banner" class="mt-4 hidden bg-yellow-500/20 border border-yellow-500 text-yellow-300 py-2 rounded-lg font-bold text-xs uppercase animate-pulse">
+        🔥 DISKON WEEKEND: JUMAT & MINGGU HEMAT! 🔥
+      </div>
+    </div>
+
+    <div id="container-produk" class="max-w-md mx-auto space-y-6"></div>
+  </div>
+
+  <div id="modal-keranjang" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0b1b2b] border-2 border-[#0FFCBE] rounded-xl w-full max-w-sm p-4 text-left shadow-2xl relative">
+      <div class="flex justify-between items-center border-b border-white/10 pb-2 mb-3">
+        <h3 class="font-bold text-base text-white flex items-center gap-1.5">🛒 Keranjang Belanja</h3>
+        <button onclick="tutupModalKeranjang()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-3 py-1.5 rounded">Tutup</button>
+      </div>
+      <div id="modal-list-item" class="space-y-3 max-h-60 overflow-y-auto mb-4 pr-1"></div>
+      <div class="border-t border-white/10 pt-3">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-xs text-gray-400 font-medium">Total</span>
+          <span id="modal-total-harga" class="text-lg font-black text-[#ffd24d]">Rp 0</span>
+        </div>
+        <div class="flex flex-col gap-2">
+          <a href="pembayaran.html" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm py-2.5 rounded-lg text-center transition">Checkout</a>
+          <button onclick="bersihkanSemuaKeranjang()" class="bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs py-2 rounded-lg transition">Bersihkan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">Produk berhasil ditambah! 🛒</div>
+
+  <script>
+    // 🛠️ TAMBAH PRODUK BARU DISINI
+    const DAFTAR_PRODUK = [
+      {
+        id: "PROD-01",
+        nama: "ENAFF PACK",
+        harga: 208000,
+        tag: "PREMIUM PACK",
+        ukuran: "~182MB",
+        deskripsi: "Style remix premium yang sering viral di tiktok, dapatkan packnya sekarang.",
+        fitur: ["Enaff Nanda777", "Enaff Mejikuhibiniu", "Enaff V1", "Enaff Culik Aku Dong", "Enaff Babad Babad"]
+      },
+      {
+        id: "PROD-02",
+        nama: "Slow Beat Pack",
+        harga: 158000,
+        tag: "MURAH & WORTH IT",
+        ukuran: "~82MB",
+        deskripsi: "Sangat cocok untuk pencinta ketukan santai, jedag-jedug tipis, maupun style healing.",
+        fitur: ["Happy Team", "Style Kondang", "Maman Fvndy"]
+      },
+      {
+        id: "PROD-03",
+        nama: "Pack FLM Terviral",
+        harga: 278000,
+        tag: "TRENDING FLM",
+        ukuran: "~302MB",
+        deskripsi: "Berisi FLM yang pernah viral dan trending topik.",
+        fitur: ["JDM Alone Marshmellow", "Enaff Culik Aku Dong Kharis Sopan", "Ngapain Repot Maman Fvndy", "Tabola Bale Kharis Sopan Tante V2", "Message Taylor Kharis Sopan", "Style 0landrys Thailand Edit", "Style Bhapon Musik", "Enaff Babad Babad"]
+      },
+      {
+        id: "PROD-04",
+        nama: "Pack Jawa Pride",
+        harga: 199000,
+        tag: "TRENDING JAWA",
+        ukuran: "~278MB",
+        deskripsi: "Berisi FLM Jawa Pride yang viral dan trending topik.",
+        fitur: ["Rully Fvnky", "Angga Fvnky", "Kalah Maman Fvndy", "Pingal Style Kondang", "Jawa Pride V1"]
+      },
+      {
+        id: "PROD-05",
+        nama: "Pack Remixer Viral",
+        harga: 249000,
+        tag: "FULL PACK REMIXER VIRAL",
+        ukuran: "~442MB",
+        deskripsi: "Berisi FLM para Remixer yang viral dan trending tiktok.",
+        fitur: ["0landrys", "Enaff Babad Babad",  "Angga Fvnky", "Maman Fvndy", "DJ Tebang", "Happy Team", "Nanda 777", "Elart Rmx", "Kharis Sopan", "Caro Fvnky", "Akbar Chalay Enaff", "Style Candu"]
+      },
+      {
+        id: "PROD-06",
+        nama: "ENAFF PACK V2",
+        harga: 235000,
+        tag: "FULL PACK ENAFF",
+        ukuran: "~125MB",
+        deskripsi: "Berisi FLM ENAFF yang viral dan trending tiktok.",
+        fitur: ["0landrys", "Enaff Exclusif", "Sa Stop Mabok", "Damon Vacation"]
+      },
+      {
+        id: "PROD-07",
+        nama: "EDISI CAMPUR",
+        harga: 375000,
+        tag: "WORTH IT",
+        ukuran: "~140MB",
+        deskripsi: "Flm Mantap.",
+        fitur: ["Bye Hipdut", "Jauh Ko Pergi Amapiano"]
+      }
+    ];
+
+
+    // 🛠️ SCRIPT DISKON!!
+    
+    function isWeekend() {
+      const day = new Date().getDay();
+      return (day === 5 || day === 0);
+    }
+
+    function tampilkanKatalogKeWeb() {
+      const wadah = document.getElementById('container-produk');
+      const promoBanner = document.getElementById('promo-banner');
+      const weekend = isWeekend();
+      
+      if(weekend) promoBanner.classList.remove('hidden');
+
+    // 🛠️ KALAU MAU UBAH DISKONNYA KAMU UBAH YANG .HARGA * nomor) ITU!!
+
+      let htmlGabungan = '';
+      DAFTAR_PRODUK.forEach(prod => {
+        let hargaJual = weekend ? Math.floor(prod.harga * 0.9) : prod.harga;
+        let htmlFitur = prod.fitur.map(f => `<li>${f}</li>`).join('');
+        const namaLinkSafe = encodeURIComponent(prod.nama);
+
+        htmlGabungan += `
+          <div class="pack-card p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-3">
+                <span class="bg-[#106EBE] text-white text-[10px] uppercase font-extrabold px-2 py-1 rounded">${prod.tag}</span>
+                <span class="text-xs text-gray-400 font-medium">📁 Size: ${prod.ukuran}</span>
+              </div>
+              <h3 class="text-xl font-bold text-white mb-2 border-b-2 border-[#0FFCBE] pb-1 inline-block">${prod.nama}</h3>
+              <p class="text-xs text-gray-300 mb-4 leading-relaxed">${prod.deskripsi}</p>
+              <div class="bg-black/30 p-3 rounded-lg mb-4 border border-white/5">
+                <div class="text-[11px] text-[#0FFCBE] font-semibold">Isi Folder:</div>
+                <ul class="text-[11px] text-gray-300 list-disc list-inside mt-1 space-y-0.5">${htmlFitur}</ul>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-baseline mb-4 gap-2">
+                ${weekend ? `<span class="text-sm text-gray-400 line-through">${formatRupiah(prod.harga)}</span>` : ''}
+                <span class="text-2xl font-black text-[#ffd24d]">${formatRupiah(hargaJual)}</span>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button onclick="tambahKeKeranjang('${prod.id}', '${prod.nama}', ${hargaJual})" class="btn-cart w-full py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 text-center">🛒 Tambah ke Keranjang</button>
+                <a href="pembayaran.html?produk=${namaLinkSafe}&nominal=${hargaJual}" class="btn-buy w-full py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 text-center shadow-lg">⚡ Beli Langsung</a>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      wadah.innerHTML = htmlGabungan;
+    }
+
+    // --- LOGIC KERANJANG (TIDAK BERUBAH) ---
+    const CART_KEY = 'keranjang';
+    function formatRupiah(angka) { return 'Rp ' + angka.toLocaleString('id-ID'); }
+    function dapatkanCart() { try { const raw = localStorage.getItem(CART_KEY); return raw ? JSON.parse(raw) : []; } catch(e) { return []; } }
+    function simpanCart(cart) { localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateAngkaKeranjangMelayang(); }
+    function tambahKeKeranjang(id, nama, harga) {
+      let cart = dapatkanCart();
+      const idx = cart.findIndex(it => it.id === id);
+      if(idx > -1) cart[idx].qty += 1; else cart.push({id, nama, harga, qty: 1});
+      simpanCart(cart);
+      showToast(`🛒 ${nama} berhasil ditambah!`);
+    }
+    function updateAngkaKeranjangMelayang() {
+      const cart = dapatkanCart();
+      document.getElementById('floating-cart-count').innerText = cart.reduce((t, it) => t + it.qty, 0);
+    }
+    function bukaModalKeranjang() {
+      const cart = dapatkanCart();
+      const container = document.getElementById('modal-list-item');
+      let total = 0;
+      container.innerHTML = cart.length ? cart.map(it => {
+        total += it.harga * it.qty;
+        return `<div class="bg-black/30 p-2 rounded flex justify-between text-xs"><span>${it.nama} (x${it.qty})</span><span>${formatRupiah(it.harga * it.qty)}</span></div>`;
+      }).join('') : '<p class="text-xs text-gray-400 text-center">Kosong</p>';
+      document.getElementById('modal-total-harga').innerText = formatRupiah(total);
+      document.getElementById('modal-keranjang').classList.remove('hidden');
+    }
+    function tutupModalKeranjang() { document.getElementById('modal-keranjang').classList.add('hidden'); }
+    function bersihkanSemuaKeranjang() { localStorage.removeItem(CART_KEY); updateAngkaKeranjangMelayang(); tutupModalKeranjang(); }
+    function showToast(msg) { const t = document.getElementById("toast"); t.innerText = msg; t.className = "show"; setTimeout(() => t.className = "", 3000); }
+    
+    document.addEventListener('DOMContentLoaded', () => { tampilkanKatalogKeWeb(); updateAngkaKeranjangMelayang(); });
+  </script>
+</body>
+</html>
