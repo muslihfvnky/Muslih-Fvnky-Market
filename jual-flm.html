@@ -27,6 +27,7 @@
   <!-- =================================================================== -->
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       background-image: url('backgroundweb.webp');
@@ -1299,7 +1300,7 @@
   </main>
 
   <footer class="max-w-5xl mx-auto mt-10 text-xs text-gray-300 border-t border-[#0FFCBE] pt-4 bg-black/50 p-2 rounded">
-    © 2025 Muslih Fvnky Shop. All rights reserved.
+    © 2026 Muslih Fvnky Shop. All rights reserved.
   </footer>
 
   <script>
@@ -2163,6 +2164,269 @@ if (HARI_DISKON.includes(hariIni)) {
     `;
 
   });
+
+}
+
+</script>
+  
+<!-- ==============================
+     SUPABASE PRODUCTS
+     ============================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = 'https://zmccxgydzmfdldobqaav.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_vqU2LP9ax5DLqfJY8y5h2A_j8mWbtdG';
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+// ==============================
+// ESCAPE HTML
+// ==============================
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(
+    /[&<>"']/g,
+    function(match) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[match];
+    }
+  );
+}
+
+
+// ==============================
+// LOAD PRODUK DARI SUPABASE
+// ==============================
+
+async function loadProductsFromSupabase() {
+
+  const container = document.getElementById('produk-grid');
+
+  if (!container) {
+    console.error('❌ #produk-grid tidak ditemukan');
+    return;
+  }
+
+  try {
+
+    const { data: products, error } = await supabaseClient
+      .from('products')
+      .select('*')
+      .order('id', { ascending: true });
+
+    if (error) {
+      console.error('❌ Gagal mengambil produk Supabase:', error);
+      return;
+    }
+
+    console.log('✅ Produk Supabase:', products);
+
+
+    products.forEach(product => {
+
+      // ==============================
+      // ID PRODUK
+      // ==============================
+
+      const prodId = String(
+        product.prod_id ?? product.uid ?? product.id
+      );
+
+      const uid = product.uid ?? product.id;
+
+      const price = Number(product.price ?? 0);
+
+      const name = String(
+        product.name ?? 'Produk'
+      );
+
+      const category = String(
+        product.category ?? ''
+      );
+
+
+      // ==============================
+      // CEGAH DUPLIKAT
+      // ==============================
+
+      const sudahAda = Array.from(
+        container.querySelectorAll('li')
+      ).some(li =>
+        String(li.dataset.prodId || '') === prodId
+      );
+
+      if (sudahAda) {
+        console.log(
+          '⚠️ Produk sudah ada, dilewati:',
+          prodId
+        );
+        return;
+      }
+
+
+      // ==============================
+      // AUDIO ID UNIK
+      // ==============================
+
+      const audioId =
+        'supabase-audio-' +
+        String(uid).replace(
+          /[^a-zA-Z0-9_-]/g,
+          ''
+        );
+
+
+      // ==============================
+      // BUAT CARD PRODUK
+      // ==============================
+
+      const li = document.createElement('li');
+
+      li.dataset.uid = uid;
+      li.dataset.prodId = prodId;
+      li.dataset.price = price;
+      li.dataset.category = category;
+
+      li.className =
+        'overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow';
+
+
+li.innerHTML = `
+
+  <img
+    src="${escapeHtml(product.image_url || 'muslihpack.webp')}"
+    alt="${escapeHtml(name)}"
+    class="w-20 h-20 rounded-xl object-cover flex-shrink-0"
+  >
+
+  <div class="flex-1">
+
+    <div class="font-semibold leading-tight">
+      ${escapeHtml(name)}
+    </div>
+
+    <div class="text-sm opacity-90">
+      💲 Rp${price.toLocaleString('id-ID')}
+    </div>
+
+    <div class="mt-2 flex gap-2 items-center">
+
+      <!-- PLAY PREVIEW -->
+
+      <button
+        data-audio="${audioId}"
+        class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition"
+      >
+        ▶ Play Preview
+      </button>
+
+
+      <!-- BELI -->
+
+      <a
+        data-buy="${escapeHtml(prodId)}"
+        href="pembayaran.html?produk=${encodeURIComponent(name)}"
+        class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition"
+      >
+        🛒 Beli
+      </a>
+
+
+      <!-- KERANJANG -->
+
+      <button
+        data-cart="${escapeHtml(prodId)}"
+        class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold"
+      >
+        Tambah ke Keranjang
+      </button>
+
+    </div>
+
+    <div class="player-controls-container"></div>
+
+  </div>
+
+
+  <!-- AUDIO -->
+
+  <audio
+    id="${audioId}"
+    src="${escapeHtml(product.audio_url || '')}"
+    preload="none"
+  ></audio>
+
+`;
+
+
+      // ==============================
+      // MASUKKAN KE PRODUK GRID LAMA
+      // ==============================
+
+      container.appendChild(li);
+
+    });
+
+
+    // ==============================
+    // AKTIFKAN PLAY PREVIEW
+    // ==============================
+
+    if (typeof wirePlayButtons === 'function') {
+      wirePlayButtons();
+    }
+
+
+    // ==============================
+    // AKTIFKAN KERANJANG
+    // ==============================
+
+    if (typeof wireAddCartButtons === 'function') {
+      wireAddCartButtons();
+    }
+
+
+    console.log(
+      `✅ ${products.length} produk Supabase berhasil dimuat`
+    );
+
+  } catch (error) {
+
+    console.error(
+      '❌ Error Supabase:',
+      error
+    );
+
+  }
+
+}
+
+
+// ==============================
+// JALANKAN SAAT HTML SELESAI
+// ==============================
+
+if (document.readyState === 'loading') {
+
+  document.addEventListener(
+    'DOMContentLoaded',
+    loadProductsFromSupabase
+  );
+
+} else {
+
+  loadProductsFromSupabase();
 
 }
 
