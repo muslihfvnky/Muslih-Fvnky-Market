@@ -108,14 +108,23 @@
               <label class="text-sm text-white/70">Nama<input id="productName" class="w-full rounded-xl px-3 py-2.5 mt-1" required></label>
               <label class="text-sm text-white/70">Harga (Rp)<input id="productPrice" type="number" min="0" class="w-full rounded-xl px-3 py-2.5 mt-1" required></label>
               <label class="text-sm text-white/70">Kategori<input id="productCategory" class="w-full rounded-xl px-3 py-2.5 mt-1" required></label>
-              <label class="text-sm text-white/70">Image URL<input id="productImage" type="url" class="w-full rounded-xl px-3 py-2.5 mt-1"></label>
-              <label class="text-sm text-white/70">Audio URL<input id="productAudio" type="url" class="w-full rounded-xl px-3 py-2.5 mt-1"></label>
+              <label class="text-sm text-white/70">Gambar Produk
+                <input id="productImageFile" type="file" accept="image/jpeg,image/png,image/webp" class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black">
+                <input type="hidden" id="productImageUrl">
+                <span id="productImageCurrent" class="block text-xs text-white/40 mt-1"></span>
+              </label>
+              <label class="text-sm text-white/70">Audio Preview
+                <input id="productAudioFile" type="file" accept="audio/mpeg,audio/mp3" class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black">
+                <input type="hidden" id="productAudioUrl">
+                <span id="productAudioCurrent" class="block text-xs text-white/40 mt-1"></span>
+              </label>
               <div class="md:col-span-2 flex flex-wrap gap-2 pt-1">
                 <button type="submit" id="saveProductBtn" class="btn rounded-xl px-5 py-2.5 font-bold">Simpan Produk</button>
                 <button type="button" id="cancelProductBtn2" class="rounded-xl px-5 py-2.5 bg-white/5 hover:bg-white/10">Batal</button>
               </div>
             </form>
-            <p id="productFormStatus" class="text-sm text-white/50 mt-3"></p>
+            <p class="text-xs text-white/40 mt-3">Gambar: JPG, PNG, WEBP · Audio: MP3. Saat edit, file boleh dikosongkan agar media lama tetap dipakai.</p>
+            <p id="productFormStatus" class="text-sm text-white/50 mt-2"></p>
           </div>
 
           <div class="glass rounded-2xl mt-5 overflow-hidden">
@@ -301,6 +310,10 @@ function renderProducts(){
 function resetProductForm(){
   document.getElementById("productFormEl").reset();
   document.getElementById("productId").value="";
+  document.getElementById("productImageUrl").value="";
+  document.getElementById("productAudioUrl").value="";
+  document.getElementById("productImageCurrent").textContent="";
+  document.getElementById("productAudioCurrent").textContent="";
   document.getElementById("productFormTitle").textContent="Tambah Produk";
   document.getElementById("productFormStatus").textContent="";
 }
@@ -312,35 +325,90 @@ function openEditProduct(id){
   document.getElementById("productName").value=p.name??"";
   document.getElementById("productPrice").value=p.price??0;
   document.getElementById("productCategory").value=p.category??"";
-  document.getElementById("productImage").value=p.image_url??"";
-  document.getElementById("productAudio").value=p.audio_url??"";
+  document.getElementById("productImageUrl").value=p.image_url??"";
+  document.getElementById("productAudioUrl").value=p.audio_url??"";
+  document.getElementById("productImageCurrent").textContent=p.image_url?"Gambar saat ini tersimpan. Pilih file baru jika ingin mengganti.":"Belum ada gambar.";
+  document.getElementById("productAudioCurrent").textContent=p.audio_url?"Audio saat ini tersimpan. Pilih file baru jika ingin mengganti.":"Belum ada audio.";
   document.getElementById("productFormTitle").textContent="Edit Produk #"+p.id;
   document.getElementById("productFormStatus").textContent="";
   document.getElementById("productForm").classList.remove("hidden");
   window.scrollTo({top:0,behavior:"smooth"});
 }
+
+function storageSafeName(value){
+  return String(value||"produk").trim().replace(/[^a-zA-Z0-9_-]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80)||"produk";
+}
+function storageExt(file, fallback){
+  const name=(file?.name||"").toLowerCase();
+  const ext=name.includes(".")?name.split(".").pop():fallback;
+  return ext.replace(/[^a-z0-9]/g,"")||fallback;
+}
+async function uploadProductFile(file,bucket,folder,baseName){
+  if(!file)return null;
+  const ext=storageExt(file,bucket==="images"?"webp":"mp3");
+  const path=`${folder}/${baseName}-${Date.now()}.${ext}`;
+  const {error}=await sb.storage.from(bucket).upload(path,file,{cacheControl:"3600",upsert:false});
+  if(error)throw new Error(`Upload ${bucket} gagal: ${error.message}`);
+  const {data}=sb.storage.from(bucket).getPublicUrl(path);
+  return data.publicUrl;
+}
+
 async function saveProduct(e){
   e.preventDefault();
   const id=document.getElementById("productId").value;
-  const payload={
-    prod_id:document.getElementById("prodId").value.trim(),
-    name:document.getElementById("productName").value.trim(),
-    price:Number(document.getElementById("productPrice").value)||0,
-    category:document.getElementById("productCategory").value.trim(),
-    image_url:document.getElementById("productImage").value.trim()||null,
-    audio_url:document.getElementById("productAudio").value.trim()||null
-  };
+  const prodId=document.getElementById("prodId").value.trim();
+  const imageFile=document.getElementById("productImageFile").files[0]||null;
+  const audioFile=document.getElementById("productAudioFile").files[0]||null;
   const status=document.getElementById("productFormStatus");
   const btn=document.getElementById("saveProductBtn");
-  btn.disabled=true;status.textContent="Menyimpan...";
-  let result;
-  if(id)result=await sb.from("products").update(payload).eq("id",Number(id));
-  else result=await sb.from("products").insert(payload);
-  btn.disabled=false;
-  if(result.error){status.textContent="❌ "+result.error.message;status.className="text-sm text-red-300 mt-3";return}
-  status.textContent="✅ Produk berhasil disimpan.";status.className="text-sm text-emerald-300 mt-3";
-  await loadProducts();await loadDashboardStats();
-  setTimeout(()=>document.getElementById("productForm").classList.add("hidden"),500);
+  btn.disabled=true;
+  status.className="text-sm text-white/50 mt-3";
+  status.textContent="⏳ Menyimpan produk...";
+
+  try{
+    let imageUrl=document.getElementById("productImageUrl").value.trim()||null;
+    let audioUrl=document.getElementById("productAudioUrl").value.trim()||null;
+    const base=storageSafeName(prodId||document.getElementById("productName").value);
+
+    if(imageFile){
+      status.textContent="⏳ Upload gambar...";
+      imageUrl=await uploadProductFile(imageFile,"images","products",base);
+    }
+    if(audioFile){
+      status.textContent="⏳ Upload audio...";
+      audioUrl=await uploadProductFile(audioFile,"audio","products",base);
+    }
+
+    const payload={
+      prod_id:prodId,
+      name:document.getElementById("productName").value.trim(),
+      price:Number(document.getElementById("productPrice").value)||0,
+      category:document.getElementById("productCategory").value.trim(),
+      image_url:imageUrl,
+      audio_url:audioUrl
+    };
+
+    status.textContent="⏳ Menyimpan data ke database...";
+    let result;
+    if(id)result=await sb.from("products").update(payload).eq("id",Number(id));
+    else result=await sb.from("products").insert(payload);
+
+    if(result.error)throw new Error(result.error.message);
+
+    status.textContent="✅ Produk berhasil disimpan dan media berhasil diupload.";
+    status.className="text-sm text-emerald-300 mt-3";
+    document.getElementById("productImageFile").value="";
+    document.getElementById("productAudioFile").value="";
+    await loadProducts();
+    await loadDashboardStats();
+    setTimeout(()=>document.getElementById("productForm").classList.add("hidden"),800);
+  }catch(error){
+    console.error(error);
+    status.textContent="❌ "+error.message;
+    status.className="text-sm text-red-300 mt-3";
+  }finally{
+    btn.disabled=false;
+  }
 }
 async function deleteProduct(id){
   const p=productsCache.find(x=>Number(x.id)===id);
@@ -366,6 +434,14 @@ document.getElementById("cancelProductBtn2").addEventListener("click",()=>docume
 document.getElementById("productFormEl").addEventListener("submit",saveProduct);
 document.getElementById("productSearch").addEventListener("input",renderProducts);
 document.getElementById("refreshProductsBtn").addEventListener("click",loadProducts);
+document.getElementById("productImageFile").addEventListener("change",e=>{
+  const f=e.target.files[0];
+  document.getElementById("productImageCurrent").textContent=f?`File dipilih: ${f.name}`:"";
+});
+document.getElementById("productAudioFile").addEventListener("change",e=>{
+  const f=e.target.files[0];
+  document.getElementById("productAudioCurrent").textContent=f?`File dipilih: ${f.name}`:"";
+});
 
 if(!SUPABASE_URL||!SUPABASE_ANON_KEY){
   showStatus("Supabase belum dikonfigurasi.");
