@@ -135,6 +135,25 @@
       font-size:.85rem;
       color:rgba(255,255,255,.82)
     }
+
+
+    .comment-admin-card{
+      background:rgba(0,0,0,.24);
+      border:1px solid rgba(255,255,255,.08);
+      transition:.2s
+    }
+
+    .comment-admin-card:hover{
+      border-color:rgba(15,252,190,.2)
+    }
+
+    .comment-photo{
+      width:72px;
+      height:72px;
+      border-radius:14px;
+      object-fit:cover;
+      background:rgba(0,0,0,.25)
+    }
   </style>
 </head>
 
@@ -787,23 +806,65 @@
         <!-- COMMENTS -->
         <section id="comments" class="admin-section hidden">
 
-          <h2 class="text-2xl font-black">
-            💬 Komentar
-          </h2>
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-black">
+                💬 Komentar & Rating
+              </h2>
+              <p class="text-white/50 text-sm mt-1">
+                Moderasi komentar, rating, dan foto pengunjung.
+              </p>
+            </div>
 
-          <div class="glass rounded-2xl p-6 mt-5">
+            <button
+              id="refreshCommentsBtn"
+              class="rounded-xl px-4 py-2 text-sm bg-white/5 hover:bg-white/10"
+            >
+              ↻ Refresh
+            </button>
+          </div>
 
-            <p class="text-white/70">
-              Menu komentar siap disambungkan.
-              Struktur kolom tabel <b>comments</b>
-              perlu diketahui agar moderasi aman.
-            </p>
+          <div class="grid sm:grid-cols-3 gap-4 mt-5">
+            <div class="stat rounded-2xl p-5">
+              <p class="text-white/50 text-sm">Total Komentar</p>
+              <p id="commentAdminTotal" class="text-3xl font-black mt-2">—</p>
+            </div>
+            <div class="stat rounded-2xl p-5">
+              <p class="text-white/50 text-sm">Menunggu Persetujuan</p>
+              <p id="commentAdminPending" class="text-3xl font-black mt-2 text-yellow-300">—</p>
+            </div>
+            <div class="stat rounded-2xl p-5">
+              <p class="text-white/50 text-sm">Rating Rata-rata</p>
+              <p id="commentAdminAverage" class="text-3xl font-black mt-2">—</p>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl mt-5 overflow-hidden">
+            <div class="p-4 border-b border-white/10 flex flex-wrap gap-3 items-center justify-between">
+              <input
+                id="commentSearch"
+                class="rounded-xl px-3 py-2 text-sm w-full sm:w-80"
+                placeholder="Cari nama atau komentar..."
+              >
+
+              <select
+                id="commentFilter"
+                class="rounded-xl px-3 py-2 text-sm"
+              >
+                <option value="all">Semua</option>
+                <option value="pending">Menunggu</option>
+                <option value="approved">Sudah Disetujui</option>
+              </select>
+            </div>
+
+            <div id="commentsAdminList" class="p-4 grid gap-4">
+              <div class="text-center text-white/40 py-8">Memuat komentar...</div>
+            </div>
 
             <p
               id="commentsStatus"
-              class="text-sm text-white/40 mt-2"
+              class="px-4 pb-4 text-sm text-white/40"
             ></p>
-
           </div>
 
         </section>
@@ -2271,6 +2332,180 @@ async function deleteProduct(id){
 
 
 /* =========================================================
+   COMMENTS / RATING ADMIN
+========================================================= */
+
+let commentsCache = [];
+
+function commentStars(n){
+  const rating = Math.max(0, Math.min(5, Number(n)||0));
+  return "★".repeat(rating) + "☆".repeat(5-rating);
+}
+
+function commentDate(v){
+  try{
+    return new Intl.DateTimeFormat("id-ID",{
+      dateStyle:"medium",
+      timeStyle:"short"
+    }).format(new Date(v));
+  }catch{
+    return "-";
+  }
+}
+
+async function loadCommentsAdmin(){
+  const box = document.getElementById("commentsAdminList");
+  if(!box) return;
+
+  box.innerHTML = '<div class="text-center text-white/40 py-8">Memuat komentar...</div>';
+
+  const {data,error} = await sb
+    .from("comments")
+    .select("id,created_at,name,rating,comment,image_url,approved")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    box.innerHTML = `<div class="rounded-xl p-5 bg-red-500/10 border border-red-400/20 text-red-300">Gagal memuat komentar: ${esc(error.message)}</div>`;
+    document.getElementById("commentsStatus").textContent = "Periksa RLS tabel comments dan pastikan SQL comments_setup.sql sudah dijalankan.";
+    return;
+  }
+
+  commentsCache = data || [];
+  updateCommentStats();
+  renderCommentsAdmin();
+}
+
+function updateCommentStats(){
+  const total = commentsCache.length;
+  const pending = commentsCache.filter(x => !x.approved).length;
+  const avg = total
+    ? commentsCache.reduce((sum,x)=>sum + Number(x.rating||0),0) / total
+    : 0;
+
+  document.getElementById("commentAdminTotal").textContent = total;
+  document.getElementById("commentAdminPending").textContent = pending;
+  document.getElementById("commentAdminAverage").textContent = total ? avg.toFixed(1) + " ★" : "—";
+}
+
+function renderCommentsAdmin(){
+  const box = document.getElementById("commentsAdminList");
+  const q = (document.getElementById("commentSearch")?.value || "").toLowerCase().trim();
+  const filter = document.getElementById("commentFilter")?.value || "all";
+
+  let rows = commentsCache.filter(x => {
+    const matchesSearch = [x.name,x.comment].some(v =>
+      String(v ?? "").toLowerCase().includes(q)
+    );
+
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "pending" && !x.approved) ||
+      (filter === "approved" && x.approved);
+
+    return matchesSearch && matchesFilter;
+  });
+
+  if(!rows.length){
+    box.innerHTML = '<div class="glass rounded-2xl p-6 text-center text-white/40">Tidak ada komentar yang cocok.</div>';
+    return;
+  }
+
+  box.innerHTML = rows.map(x => {
+    const status = x.approved
+      ? '<span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 text-xs font-bold">✓ Tampil di website</span>'
+      : '<span class="px-2 py-1 rounded-lg bg-yellow-500/10 text-yellow-300 text-xs font-bold">⏳ Menunggu persetujuan</span>';
+
+    const photo = x.image_url
+      ? `<a href="${esc(x.image_url)}" target="_blank" rel="noopener"><img src="${esc(x.image_url)}" class="comment-photo" alt="Foto ${esc(x.name)}" onerror="this.style.display='none'"></a>`
+      : '<div class="comment-photo grid place-items-center text-white/25 text-2xl">👤</div>';
+
+    const action = x.approved
+      ? `<button class="comment-unapprove rounded-lg px-3 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-300" data-id="${esc(x.id)}">Sembunyikan</button>`
+      : `<button class="comment-approve btn rounded-lg px-3 py-2" data-id="${esc(x.id)}">✓ Setujui</button>`;
+
+    return `
+      <article class="comment-admin-card rounded-2xl p-4">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="shrink-0">${photo}</div>
+
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <strong class="text-lg">${esc(x.name)}</strong>
+              <span class="text-yellow-300 tracking-wide">${commentStars(x.rating)}</span>
+              ${status}
+            </div>
+
+            <div class="text-xs text-white/35 mt-1">
+              ${esc(commentDate(x.created_at))} · Rating ${Number(x.rating)||0}/5
+            </div>
+
+            <p class="text-white/80 mt-3 whitespace-pre-wrap break-words">${esc(x.comment)}</p>
+
+            <div class="flex flex-wrap gap-2 mt-4">
+              ${action}
+              <button class="comment-delete btn-danger rounded-lg px-3 py-2" data-id="${esc(x.id)}">🗑 Hapus</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  box.querySelectorAll(".comment-approve").forEach(btn => {
+    btn.addEventListener("click", () => setCommentApproval(btn.dataset.id,true));
+  });
+
+  box.querySelectorAll(".comment-unapprove").forEach(btn => {
+    btn.addEventListener("click", () => setCommentApproval(btn.dataset.id,false));
+  });
+
+  box.querySelectorAll(".comment-delete").forEach(btn => {
+    btn.addEventListener("click", () => deleteCommentAdmin(btn.dataset.id));
+  });
+}
+
+async function setCommentApproval(id,approved){
+  const row = commentsCache.find(x => String(x.id) === String(id));
+  if(!row) return;
+
+  const actionText = approved ? "menyetujui" : "menyembunyikan";
+  if(!confirm(`${approved ? "Tampilkan" : "Sembunyikan"} komentar dari "${row.name || "pengunjung"}"?`)) return;
+
+  const {error} = await sb
+    .from("comments")
+    .update({approved})
+    .eq("id",id);
+
+  if(error){
+    alert("Gagal " + actionText + ": " + error.message);
+    return;
+  }
+
+  await loadCommentsAdmin();
+  await loadDashboardStats();
+}
+
+async function deleteCommentAdmin(id){
+  const row = commentsCache.find(x => String(x.id) === String(id));
+  if(!row) return;
+
+  if(!confirm(`Hapus komentar dari "${row.name || "pengunjung"}" secara permanen?`)) return;
+
+  const {error} = await sb
+    .from("comments")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    alert("Gagal menghapus komentar: " + error.message);
+    return;
+  }
+
+  await loadCommentsAdmin();
+  await loadDashboardStats();
+}
+
+/* =========================================================
    NAVIGATION
 ========================================================= */
 
@@ -2335,6 +2570,12 @@ document
             "overview"
           )
             await loadDashboardStats();
+
+          if(
+            btn.dataset.section ===
+            "comments"
+          )
+            await loadCommentsAdmin();
 
         }
       );
@@ -2498,6 +2739,22 @@ document
     }
   );
 
+
+/* =========================================================
+   COMMENTS BUTTONS
+========================================================= */
+
+document
+  .getElementById("refreshCommentsBtn")
+  .addEventListener("click",loadCommentsAdmin);
+
+document
+  .getElementById("commentSearch")
+  .addEventListener("input",renderCommentsAdmin);
+
+document
+  .getElementById("commentFilter")
+  .addEventListener("change",renderCommentsAdmin);
 
 /* =========================================================
    START
