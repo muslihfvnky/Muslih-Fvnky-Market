@@ -250,18 +250,46 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
         showStatus("Kamu sudah keluar.");
       });
 
-      sb.auth.onAuthStateChange((_event, session) => {
-        if (session?.user) {
-          showDashboard(session.user);
-        } else {
+      // ==========================================================
+      // AKSES ADMIN
+      // Hanya akun Google ini yang diperbolehkan masuk dashboard.
+      // ==========================================================
+      const ADMIN_EMAIL = "muslihshoope@gmail.com";
+
+      async function checkAdminAccess(session) {
+        if (!session?.user) {
           dashboardView.classList.add("hidden");
           loginView.classList.remove("hidden");
+          document.getElementById("authStatus").textContent = "Belum login";
+          return;
         }
+
+        const email = (session.user.email || "").toLowerCase().trim();
+
+        // Tolak semua akun selain akun admin
+        if (email !== ADMIN_EMAIL.toLowerCase()) {
+          await sb.auth.signOut();
+          dashboardView.classList.add("hidden");
+          loginView.classList.remove("hidden");
+          showStatus("❌ Akses ditolak. Akun ini bukan akun admin.");
+          document.getElementById("authStatus").textContent = "Akses ditolak";
+          return;
+        }
+
+        // Email cocok → boleh masuk dashboard
+        showDashboard(session.user);
+      }
+
+      sb.auth.onAuthStateChange((_event, session) => {
+        checkAdminAccess(session);
       });
 
       const { data } = await sb.auth.getSession();
-      if (data.session?.user) showDashboard(data.session.user);
-      else document.getElementById("authStatus").textContent = "Belum login";
+      if (data.session?.user) {
+        await checkAdminAccess(data.session);
+      } else {
+        document.getElementById("authStatus").textContent = "Belum login";
+      }
     }
 
     function showDashboard(user) {
