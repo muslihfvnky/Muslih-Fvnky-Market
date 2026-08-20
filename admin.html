@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Muslih Fvnky Shop</title>
+  <link rel="icon" type="image/png" href="logowebbundar.webp" sizes="512x512">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --mint:#0FFCBE;
+      --blue:#106EBE;
+      --bg:#06151c;
+      --panel:rgba(7,29,39,.88);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:#fff;
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:
+        linear-gradient(rgba(0,0,0,.78),rgba(0,0,0,.88)),
+        url('backgroundweb.webp') center/cover fixed no-repeat;
+    }
+    .glass{
+      background:var(--panel);
+      border:1px solid rgba(15,252,190,.16);
+      box-shadow:0 15px 45px rgba(0,0,0,.35);
+      backdrop-filter:blur(12px);
+    }
+    .mint{color:var(--mint)}
+    .btn{
+      border:1px solid rgba(15,252,190,.5);
+      background:rgba(16,110,190,.35);
+      transition:.2s;
+    }
+    .btn:hover{background:rgba(15,252,190,.16);transform:translateY(-1px)}
+    .stat{
+      background:linear-gradient(145deg,rgba(16,110,190,.28),rgba(15,252,190,.08));
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .nav-item{
+      width:100%;text-align:left;padding:12px 14px;border-radius:10px;
+      color:rgba(255,255,255,.78);transition:.2s;
+    }
+    .nav-item:hover,.nav-item.active{background:rgba(15,252,190,.1);color:#fff}
+    .hidden{display:none!important}
+    .spinner{
+      width:20px;height:20px;border:3px solid rgba(255,255,255,.2);
+      border-top-color:var(--mint);border-radius:50%;animation:spin .8s linear infinite
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+
+<body>
+  <!-- LOGIN -->
+  <main id="loginView" class="min-h-screen flex items-center justify-center p-5">
+    <section class="glass w-full max-w-md rounded-3xl p-7 text-center">
+      <img src="logowebbundar.webp" alt="Muslih Fvnky Shop" class="w-20 h-20 rounded-full mx-auto mb-5 object-cover">
+      <h1 class="text-2xl font-black">Admin Dashboard</h1>
+      <p class="text-white/60 mt-2 mb-7">Muslih Fvnky Shop</p>
+
+      <button id="googleLogin" class="btn w-full rounded-xl px-5 py-3 font-bold flex items-center justify-center gap-3">
+        <span class="text-xl">G</span>
+        Masuk dengan Google
+      </button>
+
+      <p id="loginStatus" class="text-sm text-white/50 mt-4"></p>
+      <a href="index.html" class="inline-block mt-6 text-sm text-white/50 hover:text-white">← Kembali ke website</a>
+    </section>
+  </main>
+
+  <!-- DASHBOARD -->
+  <div id="dashboardView" class="hidden min-h-screen">
+    <header class="glass sticky top-0 z-20 border-x-0 border-t-0">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img src="logowebbundar.webp" class="w-11 h-11 rounded-full object-cover" alt="">
+          <div>
+            <h1 class="font-black">Muslih Fvnky Shop</h1>
+            <p class="text-xs text-white/50">Admin Dashboard</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:block text-right">
+            <p id="userName" class="text-sm font-bold"></p>
+            <p id="userEmail" class="text-xs text-white/50"></p>
+          </div>
+          <button id="logoutBtn" class="btn rounded-lg px-3 py-2 text-sm font-bold">Keluar</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid lg:grid-cols-[230px_1fr] gap-6">
+      <aside class="glass rounded-2xl p-3 h-fit">
+        <p class="text-xs uppercase tracking-wider text-white/40 px-3 py-2">Menu</p>
+        <button class="nav-item active" data-section="overview">📊 Dashboard</button>
+        <button class="nav-item" data-section="products">📦 Produk</button>
+        <button class="nav-item" data-section="orders">🧾 Pesanan</button>
+        <button class="nav-item" data-section="comments">💬 Komentar</button>
+        <button class="nav-item" data-section="testimonials">📸 Testimoni</button>
+        <button class="nav-item" data-section="settings">⚙️ Pengaturan</button>
+        <a href="index.html" class="nav-item block mt-2">🏠 Lihat Website</a>
+      </aside>
+
+      <main>
+        <section id="overview" class="admin-section">
+          <div class="mb-6">
+            <h2 class="text-2xl font-black">Dashboard</h2>
+            <p class="text-white/55 mt-1">Selamat datang di panel admin toko.</p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div class="stat rounded-2xl p-5">
+              <p class="text-white/50 text-sm">Produk</p>
+              <p class="text-3xl font-black mt-2">—</p>
+              <p class="text-xs text-white/40 mt-1">Belum terhubung database</p>
+            </div>
+            <div class="stat rounded-2xl p-5">
+              <p class="text-white/50 text-sm">Pesanan</p>
+              <p class="text-3xl font-black mt-2">—</p>
+              <p class="text-xs text-white/40 mt-1">Belum terhubung database</p>
+            </div>
+            <div class="stat rounded-2xl p-5">
+              <p class="text-white/50 text-sm">Komentar</p>
+              <p class="text-3xl font-black mt-2">—</p>
+              <p class="text-xs text-white/40 mt-1">Belum terhubung database</p>
+            </div>
+            <div class="stat rounded-2xl p-5">
+              <p class="text-white/50 text-sm">Testimoni</p>
+              <p class="text-3xl font-black mt-2">—</p>
+              <p class="text-xs text-white/40 mt-1">Belum terhubung database</p>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl p-5 mt-5">
+            <h3 class="font-black text-lg">Status sistem</h3>
+            <div class="mt-4 space-y-3 text-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-white/65">Google Login</span>
+                <span id="authStatus" class="text-yellow-300">Memeriksa...</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-white/65">Database</span>
+                <span class="text-yellow-300">Belum dikonfigurasi</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="products" class="admin-section hidden">
+          <h2 class="text-2xl font-black">📦 Produk</h2>
+          <div class="glass rounded-2xl p-6 mt-5">
+            <p class="text-white/70">Tempat untuk mengelola produk FLM nanti.</p>
+            <p class="text-sm text-white/40 mt-2">Kita bisa sambungkan ke database Supabase agar tambah, edit, hapus, harga, kategori, dan preview bisa dilakukan dari sini.</p>
+          </div>
+        </section>
+
+        <section id="orders" class="admin-section hidden">
+          <h2 class="text-2xl font-black">🧾 Pesanan</h2>
+          <div class="glass rounded-2xl p-6 mt-5">
+            <p class="text-white/70">Daftar transaksi/pesanan akan tampil di sini setelah tabel pesanan Supabase dibuat.</p>
+          </div>
+        </section>
+
+        <section id="comments" class="admin-section hidden">
+          <h2 class="text-2xl font-black">💬 Komentar</h2>
+          <div class="glass rounded-2xl p-6 mt-5">
+            <p class="text-white/70">Komentar pengunjung bisa dikelola dari sini setelah kita hubungkan tabel komentar.</p>
+          </div>
+        </section>
+
+        <section id="testimonials" class="admin-section hidden">
+          <h2 class="text-2xl font-black">📸 Testimoni</h2>
+          <div class="glass rounded-2xl p-6 mt-5">
+            <p class="text-white/70">Nanti bisa dibuat fitur tambah/edit/hapus testimoni dari dashboard.</p>
+          </div>
+        </section>
+
+        <section id="settings" class="admin-section hidden">
+          <h2 class="text-2xl font-black">⚙️ Pengaturan</h2>
+          <div class="glass rounded-2xl p-6 mt-5">
+            <h3 class="font-bold">Konfigurasi Supabase</h3>
+            <p class="text-sm text-white/50 mt-2">
+              URL project dan anon key diatur di bagian konfigurasi JavaScript file ini.
+              Jangan pernah memasukkan Client Secret Google OAuth ke file frontend.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    /*
+      ==========================================================
+      KONFIGURASI SUPABASE
+      ==========================================================
+      Isi SUPABASE_ANON_KEY dengan anon/publishable key dari:
+      Supabase Dashboard → Project Settings → API.
+
+      JANGAN masukkan Google Client Secret ke sini.
+    */
+const SUPABASE_URL = "https://zmccxgydzmfdldobqaav.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_vqU2LP9ax5DLqfJY8y5h2A_j8mWbtdG";
+
+const loginView = document.getElementById("loginView");
+const dashboardView = document.getElementById("dashboardView");
+const loginStatus = document.getElementById("loginStatus");
+
+function showStatus(text) {
+  loginStatus.textContent = text;
+}
+
+// Load Supabase only after configuration is ready
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  showStatus("Supabase belum dikonfigurasi. Isi anon/publishable key terlebih dahulu.");
+  document.getElementById("googleLogin").disabled = true;
+  document.getElementById("googleLogin").classList.add("opacity-50", "cursor-not-allowed");
+} else {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+      script.onload = initSupabase;
+      script.onerror = () => showStatus("Gagal memuat Supabase JS.");
+      document.head.appendChild(script);
+    }
+
+    let sb = null;
+
+    async function initSupabase() {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      document.getElementById("googleLogin").addEventListener("click", async () => {
+        showStatus("Membuka login Google...");
+        const { error } = await sb.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: window.location.origin + window.location.pathname
+          }
+        });
+        if (error) showStatus("Login gagal: " + error.message);
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await sb.auth.signOut();
+        dashboardView.classList.add("hidden");
+        loginView.classList.remove("hidden");
+        showStatus("Kamu sudah keluar.");
+      });
+
+      sb.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          showDashboard(session.user);
+        } else {
+          dashboardView.classList.add("hidden");
+          loginView.classList.remove("hidden");
+        }
+      });
+
+      const { data } = await sb.auth.getSession();
+      if (data.session?.user) showDashboard(data.session.user);
+      else document.getElementById("authStatus").textContent = "Belum login";
+    }
+
+    function showDashboard(user) {
+      loginView.classList.add("hidden");
+      dashboardView.classList.remove("hidden");
+      document.getElementById("authStatus").textContent = "Terhubung ✓";
+      document.getElementById("authStatus").className = "text-emerald-300";
+      document.getElementById("userName").textContent =
+        user.user_metadata?.full_name || user.user_metadata?.name || "Admin";
+      document.getElementById("userEmail").textContent = user.email || "";
+    }
+
+    // Navigasi menu dashboard
+    document.querySelectorAll(".nav-item[data-section]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".nav-item[data-section]").forEach(x => x.classList.remove("active"));
+        btn.classList.add("active");
+        document.querySelectorAll(".admin-section").forEach(section => section.classList.add("hidden"));
+        document.getElementById(btn.dataset.section).classList.remove("hidden");
+      });
+    });
+  </script>
+</body>
+</html>
