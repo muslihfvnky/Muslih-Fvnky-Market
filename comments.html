@@ -7,131 +7,958 @@
   <link rel="icon" type="image/png" href="logowebbundar.webp" sizes="512x512">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    :root{--mint:#0FFCBE;--blue:#106EBE;--panel:rgba(4,18,26,.82)}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(rgba(0,0,0,.68),rgba(0,0,0,.78)),url('backgroundweb.webp') center/cover fixed no-repeat}
-    .glass{background:var(--panel);border:1px solid rgba(15,252,190,.18);box-shadow:0 15px 45px rgba(0,0,0,.35);backdrop-filter:blur(12px)}
-    .btn{border:1px solid rgba(15,252,190,.55);background:rgba(16,110,190,.5);transition:.2s}.btn:hover{background:rgba(15,252,190,.16);transform:translateY(-1px)}
-    input,textarea,select{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.14);color:#fff}
-    input:focus,textarea:focus,select:focus{outline:none;border-color:rgba(15,252,190,.7);box-shadow:0 0 0 2px rgba(15,252,190,.08)}
-    .rating-btn input{display:none}.rating-btn span{font-size:1.7rem;opacity:.35;cursor:pointer;transition:.15s}.rating-btn input:checked+span,.rating-btn:hover span{opacity:1}
-    .comment-card{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08)}
-    .avatar{width:46px;height:46px;border-radius:999px;object-fit:cover;background:rgba(15,252,190,.1);display:grid;place-items:center;font-weight:900}
+    :root{
+      --mint:#0FFCBE;
+      --blue:#106EBE;
+      --panel:rgba(4,18,26,.82)
+    }
+
+    *{
+      box-sizing:border-box
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      color:#fff;
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:
+        linear-gradient(rgba(0,0,0,.68),rgba(0,0,0,.78)),
+        url('backgroundweb.webp') center/cover fixed no-repeat
+    }
+
+    .glass{
+      background:var(--panel);
+      border:1px solid rgba(15,252,190,.18);
+      box-shadow:0 15px 45px rgba(0,0,0,.35);
+      backdrop-filter:blur(12px)
+    }
+
+    .btn{
+      border:1px solid rgba(15,252,190,.55);
+      background:rgba(16,110,190,.5);
+      transition:.2s
+    }
+
+    .btn:hover{
+      background:rgba(15,252,190,.16);
+      transform:translateY(-1px)
+    }
+
+    input,textarea,select{
+      background:rgba(0,0,0,.28);
+      border:1px solid rgba(255,255,255,.14);
+      color:#fff
+    }
+
+    input:focus,textarea:focus,select:focus{
+      outline:none;
+      border-color:rgba(15,252,190,.7);
+      box-shadow:0 0 0 2px rgba(15,252,190,.08)
+    }
+
+    /* =========================
+       RATING BINTANG
+       ========================= */
+
+    .rating-btn{
+      position:relative;
+      cursor:pointer;
+    }
+
+    .rating-btn input{
+      display:none;
+    }
+
+    .rating-btn span{
+      display:inline-block;
+      font-size:1.9rem;
+      color:#64717a;
+      opacity:1;
+      cursor:pointer;
+      transition:
+        color .15s ease,
+        transform .15s ease;
+      line-height:1;
+    }
+
+    .rating-btn:hover span{
+      transform:scale(1.08);
+    }
+
+    /* Bintang yang sudah dipilih */
+    .rating-btn.active span{
+      color:#facc15;
+    }
+
+    /* Hover preview */
+    .rating-btn.hovered span{
+      color:#facc15;
+    }
+
+    .rating-btn:not(.active):not(.hovered) span{
+      color:#64717a;
+    }
+
+    .comment-card{
+      background:rgba(0,0,0,.28);
+      border:1px solid rgba(255,255,255,.08)
+    }
+
+    .avatar{
+      width:46px;
+      height:46px;
+      border-radius:999px;
+      object-fit:cover;
+      background:rgba(15,252,190,.1);
+      display:grid;
+      place-items:center;
+      font-weight:900
+    }
+
+    .admin-reply{
+      background:rgba(16,110,190,.15);
+      border:1px solid rgba(15,252,190,.15)
+    }
   </style>
 </head>
+
 <body>
-  <header class="glass border-x-0 border-t-0">
-    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <img src="logowebbundar.webp" class="w-11 h-11 rounded-full object-cover" alt="Muslih Fvnky Shop">
-        <div><h1 class="font-black">Muslih Fvnky Shop</h1><p class="text-xs text-white/50">Komentar & Rating</p></div>
+
+<header class="glass border-x-0 border-t-0">
+  <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+
+    <div class="flex items-center gap-3">
+      <img
+        src="logowebbundar.webp"
+        class="w-11 h-11 rounded-full object-cover"
+        alt="Muslih Fvnky Shop"
+      >
+
+      <div>
+        <h1 class="font-black">Muslih Fvnky Shop</h1>
+        <p class="text-xs text-white/50">Komentar & Rating</p>
       </div>
-      <a href="index.html" class="btn rounded-lg px-3 py-2 text-sm font-bold">← Kembali</a>
     </div>
-  </header>
 
-  <main class="max-w-4xl mx-auto px-4 py-8">
-    <section class="text-center mb-7">
-      <h2 class="text-3xl font-black">💬 Komentar & Rating</h2>
-      <p class="text-white/60 mt-2">Bagikan pengalaman kamu di Muslih Fvnky Shop.</p>
-      <div class="glass rounded-2xl p-5 mt-5 inline-flex items-center gap-4">
-        <div><div id="avgRating" class="text-3xl font-black">—</div><div id="avgStars" class="text-lg">☆☆☆☆☆</div></div>
-        <div class="text-left"><div id="commentCount" class="font-bold">0 komentar</div><div class="text-xs text-white/45">Komentar yang sudah disetujui admin</div></div>
-      </div>
-    </section>
+    <a
+      href="index.html"
+      class="btn rounded-lg px-3 py-2 text-sm font-bold"
+    >
+      ← Kembali
+    </a>
 
-    <section class="glass rounded-2xl p-5 sm:p-6 mb-7">
-      <h3 class="text-xl font-black">Tulis Komentar</h3>
-      <p class="text-sm text-white/45 mt-1">Komentar akan muncul setelah disetujui admin.</p>
-      <form id="commentForm" class="grid gap-4 mt-5">
-        <label class="text-sm text-white/70">Nama
-          <input id="name" maxlength="60" required class="w-full rounded-xl px-3 py-3 mt-1" placeholder="Nama kamu">
-        </label>
-        <div>
-          <p class="text-sm text-white/70 mb-2">Rating</p>
-          <div class="flex items-center gap-2" id="ratingGroup">
-            <label class="rating-btn"><input type="radio" name="rating" value="1"><span>★</span></label>
-            <label class="rating-btn"><input type="radio" name="rating" value="2"><span>★</span></label>
-            <label class="rating-btn"><input type="radio" name="rating" value="3"><span>★</span></label>
-            <label class="rating-btn"><input type="radio" name="rating" value="4"><span>★</span></label>
-            <label class="rating-btn"><input type="radio" name="rating" value="5" checked><span>★</span></label>
-          </div>
+  </div>
+</header>
+
+
+<main class="max-w-4xl mx-auto px-4 py-8">
+
+  <!-- HEADER -->
+  <section class="text-center mb-7">
+
+    <h2 class="text-3xl font-black">
+      💬 Komentar & Rating
+    </h2>
+
+    <p class="text-white/60 mt-2">
+      Bagikan pengalaman kamu di Muslih Fvnky Shop.
+    </p>
+
+    <div class="glass rounded-2xl p-5 mt-5 inline-flex items-center gap-4">
+
+      <div>
+        <div id="avgRating" class="text-3xl font-black">
+          —
         </div>
-        <label class="text-sm text-white/70">Komentar
-          <textarea id="comment" maxlength="500" required rows="5" class="w-full rounded-xl px-3 py-3 mt-1" placeholder="Tulis pengalaman kamu..."></textarea>
-        </label>
-        <label class="text-sm text-white/70">Upload Foto <span class="text-white/35">(opsional, maks. 5 MB)</span>
-          <input id="photo" type="file" accept="image/jpeg,image/png,image/webp" class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black">
-        </label>
-        <button id="submitBtn" class="btn rounded-xl px-5 py-3 font-black" type="submit">Kirim Komentar</button>
-        <p id="formStatus" class="text-sm text-white/50"></p>
-      </form>
-    </section>
 
-    <section>
-      <div class="flex items-center justify-between gap-3 mb-4"><h3 class="text-xl font-black">Komentar Terbaru</h3><button id="refreshBtn" class="btn rounded-lg px-3 py-2 text-sm">↻ Refresh</button></div>
-      <div id="commentsList" class="grid gap-4"><div class="glass rounded-2xl p-6 text-white/45">Memuat komentar...</div></div>
-    </section>
-  </main>
+        <div id="avgStars" class="text-lg">
+          ☆☆☆☆☆
+        </div>
+      </div>
+
+      <div class="text-left">
+        <div id="commentCount" class="font-bold">
+          0 komentar
+        </div>
+
+        <div class="text-xs text-white/45">
+          Komentar yang sudah disetujui admin
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- FORM KOMENTAR -->
+  <section class="glass rounded-2xl p-5 sm:p-6 mb-7">
+
+    <h3 class="text-xl font-black">
+      Tulis Komentar
+    </h3>
+
+    <p class="text-sm text-white/45 mt-1">
+      Komentar akan muncul setelah disetujui admin.
+    </p>
+
+
+    <form id="commentForm" class="grid gap-4 mt-5">
+
+      <!-- NAMA -->
+      <label class="text-sm text-white/70">
+        Nama
+
+        <input
+          id="name"
+          maxlength="60"
+          required
+          class="w-full rounded-xl px-3 py-3 mt-1"
+          placeholder="Nama kamu"
+        >
+      </label>
+
+
+      <!-- RATING -->
+      <div>
+
+        <p class="text-sm text-white/70 mb-2">
+          Rating
+        </p>
+
+        <div
+          class="flex items-center gap-2"
+          id="ratingGroup"
+        >
+
+          <label class="rating-btn">
+            <input
+              type="radio"
+              name="rating"
+              value="1"
+            >
+            <span>★</span>
+          </label>
+
+          <label class="rating-btn">
+            <input
+              type="radio"
+              name="rating"
+              value="2"
+            >
+            <span>★</span>
+          </label>
+
+          <label class="rating-btn">
+            <input
+              type="radio"
+              name="rating"
+              value="3"
+            >
+            <span>★</span>
+          </label>
+
+          <label class="rating-btn">
+            <input
+              type="radio"
+              name="rating"
+              value="4"
+            >
+            <span>★</span>
+          </label>
+
+          <label class="rating-btn active">
+            <input
+              type="radio"
+              name="rating"
+              value="5"
+              checked
+            >
+            <span>★</span>
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <!-- KOMENTAR -->
+      <label class="text-sm text-white/70">
+        Komentar
+
+        <textarea
+          id="comment"
+          maxlength="500"
+          required
+          rows="5"
+          class="w-full rounded-xl px-3 py-3 mt-1"
+          placeholder="Tulis pengalaman kamu..."
+        ></textarea>
+      </label>
+
+
+      <!-- FOTO -->
+      <label class="text-sm text-white/70">
+
+        Upload Foto
+        <span class="text-white/35">
+          (opsional, maks. 5 MB)
+        </span>
+
+        <input
+          id="photo"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black"
+        >
+
+      </label>
+
+
+      <!-- BUTTON -->
+      <button
+        id="submitBtn"
+        class="btn rounded-xl px-5 py-3 font-black"
+        type="submit"
+      >
+        Kirim Komentar
+      </button>
+
+
+      <p
+        id="formStatus"
+        class="text-sm text-white/50"
+      ></p>
+
+    </form>
+
+  </section>
+
+
+  <!-- KOMENTAR -->
+  <section>
+
+    <div class="flex items-center justify-between gap-3 mb-4">
+
+      <h3 class="text-xl font-black">
+        Komentar Terbaru
+      </h3>
+
+      <button
+        id="refreshBtn"
+        class="btn rounded-lg px-3 py-2 text-sm"
+      >
+        ↻ Refresh
+      </button>
+
+    </div>
+
+    <div
+      id="commentsList"
+      class="grid gap-4"
+    >
+      <div class="glass rounded-2xl p-6 text-white/45">
+        Memuat komentar...
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
 
 <script>
-const SUPABASE_URL="https://zmccxgydzmfdldobqaav.supabase.co";
-const SUPABASE_KEY="sb_publishable_vqU2LP9ax5DLqfJY8y5h2A_j8mWbtdG";
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);
-function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
-function stars(n){return "★".repeat(Number(n)||0)+"☆".repeat(5-(Number(n)||0))}
-function dateText(v){try{return new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v))}catch{return "-"}}
-function safeName(v){return String(v||"foto").replace(/[^a-zA-Z0-9._-]+/g,"-").slice(0,80)}
 
-async function loadComments(){
-  const box=$("commentsList");
-  const {data,error}=await sb.from("comments").select("id,created_at,name,rating,comment,image_url,admin_reply").eq("approved",true).order("created_at",{ascending:false});
-  if(error){box.innerHTML=`<div class="glass rounded-2xl p-6 text-red-300">Gagal memuat komentar: ${esc(error.message)}</div>`;return}
-  const rows=data||[];
-  const avg=rows.length?rows.reduce((a,x)=>a+Number(x.rating||0),0)/rows.length:0;
-  $("avgRating").textContent=rows.length?avg.toFixed(1):"—";
-  $("avgStars").textContent=rows.length?stars(Math.round(avg)):"☆☆☆☆☆";
-  $("commentCount").textContent=`${rows.length} komentar`;
-  if(!rows.length){box.innerHTML='<div class="glass rounded-2xl p-6 text-center text-white/45">Belum ada komentar. Jadilah yang pertama! 😊</div>';return}
-  box.innerHTML=rows.map(x=>{
-    const initial=(x.name||"?").trim().charAt(0).toUpperCase()||"?";
-    return `<article class="comment-card rounded-2xl p-5">\n      <div class="flex gap-3">\n        ${x.image_url?`<a href="${esc(x.image_url)}" target="_blank" rel="noopener"><img src="${esc(x.image_url)}" class="avatar" alt="Foto ${esc(x.name)}"></a>`:`<div class="avatar">${esc(initial)}</div>`}\n        <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><strong>${esc(x.name)}</strong><span class="text-yellow-300">${stars(x.rating)}</span></div><div class="text-xs text-white/35 mt-1">${esc(dateText(x.created_at))}</div></div>\n      </div>\n      <p class="text-white/80 mt-4 whitespace-pre-wrap break-words">${esc(x.comment)}</p>
-      ${x.admin_reply?`<div class="mt-4 ml-2 rounded-xl bg-[#106EBE]/15 border border-[#0FFCBE]/15 p-3"><div class="text-sm font-black text-[#0FFCBE]">↩ Balasan Muslih Fvnky</div><p class="text-white/75 mt-1 whitespace-pre-wrap break-words">${esc(x.admin_reply)}</p></div>`:""}
-    </article>`;
-  }).join("");
+const SUPABASE_URL =
+  "https://zmccxgydzmfdldobqaav.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_vqU2LP9ax5DLqfJY8y5h2A_j8mWbtdG";
+
+const sb =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+const $ = id =>
+  document.getElementById(id);
+
+
+function esc(v){
+
+  return String(v ?? "")
+    .replace(
+      /[&<>"']/g,
+      m => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        "\"":"&quot;",
+        "'":"&#039;"
+      }[m])
+    );
+
 }
 
-$("commentForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  const btn=$("submitBtn"),status=$("formStatus"),file=$("photo").files[0]||null;
-  const name=$("name").value.trim(),comment=$("comment").value.trim();
-  const rating=Number(document.querySelector('input[name="rating"]:checked')?.value||5);
-  if(!name||!comment){status.textContent="Nama dan komentar wajib diisi.";return}
-  if(file){
-    if(file.size>5*1024*1024){status.textContent="❌ Foto maksimal 5 MB.";return}
-    if(!["image/jpeg","image/png","image/webp"].includes(file.type)){status.textContent="❌ Format foto harus JPG, PNG, atau WEBP.";return}
-  }
-  btn.disabled=true;status.className="text-sm text-white/50";status.textContent="⏳ Mengirim...";
+
+function stars(n){
+
+  n = Math.max(
+    0,
+    Math.min(
+      5,
+      Number(n) || 0
+    )
+  );
+
+  return "★".repeat(n) +
+         "☆".repeat(5-n);
+
+}
+
+
+function dateText(v){
+
   try{
-    let imageUrl=null;
-    if(file){
-      const ext=(file.name.split(".").pop()||"webp").toLowerCase().replace(/[^a-z0-9]/g,"")||"webp";
-      const path=`comments/${Date.now()}-${crypto.randomUUID()}-${safeName(file.name)}.${ext}`;
-      const up=await sb.storage.from("images").upload(path,file,{cacheControl:"3600",upsert:false});
-      if(up.error)throw new Error("Upload foto gagal: "+up.error.message);
-      imageUrl=sb.storage.from("images").getPublicUrl(path).data.publicUrl;
+
+    return new Intl.DateTimeFormat(
+      "id-ID",
+      {
+        dateStyle:"medium",
+        timeStyle:"short"
+      }
+    ).format(new Date(v));
+
+  }catch{
+
+    return "-";
+
+  }
+
+}
+
+
+function safeName(v){
+
+  return String(v || "foto")
+    .replace(
+      /[^a-zA-Z0-9._-]+/g,
+      "-"
+    )
+    .slice(0,80);
+
+}
+
+
+/* ==========================================
+   SISTEM RATING
+   ========================================== */
+
+const ratingButtons =
+  [...document.querySelectorAll(".rating-btn")];
+
+function updateRating(value){
+
+  value = Number(value);
+
+  ratingButtons.forEach((btn,index)=>{
+
+    const starValue = index + 1;
+
+    btn.classList.toggle(
+      "active",
+      starValue <= value
+    );
+
+  });
+
+}
+
+
+/* Klik bintang */
+ratingButtons.forEach((btn,index)=>{
+
+  const input =
+    btn.querySelector("input");
+
+  const value =
+    index + 1;
+
+
+  input.addEventListener(
+    "change",
+    ()=>{
+
+      updateRating(value);
+
     }
-    const {error}=await sb.from("comments").insert({name,rating,comment,image_url:imageUrl,approved:false});
-    if(error)throw new Error(error.message);
-    $("commentForm").reset();document.querySelector('input[name="rating"][value="5"]').checked=true;
-    status.className="text-sm text-emerald-300";status.textContent="✅ Komentar terkirim. Tunggu persetujuan admin ya!";
-  }catch(err){status.className="text-sm text-red-300";status.textContent="❌ "+err.message}
-  finally{btn.disabled=false}
+  );
+
+
+  /* Hover */
+  btn.addEventListener(
+    "mouseenter",
+    ()=>{
+
+      ratingButtons.forEach(
+        (b,i)=>{
+
+          b.classList.toggle(
+            "hovered",
+            i <= index
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+  btn.addEventListener(
+    "mouseleave",
+    ()=>{
+
+      ratingButtons.forEach(
+        b=>b.classList.remove("hovered")
+      );
+
+    }
+  );
+
 });
-$("refreshBtn").onclick=loadComments;
+
+
+/* Rating awal = 5 */
+updateRating(5);
+
+
+/* ==========================================
+   LOAD KOMENTAR
+   ========================================== */
+
+async function loadComments(){
+
+  const box =
+    $("commentsList");
+
+
+  const {
+    data,
+    error
+  } =
+    await sb
+      .from("comments")
+      .select(
+        "id,created_at,name,rating,comment,image_url,admin_reply"
+      )
+      .eq(
+        "approved",
+        true
+      )
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+
+  if(error){
+
+    box.innerHTML =
+      `<div class="glass rounded-2xl p-6 text-red-300">
+        Gagal memuat komentar:
+        ${esc(error.message)}
+      </div>`;
+
+    return;
+
+  }
+
+
+  const rows =
+    data || [];
+
+
+  /* Rata-rata rating */
+
+  const avg =
+    rows.length
+      ? rows.reduce(
+          (a,x)=>
+            a + Number(x.rating || 0),
+          0
+        ) / rows.length
+      : 0;
+
+
+  $("avgRating").textContent =
+    rows.length
+      ? avg.toFixed(1)
+      : "—";
+
+
+  $("avgStars").textContent =
+    rows.length
+      ? stars(Math.round(avg))
+      : "☆☆☆☆☆";
+
+
+  $("commentCount").textContent =
+    `${rows.length} komentar`;
+
+
+  if(!rows.length){
+
+    box.innerHTML =
+      `<div class="glass rounded-2xl p-6 text-center text-white/45">
+        Belum ada komentar. Jadilah yang pertama! 😊
+      </div>`;
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+    rows.map(x=>{
+
+      const initial =
+        (x.name || "?")
+          .trim()
+          .charAt(0)
+          .toUpperCase() || "?";
+
+
+      return `
+
+        <article class="comment-card rounded-2xl p-5">
+
+          <div class="flex gap-3">
+
+            ${
+              x.image_url
+
+              ?
+
+              `<a
+                href="${esc(x.image_url)}"
+                target="_blank"
+                rel="noopener"
+              >
+                <img
+                  src="${esc(x.image_url)}"
+                  class="avatar"
+                  alt="Foto ${esc(x.name)}"
+                >
+              </a>`
+
+              :
+
+              `<div class="avatar">
+                ${esc(initial)}
+              </div>`
+            }
+
+
+            <div class="min-w-0 flex-1">
+
+              <div class="flex flex-wrap items-center gap-2">
+
+                <strong>
+                  ${esc(x.name)}
+                </strong>
+
+                <span class="text-yellow-300">
+                  ${stars(x.rating)}
+                </span>
+
+              </div>
+
+
+              <div class="text-xs text-white/35 mt-1">
+                ${esc(dateText(x.created_at))}
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <p class="text-white/80 mt-4 whitespace-pre-wrap break-words">
+            ${esc(x.comment)}
+          </p>
+
+
+          ${
+            x.admin_reply
+
+            ?
+
+            `<div class="admin-reply mt-4 ml-2 rounded-xl p-3">
+
+              <div class="text-sm font-black text-[#0FFCBE]">
+                ↩ Balasan Muslih Fvnky
+              </div>
+
+              <p class="text-white/75 mt-1 whitespace-pre-wrap break-words">
+                ${esc(x.admin_reply)}
+              </p>
+
+            </div>`
+
+            :
+
+            ""
+          }
+
+        </article>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* ==========================================
+   KIRIM KOMENTAR
+   ========================================== */
+
+$("commentForm")
+  .addEventListener(
+    "submit",
+    async e=>{
+
+      e.preventDefault();
+
+
+      const btn =
+        $("submitBtn");
+
+      const status =
+        $("formStatus");
+
+      const file =
+        $("photo").files[0] || null;
+
+
+      const name =
+        $("name").value.trim();
+
+      const comment =
+        $("comment").value.trim();
+
+
+      const rating =
+        Number(
+          document.querySelector(
+            'input[name="rating"]:checked'
+          )?.value || 5
+        );
+
+
+      if(!name || !comment){
+
+        status.textContent =
+          "Nama dan komentar wajib diisi.";
+
+        return;
+
+      }
+
+
+      if(file){
+
+        if(
+          file.size >
+          5 * 1024 * 1024
+        ){
+
+          status.textContent =
+            "❌ Foto maksimal 5 MB.";
+
+          return;
+
+        }
+
+
+        if(
+          ![
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ].includes(file.type)
+        ){
+
+          status.textContent =
+            "❌ Format foto harus JPG, PNG, atau WEBP.";
+
+          return;
+
+        }
+
+      }
+
+
+      btn.disabled = true;
+
+      status.className =
+        "text-sm text-white/50";
+
+      status.textContent =
+        "⏳ Mengirim...";
+
+
+      try{
+
+        let imageUrl = null;
+
+
+        /* Upload foto */
+
+        if(file){
+
+          const ext =
+            (
+              file.name
+                .split(".")
+                .pop() ||
+              "webp"
+            )
+            .toLowerCase()
+            .replace(
+              /[^a-z0-9]/g,
+              ""
+            ) ||
+            "webp";
+
+
+          const path =
+            `comments/${Date.now()}-${crypto.randomUUID()}-${safeName(file.name)}.${ext}`;
+
+
+          const up =
+            await sb.storage
+              .from("images")
+              .upload(
+                path,
+                file,
+                {
+                  cacheControl:"3600",
+                  upsert:false
+                }
+              );
+
+
+          if(up.error){
+
+            throw new Error(
+              "Upload foto gagal: " +
+              up.error.message
+            );
+
+          }
+
+
+          imageUrl =
+            sb.storage
+              .from("images")
+              .getPublicUrl(path)
+              .data
+              .publicUrl;
+
+        }
+
+
+        /* Simpan komentar */
+
+        const {
+          error
+        } =
+          await sb
+            .from("comments")
+            .insert({
+
+              name,
+              rating,
+              comment,
+              image_url:imageUrl,
+              approved:false
+
+            });
+
+
+        if(error){
+
+          throw new Error(
+            error.message
+          );
+
+        }
+
+
+        /* Reset */
+
+        $("commentForm").reset();
+
+
+        const defaultRating =
+          document.querySelector(
+            'input[name="rating"][value="5"]'
+          );
+
+
+        defaultRating.checked =
+          true;
+
+
+        updateRating(5);
+
+
+        status.className =
+          "text-sm text-emerald-300";
+
+        status.textContent =
+          "✅ Komentar terkirim. Tunggu persetujuan admin ya!";
+
+
+      }catch(err){
+
+        status.className =
+          "text-sm text-red-300";
+
+        status.textContent =
+          "❌ " + err.message;
+
+      }finally{
+
+        btn.disabled = false;
+
+      }
+
+    }
+  );
+
+
+/* Refresh */
+
+$("refreshBtn")
+  .onclick =
+  loadComments;
+
+
+/* Load pertama */
+
 loadComments();
+
 </script>
+
 </body>
 </html>
