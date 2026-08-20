@@ -253,11 +253,16 @@ async function loadDashboardStats(){
 async function loadProducts(){
   const body=document.getElementById("productsBody");
   body.innerHTML='<tr><td colspan="6" class="p-8 text-center text-white/40">Memuat produk...</td></tr>';
-  const {data,error}=await sb.from("products").select("*").order("id",{ascending:false});
+
+  // Urutkan berdasarkan ID database dari yang paling lama ke paling baru.
+  // ID database asli TIDAK diubah.
+  const {data,error}=await sb.from("products").select("*").order("id",{ascending:true});
+
   if(error){
     body.innerHTML=`<tr><td colspan="6" class="p-8 text-center text-red-300">${esc(error.message)}</td></tr>`;
     return;
   }
+
   productsCache=data||[];
   renderProducts();
 }
@@ -267,9 +272,14 @@ function renderProducts(){
   const rows=productsCache.filter(p=>[p.prod_id,p.name,p.category,p.price].some(v=>String(v??"").toLowerCase().includes(q)));
   const body=document.getElementById("productsBody");
   if(!rows.length){body.innerHTML='<tr><td colspan="6" class="p-8 text-center text-white/40">Belum ada produk.</td></tr>';return}
-  body.innerHTML=rows.map(p=>`
+  body.innerHTML=rows.map(p=>{
+    // Nomor tampilan 1, 2, 3, ... mengikuti urutan produk lama.
+    // ID database asli tetap dipakai untuk Edit/Hapus.
+    const displayNo = productsCache.findIndex(x=>Number(x.id)===Number(p.id)) + 1;
+
+    return `
     <tr class="border-b border-white/5 hover:bg-white/[.025]">
-      <td class="p-4 text-white/45">#${esc(p.id)}</td>
+      <td class="p-4 text-white/45">#${displayNo}</td>
       <td class="p-4"><div class="flex items-center gap-3">
         ${p.image_url?`<img src="${esc(p.image_url)}" class="w-12 h-12 rounded-lg object-cover bg-black/30" onerror="this.style.display='none'">`:""}
         <div><div class="font-bold">${esc(p.name)}</div><div class="text-xs text-white/40">${esc(p.prod_id)}</div></div>
@@ -281,7 +291,8 @@ function renderProducts(){
         <button class="edit-product rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10" data-id="${esc(p.id)}">Edit</button>
         <button class="delete-product btn-danger rounded-lg px-3 py-2" data-id="${esc(p.id)}">Hapus</button>
       </div></td>
-    </tr>`).join("");
+    </tr>`;
+  }).join("");
 
   body.querySelectorAll(".edit-product").forEach(b=>b.addEventListener("click",()=>openEditProduct(Number(b.dataset.id))));
   body.querySelectorAll(".delete-product").forEach(b=>b.addEventListener("click",()=>deleteProduct(Number(b.dataset.id))));
