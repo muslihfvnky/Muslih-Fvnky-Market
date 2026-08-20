@@ -167,6 +167,26 @@
 
     footer small { color: rgba(255,255,255,0.75); }
 
+    /* Admin Login - dibuat kecil agar tidak mengganggu pengunjung */
+    .admin-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: rgba(255,255,255,0.45);
+      font-size: 11px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all .2s ease;
+    }
+    .admin-link:hover {
+      color: var(--mint);
+      border-color: rgba(15,252,190,0.35);
+      background: rgba(15,252,190,0.06);
+    }
+
     /* ---------- Jumat Berkah (Flash) styles - mint/blue theme ---------- */
     .jb-wrap { margin-top: 1.25rem; max-width: 1000px; margin-left:auto; margin-right:auto; border-radius: 12px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.45); }
     .jb-banner {
@@ -506,6 +526,7 @@
 
       <footer class="text-center text-gray-500 text-xs border-t border-gray-700 pt-4">
         <p>© 2026 Muslih Fvnky Shop. All rights reserved.</p>
+        <a href="admin.html" class="admin-link" aria-label="Login Admin">⚙️ Admin Login</a>
       </footer>
 
     </div>
