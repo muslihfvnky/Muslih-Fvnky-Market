@@ -237,7 +237,7 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
         const { error } = await sb.auth.signInWithOAuth({
           provider: "google",
           options: {
-            redirectTo: window.location.origin + window.location.pathname
+          redirectTo: "https://muslihfvnkyshop.my.id/admin.html"
           }
         });
         if (error) showStatus("Login gagal: " + error.message);
