@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Komentar & Rating - Muslih Fvnky Shop</title>
+
   <link rel="icon" type="image/png" href="logowebbundar.webp" sizes="512x512">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -12,11 +14,11 @@
     :root{
       --mint:#0FFCBE;
       --blue:#106EBE;
-      --panel:rgba(4,18,26,.82)
+      --panel:rgba(4,18,26,.82);
     }
 
     *{
-      box-sizing:border-box
+      box-sizing:border-box;
     }
 
     body{
@@ -26,101 +28,182 @@
       font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
       background:
         linear-gradient(rgba(0,0,0,.68),rgba(0,0,0,.78)),
-        url('backgroundweb.webp') center/cover fixed no-repeat
+        url('backgroundweb.webp') center/cover fixed no-repeat;
     }
 
     .glass{
       background:var(--panel);
       border:1px solid rgba(15,252,190,.18);
       box-shadow:0 15px 45px rgba(0,0,0,.35);
-      backdrop-filter:blur(12px)
+      backdrop-filter:blur(12px);
     }
 
     .btn{
       border:1px solid rgba(15,252,190,.55);
       background:rgba(16,110,190,.5);
-      transition:.2s
+      transition:.2s;
     }
 
     .btn:hover{
       background:rgba(15,252,190,.16);
-      transform:translateY(-1px)
+      transform:translateY(-1px);
     }
 
-    input,textarea,select{
+    input,
+    textarea,
+    select{
       background:rgba(0,0,0,.28);
       border:1px solid rgba(255,255,255,.14);
-      color:#fff
+      color:#fff;
     }
 
-    input:focus,textarea:focus,select:focus{
+    input:focus,
+    textarea:focus,
+    select:focus{
       outline:none;
       border-color:rgba(15,252,190,.7);
-      box-shadow:0 0 0 2px rgba(15,252,190,.08)
+      box-shadow:0 0 0 2px rgba(15,252,190,.08);
     }
 
     /* =========================
-       RATING BINTANG
-       ========================= */
-
-    .rating-btn{
-      position:relative;
-      cursor:pointer;
-    }
+       RATING
+    ========================= */
 
     .rating-btn input{
       display:none;
     }
 
     .rating-btn span{
-      display:inline-block;
-      font-size:1.9rem;
+      font-size:1.8rem;
       color:#64717a;
       opacity:1;
       cursor:pointer;
-      transition:
-        color .15s ease,
-        transform .15s ease;
+      transition:.15s;
       line-height:1;
     }
 
-    .rating-btn:hover span{
-      transform:scale(1.08);
-    }
-
-    /* Bintang yang sudah dipilih */
     .rating-btn.active span{
       color:#facc15;
+      opacity:1;
     }
 
-    /* Hover preview */
-    .rating-btn.hovered span{
+    .rating-btn:hover span{
       color:#facc15;
+      opacity:1;
     }
 
-    .rating-btn:not(.active):not(.hovered) span{
-      color:#64717a;
-    }
+    /* =========================
+       COMMENT CARD
+    ========================= */
 
     .comment-card{
       background:rgba(0,0,0,.28);
-      border:1px solid rgba(255,255,255,.08)
+      border:1px solid rgba(255,255,255,.08);
+      overflow:hidden;
     }
 
+    /* Avatar hanya inisial */
     .avatar{
       width:46px;
       height:46px;
+      min-width:46px;
       border-radius:999px;
-      object-fit:cover;
-      background:rgba(15,252,190,.1);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(15,252,190,.35),
+          rgba(16,110,190,.45)
+        );
+      border:1px solid rgba(15,252,190,.25);
       display:grid;
       place-items:center;
-      font-weight:900
+      font-weight:900;
+      font-size:1rem;
+      color:#fff;
+      text-transform:uppercase;
     }
 
+    /* Foto ulasan */
+    .review-photo{
+      display:block;
+      width:100%;
+      max-width:520px;
+      max-height:420px;
+      object-fit:cover;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      margin-top:16px;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    .review-photo:hover{
+      transform:scale(1.01);
+      border-color:rgba(15,252,190,.4);
+    }
+
+    /* Kotak balasan admin */
     .admin-reply{
-      background:rgba(16,110,190,.15);
-      border:1px solid rgba(15,252,190,.15)
+      margin-top:18px;
+      margin-left:0;
+      padding:14px 16px;
+      border-radius:14px;
+      background:rgba(16,110,190,.12);
+      border:1px solid rgba(15,252,190,.18);
+    }
+
+    .admin-reply-header{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:6px;
+      font-weight:800;
+      color:var(--mint);
+    }
+
+    .admin-reply-icon{
+      width:28px;
+      height:28px;
+      border-radius:999px;
+      background:rgba(15,252,190,.12);
+      border:1px solid rgba(15,252,190,.2);
+      display:grid;
+      place-items:center;
+      font-size:.85rem;
+    }
+
+    .admin-reply-text{
+      color:rgba(255,255,255,.78);
+      line-height:1.6;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+    }
+
+    .comment-text{
+      color:rgba(255,255,255,.82);
+      line-height:1.7;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+    }
+
+    .rating-stars{
+      color:#facc15;
+      letter-spacing:1px;
+    }
+
+    @media(max-width:640px){
+
+      .review-photo{
+        max-height:320px;
+      }
+
+      .admin-reply{
+        padding:12px;
+      }
+
+      .comment-card{
+        padding:16px !important;
+      }
     }
   </style>
 </head>
@@ -128,9 +211,11 @@
 <body>
 
 <header class="glass border-x-0 border-t-0">
+
   <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
 
     <div class="flex items-center gap-3">
+
       <img
         src="logowebbundar.webp"
         class="w-11 h-11 rounded-full object-cover"
@@ -138,9 +223,15 @@
       >
 
       <div>
-        <h1 class="font-black">Muslih Fvnky Shop</h1>
-        <p class="text-xs text-white/50">Komentar & Rating</p>
+        <h1 class="font-black">
+          Muslih Fvnky Shop
+        </h1>
+
+        <p class="text-xs text-white/50">
+          Komentar & Rating
+        </p>
       </div>
+
     </div>
 
     <a
@@ -151,12 +242,16 @@
     </a>
 
   </div>
+
 </header>
 
 
 <main class="max-w-4xl mx-auto px-4 py-8">
 
-  <!-- HEADER -->
+  <!-- =========================
+       HEADER
+  ========================== -->
+
   <section class="text-center mb-7">
 
     <h2 class="text-3xl font-black">
@@ -170,23 +265,36 @@
     <div class="glass rounded-2xl p-5 mt-5 inline-flex items-center gap-4">
 
       <div>
-        <div id="avgRating" class="text-3xl font-black">
+
+        <div
+          id="avgRating"
+          class="text-3xl font-black"
+        >
           —
         </div>
 
-        <div id="avgStars" class="text-lg">
+        <div
+          id="avgStars"
+          class="text-lg rating-stars"
+        >
           ☆☆☆☆☆
         </div>
+
       </div>
 
       <div class="text-left">
-        <div id="commentCount" class="font-bold">
+
+        <div
+          id="commentCount"
+          class="font-bold"
+        >
           0 komentar
         </div>
 
         <div class="text-xs text-white/45">
           Komentar yang sudah disetujui admin
         </div>
+
       </div>
 
     </div>
@@ -194,7 +302,10 @@
   </section>
 
 
-  <!-- FORM KOMENTAR -->
+  <!-- =========================
+       FORM KOMENTAR
+  ========================== -->
+
   <section class="glass rounded-2xl p-5 sm:p-6 mb-7">
 
     <h3 class="text-xl font-black">
@@ -206,10 +317,15 @@
     </p>
 
 
-    <form id="commentForm" class="grid gap-4 mt-5">
+    <form
+      id="commentForm"
+      class="grid gap-4 mt-5"
+    >
 
-      <!-- NAMA -->
+      <!-- Nama -->
+
       <label class="text-sm text-white/70">
+
         Nama
 
         <input
@@ -219,10 +335,12 @@
           class="w-full rounded-xl px-3 py-3 mt-1"
           placeholder="Nama kamu"
         >
+
       </label>
 
 
-      <!-- RATING -->
+      <!-- Rating -->
+
       <div>
 
         <p class="text-sm text-white/70 mb-2">
@@ -270,7 +388,7 @@
             <span>★</span>
           </label>
 
-          <label class="rating-btn active">
+          <label class="rating-btn">
             <input
               type="radio"
               name="rating"
@@ -285,8 +403,10 @@
       </div>
 
 
-      <!-- KOMENTAR -->
+      <!-- Komentar -->
+
       <label class="text-sm text-white/70">
+
         Komentar
 
         <textarea
@@ -294,16 +414,19 @@
           maxlength="500"
           required
           rows="5"
-          class="w-full rounded-xl px-3 py-3 mt-1"
+          class="w-full rounded-xl px-3 py-3 mt-1 resize-y"
           placeholder="Tulis pengalaman kamu..."
         ></textarea>
+
       </label>
 
 
-      <!-- FOTO -->
+      <!-- Foto -->
+
       <label class="text-sm text-white/70">
 
         Upload Foto
+
         <span class="text-white/35">
           (opsional, maks. 5 MB)
         </span>
@@ -318,7 +441,8 @@
       </label>
 
 
-      <!-- BUTTON -->
+      <!-- Submit -->
+
       <button
         id="submitBtn"
         class="btn rounded-xl px-5 py-3 font-black"
@@ -338,7 +462,10 @@
   </section>
 
 
-  <!-- KOMENTAR -->
+  <!-- =========================
+       KOMENTAR TERBARU
+  ========================== -->
+
   <section>
 
     <div class="flex items-center justify-between gap-3 mb-4">
@@ -356,13 +483,16 @@
 
     </div>
 
+
     <div
       id="commentsList"
       class="grid gap-4"
     >
+
       <div class="glass rounded-2xl p-6 text-white/45">
         Memuat komentar...
       </div>
+
     </div>
 
   </section>
@@ -394,13 +524,14 @@ function esc(v){
   return String(v ?? "")
     .replace(
       /[&<>"']/g,
-      m => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        "\"":"&quot;",
-        "'":"&#039;"
-      }[m])
+      m =>
+        ({
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          "\"":"&quot;",
+          "'":"&#039;"
+        }[m])
     );
 
 }
@@ -416,8 +547,10 @@ function stars(n){
     )
   );
 
-  return "★".repeat(n) +
-         "☆".repeat(5-n);
+  return (
+    "★".repeat(n) +
+    "☆".repeat(5 - n)
+  );
 
 }
 
@@ -455,92 +588,9 @@ function safeName(v){
 }
 
 
-/* ==========================================
-   SISTEM RATING
-   ========================================== */
-
-const ratingButtons =
-  [...document.querySelectorAll(".rating-btn")];
-
-function updateRating(value){
-
-  value = Number(value);
-
-  ratingButtons.forEach((btn,index)=>{
-
-    const starValue = index + 1;
-
-    btn.classList.toggle(
-      "active",
-      starValue <= value
-    );
-
-  });
-
-}
-
-
-/* Klik bintang */
-ratingButtons.forEach((btn,index)=>{
-
-  const input =
-    btn.querySelector("input");
-
-  const value =
-    index + 1;
-
-
-  input.addEventListener(
-    "change",
-    ()=>{
-
-      updateRating(value);
-
-    }
-  );
-
-
-  /* Hover */
-  btn.addEventListener(
-    "mouseenter",
-    ()=>{
-
-      ratingButtons.forEach(
-        (b,i)=>{
-
-          b.classList.toggle(
-            "hovered",
-            i <= index
-          );
-
-        }
-      );
-
-    }
-  );
-
-
-  btn.addEventListener(
-    "mouseleave",
-    ()=>{
-
-      ratingButtons.forEach(
-        b=>b.classList.remove("hovered")
-      );
-
-    }
-  );
-
-});
-
-
-/* Rating awal = 5 */
-updateRating(5);
-
-
-/* ==========================================
-   LOAD KOMENTAR
-   ========================================== */
+/* =========================
+   LOAD COMMENTS
+========================= */
 
 async function loadComments(){
 
@@ -551,31 +601,31 @@ async function loadComments(){
   const {
     data,
     error
-  } =
-    await sb
-      .from("comments")
-      .select(
-        "id,created_at,name,rating,comment,image_url,admin_reply"
-      )
-      .eq(
-        "approved",
-        true
-      )
-      .order(
-        "created_at",
-        {
-          ascending:false
-        }
-      );
+  } = await sb
+    .from("comments")
+    .select(
+      "id,created_at,name,rating,comment,image_url,admin_reply"
+    )
+    .eq(
+      "approved",
+      true
+    )
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    );
 
 
   if(error){
 
-    box.innerHTML =
-      `<div class="glass rounded-2xl p-6 text-red-300">
+    box.innerHTML = `
+      <div class="glass rounded-2xl p-6 text-red-300">
         Gagal memuat komentar:
         ${esc(error.message)}
-      </div>`;
+      </div>
+    `;
 
     return;
 
@@ -586,12 +636,12 @@ async function loadComments(){
     data || [];
 
 
-  /* Rata-rata rating */
+  /* RATING RATA-RATA */
 
   const avg =
     rows.length
       ? rows.reduce(
-          (a,x)=>
+          (a,x) =>
             a + Number(x.rating || 0),
           0
         ) / rows.length
@@ -614,20 +664,31 @@ async function loadComments(){
     `${rows.length} komentar`;
 
 
+  /* BELUM ADA KOMENTAR */
+
   if(!rows.length){
 
-    box.innerHTML =
-      `<div class="glass rounded-2xl p-6 text-center text-white/45">
-        Belum ada komentar. Jadilah yang pertama! 😊
-      </div>`;
+    box.innerHTML = `
+      <div class="glass rounded-2xl p-6 text-center text-white/45">
+        Belum ada komentar.
+        Jadilah yang pertama! 😊
+      </div>
+    `;
 
     return;
 
   }
 
 
+  /* RENDER KOMENTAR */
+
   box.innerHTML =
-    rows.map(x=>{
+    rows.map(x => {
+
+      /*
+        AVATAR SELALU INISIAL
+        Tidak menggunakan image_url
+      */
 
       const initial =
         (x.name || "?")
@@ -636,46 +697,86 @@ async function loadComments(){
           .toUpperCase() || "?";
 
 
-      return `
+      /*
+        FOTO ULASAN
+        Hanya muncul jika user upload foto
+      */
 
+      const reviewPhoto =
+        x.image_url
+          ? `
+            <a
+              href="${esc(x.image_url)}"
+              target="_blank"
+              rel="noopener"
+              title="Lihat foto ulasan"
+            >
+              <img
+                src="${esc(x.image_url)}"
+                class="review-photo"
+                alt="Foto ulasan dari ${esc(x.name)}"
+                loading="lazy"
+              >
+            </a>
+          `
+          : "";
+
+
+      /*
+        BALASAN ADMIN
+      */
+
+      const adminReply =
+        x.admin_reply
+          ? `
+            <div class="admin-reply">
+
+              <div class="admin-reply-header">
+
+                <div class="admin-reply-icon">
+                  ↩
+                </div>
+
+                <span>
+                  Balasan Muslih Fvnky
+                </span>
+
+              </div>
+
+              <div class="admin-reply-text">
+                ${esc(x.admin_reply)}
+              </div>
+
+            </div>
+          `
+          : "";
+
+
+      return `
         <article class="comment-card rounded-2xl p-5">
+
+          <!-- HEADER KOMENTAR -->
 
           <div class="flex gap-3">
 
-            ${
-              x.image_url
+            <!-- AVATAR INISIAL -->
 
-              ?
+            <div class="avatar">
+              ${esc(initial)}
+            </div>
 
-              `<a
-                href="${esc(x.image_url)}"
-                target="_blank"
-                rel="noopener"
-              >
-                <img
-                  src="${esc(x.image_url)}"
-                  class="avatar"
-                  alt="Foto ${esc(x.name)}"
-                >
-              </a>`
 
-              :
-
-              `<div class="avatar">
-                ${esc(initial)}
-              </div>`
-            }
-
+            <!-- IDENTITAS -->
 
             <div class="min-w-0 flex-1">
 
               <div class="flex flex-wrap items-center gap-2">
 
-                <strong>
+                <strong class="font-black">
                   ${esc(x.name)}
                 </strong>
 
-                <span class="text-yellow-300">
+                <span class="rating-stars text-sm">
                   ${stars(x.rating)}
                 </span>
 
@@ -691,35 +792,27 @@ async function loadComments(){
           </div>
 
 
-          <p class="text-white/80 mt-4 whitespace-pre-wrap break-words">
-            ${esc(x.comment)}
-          </p>
+          <!-- ISI KOMENTAR -->
+
+          <div class="mt-4">
+
+            <p class="comment-text">
+              ${esc(x.comment)}
+            </p>
+
+          </div>
 
 
-          ${
-            x.admin_reply
+          <!-- FOTO ULASAN -->
 
-            ?
+          ${reviewPhoto}
 
-            `<div class="admin-reply mt-4 ml-2 rounded-xl p-3">
 
-              <div class="text-sm font-black text-[#0FFCBE]">
-                ↩ Balasan Muslih Fvnky
-              </div>
+          <!-- BALASAN ADMIN -->
 
-              <p class="text-white/75 mt-1 whitespace-pre-wrap break-words">
-                ${esc(x.admin_reply)}
-              </p>
-
-            </div>`
-
-            :
-
-            ""
-          }
+          ${adminReply}
 
         </article>
-
       `;
 
     }).join("");
@@ -727,14 +820,59 @@ async function loadComments(){
 }
 
 
-/* ==========================================
-   KIRIM KOMENTAR
-   ========================================== */
+/* =========================
+   RATING BINTANG
+========================= */
+
+const ratingButtons =
+  document.querySelectorAll(".rating-btn");
+
+function updateRatingStars(value){
+
+  ratingButtons.forEach(btn => {
+
+    const rating =
+      Number(btn.dataset.rating);
+
+    btn.classList.toggle(
+      "active",
+      rating <= value
+    );
+
+  });
+}
+
+ratingButtons.forEach((btn, index) => {
+
+  const input =
+    btn.querySelector("input");
+
+  const value = index + 1;
+
+  btn.dataset.rating = value;
+
+  input.addEventListener("change", () => {
+    updateRatingStars(value);
+  });
+
+  btn.addEventListener("click", () => {
+    input.checked = true;
+    updateRatingStars(value);
+  });
+
+});
+
+updateRatingStars(5);
+
+
+/* =========================
+   SUBMIT KOMENTAR
+========================= */
 
 $("commentForm")
   .addEventListener(
     "submit",
-    async e=>{
+    async e => {
 
       e.preventDefault();
 
@@ -750,17 +888,24 @@ $("commentForm")
 
 
       const name =
-        $("name").value.trim();
+        $("name")
+          .value
+          .trim();
+
 
       const comment =
-        $("comment").value.trim();
+        $("comment")
+          .value
+          .trim();
 
 
       const rating =
         Number(
-          document.querySelector(
-            'input[name="rating"]:checked'
-          )?.value || 5
+          document
+            .querySelector(
+              'input[name="rating"]:checked'
+            )
+            ?.value || 5
         );
 
 
@@ -773,6 +918,8 @@ $("commentForm")
 
       }
 
+
+      /* VALIDASI FOTO */
 
       if(file){
 
@@ -821,7 +968,7 @@ $("commentForm")
         let imageUrl = null;
 
 
-        /* Upload foto */
+        /* UPLOAD FOTO ULASAN */
 
         if(file){
 
@@ -836,8 +983,7 @@ $("commentForm")
             .replace(
               /[^a-z0-9]/g,
               ""
-            ) ||
-            "webp";
+            ) || "webp";
 
 
           const path =
@@ -845,7 +991,8 @@ $("commentForm")
 
 
           const up =
-            await sb.storage
+            await sb
+              .storage
               .from("images")
               .upload(
                 path,
@@ -868,7 +1015,8 @@ $("commentForm")
 
 
           imageUrl =
-            sb.storage
+            sb
+              .storage
               .from("images")
               .getPublicUrl(path)
               .data
@@ -877,7 +1025,7 @@ $("commentForm")
         }
 
 
-        /* Simpan komentar */
+        /* INSERT KOMENTAR */
 
         const {
           error
@@ -887,9 +1035,13 @@ $("commentForm")
             .insert({
 
               name,
+
               rating,
+
               comment,
+
               image_url:imageUrl,
+
               approved:false
 
             });
@@ -904,26 +1056,23 @@ $("commentForm")
         }
 
 
-        /* Reset */
+        /* RESET */
 
         $("commentForm").reset();
 
 
-        const defaultRating =
-          document.querySelector(
+        document
+          .querySelector(
             'input[name="rating"][value="5"]'
-          );
+          )
+          .checked = true;
 
-
-        defaultRating.checked =
-          true;
-
-
-        updateRating(5);
+        updateRatingStars(5);
 
 
         status.className =
           "text-sm text-emerald-300";
+
 
         status.textContent =
           "✅ Komentar terkirim. Tunggu persetujuan admin ya!";
@@ -933,6 +1082,7 @@ $("commentForm")
 
         status.className =
           "text-sm text-red-300";
+
 
         status.textContent =
           "❌ " + err.message;
@@ -947,14 +1097,18 @@ $("commentForm")
   );
 
 
-/* Refresh */
+/* =========================
+   REFRESH
+========================= */
 
 $("refreshBtn")
   .onclick =
-  loadComments;
+    loadComments;
 
 
-/* Load pertama */
+/* =========================
+   LOAD AWAL
+========================= */
 
 loadComments();
 
