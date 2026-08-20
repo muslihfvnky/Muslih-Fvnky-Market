@@ -6,2807 +6,607 @@
   <title>Admin Dashboard - Muslih Fvnky Shop</title>
   <link rel="icon" type="image/png" href="logowebbundar.webp" sizes="512x512">
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
-    :root{
-      --mint:#0FFCBE;
-      --blue:#106EBE;
-      --bg:#06151c;
-      --panel:rgba(7,29,39,.88)
-    }
-
+    :root{--mint:#0FFCBE;--blue:#106EBE;--bg:#06151c;--panel:rgba(7,29,39,.88)}
     *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      min-height:100vh;
-      color:#fff;
-      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-      background:
-        linear-gradient(rgba(0,0,0,.78),rgba(0,0,0,.88)),
-        url('backgroundweb.webp') center/cover fixed no-repeat
-    }
-
-    .glass{
-      background:var(--panel);
-      border:1px solid rgba(15,252,190,.16);
-      box-shadow:0 15px 45px rgba(0,0,0,.35);
-      backdrop-filter:blur(12px)
-    }
-
+    body{margin:0;min-height:100vh;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:linear-gradient(rgba(0,0,0,.78),rgba(0,0,0,.88)),url('backgroundweb.webp') center/cover fixed no-repeat}
+    .glass{background:var(--panel);border:1px solid rgba(15,252,190,.16);box-shadow:0 15px 45px rgba(0,0,0,.35);backdrop-filter:blur(12px)}
     .mint{color:var(--mint)}
-
-    .btn{
-      border:1px solid rgba(15,252,190,.5);
-      background:rgba(16,110,190,.35);
-      transition:.2s
-    }
-
-    .btn:hover{
-      background:rgba(15,252,190,.16);
-      transform:translateY(-1px)
-    }
-
-    .btn-danger{
-      border:1px solid rgba(248,113,113,.45);
-      background:rgba(127,29,29,.3)
-    }
-
-    .btn-danger:hover{
-      background:rgba(239,68,68,.18)
-    }
-
-    .stat{
-      background:linear-gradient(
-        145deg,
-        rgba(16,110,190,.28),
-        rgba(15,252,190,.08)
-      );
-      border:1px solid rgba(255,255,255,.08)
-    }
-
-    .nav-item{
-      width:100%;
-      text-align:left;
-      padding:12px 14px;
-      border-radius:10px;
-      color:rgba(255,255,255,.78);
-      transition:.2s
-    }
-
-    .nav-item:hover,
-    .nav-item.active{
-      background:rgba(15,252,190,.1);
-      color:#fff
-    }
-
-    .hidden{
-      display:none!important
-    }
-
-    .spinner{
-      width:20px;
-      height:20px;
-      border:3px solid rgba(255,255,255,.2);
-      border-top-color:var(--mint);
-      border-radius:50%;
-      animation:spin .8s linear infinite
-    }
-
-    @keyframes spin{
-      to{transform:rotate(360deg)}
-    }
-
-    input,select{
-      background:rgba(0,0,0,.25);
-      border:1px solid rgba(255,255,255,.12);
-      color:#fff
-    }
-
-    input:focus,
-    select:focus{
-      outline:none;
-      border-color:rgba(15,252,190,.65);
-      box-shadow:0 0 0 2px rgba(15,252,190,.08)
-    }
-
-    select option{
-      background:#071d27;
-      color:#fff
-    }
-
-    .table-wrap{
-      overflow-x:auto
-    }
-
-    table{
-      min-width:850px
-    }
-
-    th{
-      font-size:.72rem;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-      color:rgba(255,255,255,.45);
-      font-weight:700
-    }
-
-    td{
-      font-size:.85rem;
-      color:rgba(255,255,255,.82)
-    }
-
-
-    .comment-admin-card{
-      background:rgba(0,0,0,.24);
-      border:1px solid rgba(255,255,255,.08);
-      transition:.2s
-    }
-
-    .comment-admin-card:hover{
-      border-color:rgba(15,252,190,.2)
-    }
-
-    .comment-photo{
-      width:72px;
-      height:72px;
-      border-radius:14px;
-      object-fit:cover;
-      background:rgba(0,0,0,.25)
-    }
+    .btn{border:1px solid rgba(15,252,190,.5);background:rgba(16,110,190,.35);transition:.2s}
+    .btn:hover{background:rgba(15,252,190,.16);transform:translateY(-1px)}
+    .btn-danger{border:1px solid rgba(248,113,113,.45);background:rgba(127,29,29,.3)}
+    .btn-danger:hover{background:rgba(239,68,68,.18)}
+    .stat{background:linear-gradient(145deg,rgba(16,110,190,.28),rgba(15,252,190,.08));border:1px solid rgba(255,255,255,.08)}
+    .nav-item{width:100%;text-align:left;padding:12px 14px;border-radius:10px;color:rgba(255,255,255,.78);transition:.2s}
+    .nav-item:hover,.nav-item.active{background:rgba(15,252,190,.1);color:#fff}
+    .hidden{display:none!important}
+    .spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--mint);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    input,select{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.12);color:#fff}
+    input:focus,select:focus{outline:none;border-color:rgba(15,252,190,.65);box-shadow:0 0 0 2px rgba(15,252,190,.08)}
+    select option{background:#071d27;color:#fff}
+    .table-wrap{overflow-x:auto}
+    table{min-width:850px}
+    th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.45);font-weight:700}
+    td{font-size:.85rem;color:rgba(255,255,255,.82)}
   </style>
 </head>
-
 <body>
-
-  <!-- LOGIN -->
   <main id="loginView" class="min-h-screen flex items-center justify-center p-5">
     <section class="glass w-full max-w-md rounded-3xl p-7 text-center">
-
-      <img
-        src="logowebbundar.webp"
-        alt="Muslih Fvnky Shop"
-        class="w-20 h-20 rounded-full mx-auto mb-5 object-cover"
-      >
-
-      <h1 class="text-2xl font-black">
-        Admin Dashboard
-      </h1>
-
-      <p class="text-white/60 mt-2 mb-7">
-        Muslih Fvnky Shop
-      </p>
-
-      <button
-        id="googleLogin"
-        class="btn w-full rounded-xl px-5 py-3 font-bold flex items-center justify-center gap-3"
-      >
-        <span class="text-xl">G</span>
-        Masuk dengan Google
+      <img src="logowebbundar.webp" alt="Muslih Fvnky Shop" class="w-20 h-20 rounded-full mx-auto mb-5 object-cover">
+      <h1 class="text-2xl font-black">Admin Dashboard</h1>
+      <p class="text-white/60 mt-2 mb-7">Muslih Fvnky Shop</p>
+      <button id="googleLogin" class="btn w-full rounded-xl px-5 py-3 font-bold flex items-center justify-center gap-3">
+        <span class="text-xl">G</span> Masuk dengan Google
       </button>
-
       <p id="loginStatus" class="text-sm text-white/50 mt-4"></p>
-
-      <a
-        href="index.html"
-        class="inline-block mt-6 text-sm text-white/50 hover:text-white"
-      >
-        ← Kembali ke website
-      </a>
-
+      <a href="index.html" class="inline-block mt-6 text-sm text-white/50 hover:text-white">← Kembali ke website</a>
     </section>
   </main>
 
-
-  <!-- DASHBOARD -->
   <div id="dashboardView" class="hidden min-h-screen">
-
-    <!-- HEADER -->
     <header class="glass sticky top-0 z-20 border-x-0 border-t-0">
-
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-
         <div class="flex items-center gap-3">
-
-          <img
-            src="logowebbundar.webp"
-            class="w-11 h-11 rounded-full object-cover"
-            alt=""
-          >
-
-          <div>
-            <h1 class="font-black">
-              Muslih Fvnky Shop
-            </h1>
-
-            <p class="text-xs text-white/50">
-              Admin Dashboard
-            </p>
-          </div>
-
+          <img src="logowebbundar.webp" class="w-11 h-11 rounded-full object-cover" alt="">
+          <div><h1 class="font-black">Muslih Fvnky Shop</h1><p class="text-xs text-white/50">Admin Dashboard</p></div>
         </div>
-
         <div class="flex items-center gap-3">
-
-          <div class="hidden sm:block text-right">
-            <p id="userName" class="text-sm font-bold"></p>
-            <p id="userEmail" class="text-xs text-white/50"></p>
-          </div>
-
-          <button
-            id="logoutBtn"
-            class="btn rounded-lg px-3 py-2 text-sm font-bold"
-          >
-            Keluar
-          </button>
-
+          <div class="hidden sm:block text-right"><p id="userName" class="text-sm font-bold"></p><p id="userEmail" class="text-xs text-white/50"></p></div>
+          <button id="logoutBtn" class="btn rounded-lg px-3 py-2 text-sm font-bold">Keluar</button>
         </div>
-
       </div>
-
     </header>
 
-
-    <!-- MAIN LAYOUT -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid lg:grid-cols-[230px_1fr] gap-6">
-
-      <!-- SIDEBAR -->
       <aside class="glass rounded-2xl p-3 h-fit">
-
-        <p class="text-xs uppercase tracking-wider text-white/40 px-3 py-2">
-          Menu
-        </p>
-
-        <button
-          class="nav-item active"
-          data-section="overview"
-        >
-          📊 Dashboard
-        </button>
-
-        <button
-          class="nav-item"
-          data-section="products"
-        >
-          📦 Produk
-        </button>
-
-        <button
-          class="nav-item"
-          data-section="orders"
-        >
-          🧾 Pesanan
-        </button>
-
-        <button
-          class="nav-item"
-          data-section="comments"
-        >
-          💬 Komentar
-        </button>
-
-        <button
-          class="nav-item"
-          data-section="testimonials"
-        >
-          📸 Testimoni
-        </button>
-
-        <button
-          class="nav-item"
-          data-section="settings"
-        >
-          ⚙️ Pengaturan
-        </button>
-
-        <a
-          href="index.html"
-          class="nav-item block mt-2"
-        >
-          🏠 Lihat Website
-        </a>
-
+        <p class="text-xs uppercase tracking-wider text-white/40 px-3 py-2">Menu</p>
+        <button class="nav-item active" data-section="overview">📊 Dashboard</button>
+        <button class="nav-item" data-section="products">📦 Produk</button>
+        <button class="nav-item" data-section="orders">🧾 Pesanan</button>
+        <button class="nav-item" data-section="comments">💬 Komentar</button>
+        <button class="nav-item" data-section="testimonials">📸 Testimoni</button>
+        <button class="nav-item" data-section="settings">⚙️ Pengaturan</button>
+        <a href="index.html" class="nav-item block mt-2">🏠 Lihat Website</a>
       </aside>
 
-
-      <!-- CONTENT -->
       <main>
-
-        <!-- DASHBOARD -->
         <section id="overview" class="admin-section">
-
-          <div class="mb-6">
-
-            <h2 class="text-2xl font-black">
-              Dashboard
-            </h2>
-
-            <p class="text-white/55 mt-1">
-              Selamat datang di panel admin toko.
-            </p>
-
-          </div>
-
-
+          <div class="mb-6"><h2 class="text-2xl font-black">Dashboard</h2><p class="text-white/55 mt-1">Selamat datang di panel admin toko.</p></div>
           <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-
-            <div class="stat rounded-2xl p-5">
-              <p class="text-white/50 text-sm">
-                Produk
-              </p>
-
-              <p
-                id="statProducts"
-                class="text-3xl font-black mt-2"
-              >
-                —
-              </p>
-
-              <p
-                id="statProductsText"
-                class="text-xs text-white/40 mt-1"
-              >
-                Memuat...
-              </p>
-            </div>
-
-
-            <div class="stat rounded-2xl p-5">
-
-              <p class="text-white/50 text-sm">
-                Pesanan
-              </p>
-
-              <p
-                id="statOrders"
-                class="text-3xl font-black mt-2"
-              >
-                —
-              </p>
-
-              <p class="text-xs text-white/40 mt-1">
-                Database
-              </p>
-
-            </div>
-
-
-            <div class="stat rounded-2xl p-5">
-
-              <p class="text-white/50 text-sm">
-                Komentar
-              </p>
-
-              <p
-                id="statComments"
-                class="text-3xl font-black mt-2"
-              >
-                —
-              </p>
-
-              <p class="text-xs text-white/40 mt-1">
-                Database
-              </p>
-
-            </div>
-
-
-            <div class="stat rounded-2xl p-5">
-
-              <p class="text-white/50 text-sm">
-                Testimoni
-              </p>
-
-              <p
-                id="statTestimonials"
-                class="text-3xl font-black mt-2"
-              >
-                —
-              </p>
-
-              <p class="text-xs text-white/40 mt-1">
-                Database
-              </p>
-
-            </div>
-
+            <div class="stat rounded-2xl p-5"><p class="text-white/50 text-sm">Produk</p><p id="statProducts" class="text-3xl font-black mt-2">—</p><p id="statProductsText" class="text-xs text-white/40 mt-1">Memuat...</p></div>
+            <div class="stat rounded-2xl p-5"><p class="text-white/50 text-sm">Pesanan</p><p id="statOrders" class="text-3xl font-black mt-2">—</p><p class="text-xs text-white/40 mt-1">Database</p></div>
+            <div class="stat rounded-2xl p-5"><p class="text-white/50 text-sm">Komentar</p><p id="statComments" class="text-3xl font-black mt-2">—</p><p class="text-xs text-white/40 mt-1">Database</p></div>
+            <div class="stat rounded-2xl p-5"><p class="text-white/50 text-sm">Testimoni</p><p id="statTestimonials" class="text-3xl font-black mt-2">—</p><p class="text-xs text-white/40 mt-1">Database</p></div>
           </div>
-
-
           <div class="glass rounded-2xl p-5 mt-5">
-
-            <h3 class="font-black text-lg">
-              Status sistem
-            </h3>
-
+            <h3 class="font-black text-lg">Status sistem</h3>
             <div class="mt-4 space-y-3 text-sm">
-
-              <div class="flex items-center justify-between">
-
-                <span class="text-white/65">
-                  Google Login
-                </span>
-
-                <span
-                  id="authStatus"
-                  class="text-yellow-300"
-                >
-                  Memeriksa...
-                </span>
-
-              </div>
-
-
-              <div class="flex items-center justify-between">
-
-                <span class="text-white/65">
-                  Database
-                </span>
-
-                <span
-                  id="dbStatus"
-                  class="text-yellow-300"
-                >
-                  Memeriksa...
-                </span>
-
-              </div>
-
-
-              <div class="flex items-center justify-between">
-
-                <span class="text-white/65">
-                  Akun Admin
-                </span>
-
-                <span class="text-emerald-300">
-                  muslihshoope@gmail.com ✓
-                </span>
-
-              </div>
-
+              <div class="flex items-center justify-between"><span class="text-white/65">Google Login</span><span id="authStatus" class="text-yellow-300">Memeriksa...</span></div>
+              <div class="flex items-center justify-between"><span class="text-white/65">Database</span><span id="dbStatus" class="text-yellow-300">Memeriksa...</span></div>
+              <div class="flex items-center justify-between"><span class="text-white/65">Akun Admin</span><span class="text-emerald-300">muslihshoope@gmail.com ✓</span></div>
             </div>
-
           </div>
-
         </section>
 
-
-        <!-- PRODUCTS -->
         <section id="products" class="admin-section hidden">
-
           <div class="flex flex-wrap items-center justify-between gap-3">
-
-            <div>
-
-              <h2 class="text-2xl font-black">
-                📦 Produk
-              </h2>
-
-              <p class="text-white/50 text-sm mt-1">
-                Kelola produk FLM langsung dari Supabase.
-              </p>
-
-            </div>
-
-
-            <button
-              id="addProductBtn"
-              class="btn rounded-xl px-4 py-2.5 font-bold"
-            >
-              ＋ Tambah Produk
-            </button>
-
+            <div><h2 class="text-2xl font-black">📦 Produk</h2><p class="text-white/50 text-sm mt-1">Kelola produk FLM langsung dari Supabase.</p></div>
+            <button id="addProductBtn" class="btn rounded-xl px-4 py-2.5 font-bold">＋ Tambah Produk</button>
           </div>
 
-
-          <!-- PRODUCT FORM -->
-          <div
-            id="productForm"
-            class="glass rounded-2xl p-5 mt-5 hidden"
-          >
-
+          <div id="productForm" class="glass rounded-2xl p-5 mt-5 hidden">
             <div class="flex items-center justify-between gap-3 mb-4">
-
-              <h3
-                id="productFormTitle"
-                class="font-black text-lg"
-              >
-                Tambah Produk
-              </h3>
-
-              <button
-                id="cancelProductBtn"
-                class="text-white/50 hover:text-white"
-              >
-                ✕
-              </button>
-
+              <h3 id="productFormTitle" class="font-black text-lg">Tambah Produk</h3>
+              <button id="cancelProductBtn" class="text-white/50 hover:text-white">✕</button>
             </div>
-
-
-            <form
-              id="productFormEl"
-              class="grid md:grid-cols-2 gap-4"
-            >
-
-              <input
-                type="hidden"
-                id="productId"
-              >
-
-
-              <label class="text-sm text-white/70">
-
-                Product ID / prod_id
-
-                <input
-                  id="prodId"
-                  class="w-full rounded-xl px-3 py-2.5 mt-1"
-                  required
-                >
-
+            <form id="productFormEl" class="grid md:grid-cols-2 gap-4">
+              <input type="hidden" id="productId">
+              <label class="text-sm text-white/70">Product ID / prod_id<input id="prodId" class="w-full rounded-xl px-3 py-2.5 mt-1" required></label>
+              <label class="text-sm text-white/70">Nama<input id="productName" class="w-full rounded-xl px-3 py-2.5 mt-1" required></label>
+              <label class="text-sm text-white/70">Harga (Rp)<input id="productPrice" type="number" min="0" class="w-full rounded-xl px-3 py-2.5 mt-1" required></label>
+              <label class="text-sm text-white/70">Kategori<input id="productCategory" class="w-full rounded-xl px-3 py-2.5 mt-1" required></label>
+              <label class="text-sm text-white/70">Gambar Produk
+                <input id="productImageFile" type="file" accept="image/jpeg,image/png,image/webp" class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black">
+                <input type="hidden" id="productImageUrl">
+                <span id="productImageCurrent" class="block text-xs text-white/40 mt-1"></span>
               </label>
-
-
-              <label class="text-sm text-white/70">
-
-                Nama
-
-                <input
-                  id="productName"
-                  class="w-full rounded-xl px-3 py-2.5 mt-1"
-                  required
-                >
-
+              <label class="text-sm text-white/70">Audio Preview
+                <input id="productAudioFile" type="file" accept="audio/mpeg,audio/mp3" class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black">
+                <input type="hidden" id="productAudioUrl">
+                <span id="productAudioCurrent" class="block text-xs text-white/40 mt-1"></span>
               </label>
-
-
-              <label class="text-sm text-white/70">
-
-                Harga (Rp)
-
-                <input
-                  id="productPrice"
-                  type="number"
-                  min="0"
-                  class="w-full rounded-xl px-3 py-2.5 mt-1"
-                  required
-                >
-
-              </label>
-
-
-              <label class="text-sm text-white/70">
-
-                Kategori
-
-                <input
-                  id="productCategory"
-                  class="w-full rounded-xl px-3 py-2.5 mt-1"
-                  required
-                >
-
-              </label>
-
-
-              <!-- IMAGE UPLOAD -->
-              <label class="text-sm text-white/70">
-
-                Gambar Produk
-
-                <input
-                  id="productImageFile"
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black"
-                >
-
-                <input
-                  type="hidden"
-                  id="productImageUrl"
-                >
-
-                <span
-                  id="productImageCurrent"
-                  class="block text-xs text-white/40 mt-1"
-                ></span>
-
-              </label>
-
-
-              <!-- AUDIO UPLOAD -->
-              <label class="text-sm text-white/70">
-
-                Audio Preview
-
-                <input
-                  id="productAudioFile"
-                  type="file"
-                  accept="audio/mpeg,audio/mp3"
-                  class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black"
-                >
-
-                <input
-                  type="hidden"
-                  id="productAudioUrl"
-                >
-
-                <span
-                  id="productAudioCurrent"
-                  class="block text-xs text-white/40 mt-1"
-                ></span>
-
-              </label>
-
-
               <div class="md:col-span-2 flex flex-wrap gap-2 pt-1">
-
-                <button
-                  type="submit"
-                  id="saveProductBtn"
-                  class="btn rounded-xl px-5 py-2.5 font-bold"
-                >
-                  Simpan Produk
-                </button>
-
-                <button
-                  type="button"
-                  id="cancelProductBtn2"
-                  class="rounded-xl px-5 py-2.5 bg-white/5 hover:bg-white/10"
-                >
-                  Batal
-                </button>
-
+                <button type="submit" id="saveProductBtn" class="btn rounded-xl px-5 py-2.5 font-bold">Simpan Produk</button>
+                <button type="button" id="cancelProductBtn2" class="rounded-xl px-5 py-2.5 bg-white/5 hover:bg-white/10">Batal</button>
               </div>
-
             </form>
-
-
-            <p class="text-xs text-white/40 mt-3">
-              Gambar: JPG, PNG, WEBP · Audio: MP3.
-              Saat edit, file boleh dikosongkan agar media lama tetap dipakai.
-            </p>
-
-            <p
-              id="productFormStatus"
-              class="text-sm text-white/50 mt-2"
-            ></p>
-
+            <p class="text-xs text-white/40 mt-3">Gambar: JPG, PNG, WEBP · Audio: MP3. Saat edit, file boleh dikosongkan agar media lama tetap dipakai.</p>
+            <p id="productFormStatus" class="text-sm text-white/50 mt-2"></p>
           </div>
 
-
-          <!-- PRODUCT TABLE -->
           <div class="glass rounded-2xl mt-5 overflow-hidden">
-
-            <!-- SEARCH + FILTER -->
             <div class="p-4 border-b border-white/10 flex flex-wrap gap-3 items-center justify-between">
-
-              <div class="flex flex-wrap gap-3 w-full sm:w-auto">
-
-                <input
-                  id="productSearch"
-                  class="rounded-xl px-3 py-2 text-sm w-full sm:w-80"
-                  placeholder="Cari nama, kategori, prod_id..."
-                >
-
-                <!-- FILTER TERBARU / TERLAMA -->
-                <select
-                  id="productSort"
-                  class="rounded-xl px-3 py-2 text-sm w-full sm:w-auto"
-                >
-                  <option value="oldest">
-                    ⬆️ Terlama
-                  </option>
-
-                  <option value="newest">
-                    ⬇️ Terbaru
-                  </option>
+              <div class="flex flex-wrap gap-2 items-center w-full sm:w-auto">
+                <input id="productSearch" class="rounded-xl px-3 py-2 text-sm w-full sm:w-80" placeholder="Cari nama, kategori, prod_id...">
+                <select id="productSort" class="rounded-xl px-3 py-2 text-sm">
+                  <option value="newest">⬇ Terbaru</option>
+                  <option value="oldest">⬆ Terlama</option>
                 </select>
-
               </div>
-
-
-              <button
-                id="refreshProductsBtn"
-                class="rounded-xl px-4 py-2 text-sm bg-white/5 hover:bg-white/10"
-              >
-                ↻ Refresh
-              </button>
-
+              <button id="refreshProductsBtn" class="rounded-xl px-4 py-2 text-sm bg-white/5 hover:bg-white/10">↻ Refresh</button>
             </div>
-
-
             <div class="table-wrap">
-
               <table class="w-full text-left">
-
-                <thead class="border-b border-white/10">
-
-                  <tr>
-
-                    <th class="p-4">
-                      ID
-                    </th>
-
-                    <th class="p-4">
-                      Produk
-                    </th>
-
-                    <th class="p-4">
-                      Kategori
-                    </th>
-
-                    <th class="p-4">
-                      Harga
-                    </th>
-
-                    <th class="p-4">
-                      Media
-                    </th>
-
-                    <th class="p-4 text-right">
-                      Aksi
-                    </th>
-
-                  </tr>
-
-                </thead>
-
-
-                <tbody id="productsBody">
-
-                  <tr>
-
-                    <td
-                      colspan="6"
-                      class="p-8 text-center text-white/40"
-                    >
-                      Memuat produk...
-                    </td>
-
-                  </tr>
-
-                </tbody>
-
+                <thead class="border-b border-white/10"><tr>
+                  <th class="p-4">ID</th><th class="p-4">Produk</th><th class="p-4">Kategori</th><th class="p-4">Harga</th><th class="p-4">Media</th><th class="p-4 text-right">Aksi</th>
+                </tr></thead>
+                <tbody id="productsBody"><tr><td colspan="6" class="p-8 text-center text-white/40">Memuat produk...</td></tr></tbody>
               </table>
-
             </div>
-
           </div>
-
         </section>
 
-
-        <!-- ORDERS -->
         <section id="orders" class="admin-section hidden">
-
-          <h2 class="text-2xl font-black">
-            🧾 Pesanan
-          </h2>
-
+          <h2 class="text-2xl font-black">🧾 Pesanan</h2>
           <div class="glass rounded-2xl p-6 mt-5">
-
-            <p class="text-white/70">
-              Menu pesanan siap disambungkan.
-              Struktur kolom tabel <b>orders</b>
-              perlu diketahui agar form CRUD tidak salah kolom.
-            </p>
-
-            <p
-              id="ordersStatus"
-              class="text-sm text-white/40 mt-2"
-            ></p>
-
+            <p class="text-white/70">Menu pesanan siap disambungkan. Struktur kolom tabel <b>orders</b> perlu diketahui agar form CRUD tidak salah kolom.</p>
+            <p id="ordersStatus" class="text-sm text-white/40 mt-2"></p>
           </div>
-
         </section>
 
-
-        <!-- COMMENTS -->
         <section id="comments" class="admin-section hidden">
-
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 class="text-2xl font-black">
-                💬 Komentar & Rating
-              </h2>
-              <p class="text-white/50 text-sm mt-1">
-                Moderasi komentar, rating, dan foto pengunjung.
-              </p>
-            </div>
-
-            <button
-              id="refreshCommentsBtn"
-              class="rounded-xl px-4 py-2 text-sm bg-white/5 hover:bg-white/10"
-            >
-              ↻ Refresh
-            </button>
+            <div><h2 class="text-2xl font-black">💬 Komentar & Rating</h2><p class="text-white/50 text-sm mt-1">Moderasi komentar, rating, dan foto pengunjung.</p></div>
+            <button id="refreshCommentsBtn" class="btn rounded-xl px-4 py-2.5 font-bold">↻ Refresh</button>
           </div>
-
-          <div class="grid sm:grid-cols-3 gap-4 mt-5">
-            <div class="stat rounded-2xl p-5">
-              <p class="text-white/50 text-sm">Total Komentar</p>
-              <p id="commentAdminTotal" class="text-3xl font-black mt-2">—</p>
-            </div>
-            <div class="stat rounded-2xl p-5">
-              <p class="text-white/50 text-sm">Menunggu Persetujuan</p>
-              <p id="commentAdminPending" class="text-3xl font-black mt-2 text-yellow-300">—</p>
-            </div>
-            <div class="stat rounded-2xl p-5">
-              <p class="text-white/50 text-sm">Rating Rata-rata</p>
-              <p id="commentAdminAverage" class="text-3xl font-black mt-2">—</p>
-            </div>
-          </div>
-
           <div class="glass rounded-2xl mt-5 overflow-hidden">
             <div class="p-4 border-b border-white/10 flex flex-wrap gap-3 items-center justify-between">
-              <input
-                id="commentSearch"
-                class="rounded-xl px-3 py-2 text-sm w-full sm:w-80"
-                placeholder="Cari nama atau komentar..."
-              >
-
-              <select
-                id="commentFilter"
-                class="rounded-xl px-3 py-2 text-sm"
-              >
+              <input id="commentSearch" class="rounded-xl px-3 py-2 text-sm w-full sm:w-80" placeholder="Cari nama atau komentar...">
+              <select id="commentFilter" class="rounded-xl px-3 py-2 text-sm">
                 <option value="all">Semua</option>
                 <option value="pending">Menunggu</option>
-                <option value="approved">Sudah Disetujui</option>
+                <option value="approved">Tampil</option>
               </select>
             </div>
-
-            <div id="commentsAdminList" class="p-4 grid gap-4">
-              <div class="text-center text-white/40 py-8">Memuat komentar...</div>
+            <div class="table-wrap">
+              <table class="w-full text-left">
+                <thead class="border-b border-white/10"><tr>
+                  <th class="p-4">Foto</th><th class="p-4">Tanggal</th><th class="p-4">Nama</th><th class="p-4">Rating</th><th class="p-4">Komentar</th><th class="p-4">Status</th><th class="p-4 text-right">Aksi</th>
+                </tr></thead>
+                <tbody id="commentsBody"><tr><td colspan="7" class="p-8 text-center text-white/40">Memuat komentar...</td></tr></tbody>
+              </table>
             </div>
-
-            <p
-              id="commentsStatus"
-              class="px-4 pb-4 text-sm text-white/40"
-            ></p>
           </div>
-
+          <div id="commentEditBox" class="glass rounded-2xl p-5 mt-5 hidden">
+            <div class="flex items-center justify-between mb-4"><h3 class="font-black">Edit Komentar</h3><button id="cancelCommentEdit" class="text-white/50 hover:text-white">✕</button></div>
+            <form id="commentEditForm" class="grid md:grid-cols-2 gap-4">
+              <input type="hidden" id="editCommentId">
+              <label class="text-sm text-white/70">Nama<input id="editCommentName" class="w-full rounded-xl px-3 py-2.5 mt-1" required></label>
+              <label class="text-sm text-white/70">Rating<select id="editCommentRating" class="w-full rounded-xl px-3 py-2.5 mt-1"><option value="1">⭐ 1</option><option value="2">⭐⭐ 2</option><option value="3">⭐⭐⭐ 3</option><option value="4">⭐⭐⭐⭐ 4</option><option value="5">⭐⭐⭐⭐⭐ 5</option></select></label>
+              <label class="text-sm text-white/70 md:col-span-2">Komentar<textarea id="editCommentText" class="w-full rounded-xl px-3 py-2.5 mt-1 bg-black/25 border border-white/10 text-white" rows="4" required></textarea></label>
+              <label class="text-sm text-white/70 md:col-span-2">Balasan Admin
+                <textarea id="editCommentReply" maxlength="500" class="w-full rounded-xl px-3 py-2.5 mt-1 bg-black/25 border border-white/10 text-white" rows="3" placeholder="Tulis balasan untuk pelanggan..."></textarea>
+                <span class="block text-xs text-white/35 mt-1">Balasan akan tampil di bawah komentar setelah disimpan.</span>
+              </label>
+              <label class="text-sm text-white/70">Ganti Foto (opsional)<input id="editCommentPhoto" type="file" accept="image/jpeg,image/png,image/webp" class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black"></label>
+              <div class="flex items-end gap-2"><button class="btn rounded-xl px-5 py-2.5 font-bold">Simpan Perubahan</button><button type="button" id="cancelCommentEdit2" class="rounded-xl px-5 py-2.5 bg-white/5">Batal</button></div>
+            </form>
+            <p id="commentEditStatus" class="text-sm text-white/50 mt-2"></p>
+          </div>
         </section>
 
-
-        <!-- TESTIMONIALS -->
         <section id="testimonials" class="admin-section hidden">
-
-          <h2 class="text-2xl font-black">
-            📸 Testimoni
-          </h2>
-
+          <h2 class="text-2xl font-black">📸 Testimoni</h2>
           <div class="glass rounded-2xl p-6 mt-5">
-
-            <p class="text-white/70">
-              Menu testimoni siap disambungkan.
-              Struktur kolom tabel <b>testimonials</b>
-              perlu diketahui agar CRUD sesuai database.
-            </p>
-
-            <p
-              id="testimonialsStatus"
-              class="text-sm text-white/40 mt-2"
-            ></p>
-
+            <p class="text-white/70">Menu testimoni siap disambungkan. Struktur kolom tabel <b>testimonials</b> perlu diketahui agar CRUD sesuai database.</p>
+            <p id="testimonialsStatus" class="text-sm text-white/40 mt-2"></p>
           </div>
-
         </section>
 
-
-        <!-- SETTINGS -->
         <section id="settings" class="admin-section hidden">
-
-          <h2 class="text-2xl font-black">
-            ⚙️ Pengaturan
-          </h2>
-
+          <h2 class="text-2xl font-black">⚙️ Pengaturan</h2>
           <div class="glass rounded-2xl p-6 mt-5 space-y-4">
-
-            <div>
-
-              <h3 class="font-bold">
-                Konfigurasi Supabase
-              </h3>
-
-              <p class="text-sm text-white/50 mt-2">
-                Frontend memakai publishable/anon key.
-                Jangan masukkan Client Secret Google OAuth
-                atau service_role key ke file ini.
-              </p>
-
-            </div>
-
-
-            <div class="rounded-xl bg-white/5 p-4">
-
-              <p class="text-sm text-white/50">
-                Admin aktif
-              </p>
-
-              <p class="font-bold mt-1">
-                muslihshoope@gmail.com
-              </p>
-
-            </div>
-
+            <div><h3 class="font-bold">Konfigurasi Supabase</h3><p class="text-sm text-white/50 mt-2">Frontend memakai publishable/anon key. Jangan masukkan Client Secret Google OAuth atau service_role key ke file ini.</p></div>
+            <div class="rounded-xl bg-white/5 p-4"><p class="text-sm text-white/50">Admin aktif</p><p class="font-bold mt-1">muslihshoope@gmail.com</p></div>
           </div>
-
         </section>
-
       </main>
-
     </div>
-
   </div>
 
-
 <script type="module">
+const SUPABASE_URL = "https://zmccxgydzmfdldobqaav.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_vqU2LP9ax5DLqfJY8y5h2A_j8mWbtdG";
+const ADMIN_EMAIL = "muslihshoope@gmail.com";
 
-/* =========================================================
-   SUPABASE CONFIG
-========================================================= */
+const loginView=document.getElementById("loginView");
+const dashboardView=document.getElementById("dashboardView");
+const loginStatus=document.getElementById("loginStatus");
+let sb=null;
+let productsCache=[];
+let commentsCache=[];
 
-const SUPABASE_URL =
-  "https://zmccxgydzmfdldobqaav.supabase.co";
-
-const SUPABASE_ANON_KEY =
-  "sb_publishable_vqU2LP9ax5DLqfJY8y5h2A_j8mWbtdG";
-
-const ADMIN_EMAIL =
-  "muslihshoope@gmail.com";
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const loginView =
-  document.getElementById("loginView");
-
-const dashboardView =
-  document.getElementById("dashboardView");
-
-const loginStatus =
-  document.getElementById("loginStatus");
-
-
-/* =========================================================
-   VARIABLES
-========================================================= */
-
-let sb = null;
-
-let productsCache = [];
-
-
-/* =========================================================
-   HELPER
-========================================================= */
-
-function showStatus(t){
-  loginStatus.textContent = t;
-}
-
-
-function money(v){
-
-  return new Intl.NumberFormat(
-    "id-ID",
-    {
-      style:"currency",
-      currency:"IDR",
-      maximumFractionDigits:0
-    }
-  ).format(Number(v)||0);
-
-}
-
-
-function esc(v){
-
-  return String(v??"").replace(
-    /[&<>"']/g,
-    m => ({
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-    }[m])
-  );
-
-}
-
-
-/* =========================================================
-   SUPABASE INIT
-========================================================= */
+function showStatus(t){loginStatus.textContent=t}
+function money(v){return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(v)||0)}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 
 async function initSupabase(){
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-  sb =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+  document.getElementById("googleLogin").addEventListener("click",async()=>{
+    showStatus("Membuka login Google...");
+    const {error}=await sb.auth.signInWithOAuth({
+      provider:"google",
+      options:{redirectTo:"https://muslihfvnkyshop.my.id/admin.html"}
+    });
+    if(error)showStatus("Login gagal: "+error.message);
+  });
 
+  document.getElementById("logoutBtn").addEventListener("click",async()=>{
+    await sb.auth.signOut();
+    dashboardView.classList.add("hidden");
+    loginView.classList.remove("hidden");
+    showStatus("Kamu sudah keluar.");
+  });
 
-  /* GOOGLE LOGIN */
-
-  document
-    .getElementById("googleLogin")
-    .addEventListener(
-      "click",
-      async()=>{
-
-        showStatus(
-          "Membuka login Google..."
-        );
-
-        const {error} =
-          await sb.auth.signInWithOAuth({
-
-            provider:"google",
-
-            options:{
-              redirectTo:
-                "https://muslihfvnkyshop.my.id/admin.html"
-            }
-
-          });
-
-
-        if(error)
-          showStatus(
-            "Login gagal: " +
-            error.message
-          );
-
-      }
-    );
-
-
-  /* LOGOUT */
-
-  document
-    .getElementById("logoutBtn")
-    .addEventListener(
-      "click",
-      async()=>{
-
-        await sb.auth.signOut();
-
-        dashboardView.classList.add(
-          "hidden"
-        );
-
-        loginView.classList.remove(
-          "hidden"
-        );
-
-        showStatus(
-          "Kamu sudah keluar."
-        );
-
-      }
-    );
-
-
-  /* AUTH STATE */
-
-  sb.auth.onAuthStateChange(
-    (_event,session)=>{
-      checkAdminAccess(session);
-    }
-  );
-
-
-  const {data} =
-    await sb.auth.getSession();
-
-
-  await checkAdminAccess(
-    data.session
-  );
-
+  sb.auth.onAuthStateChange((_event,session)=>{checkAdminAccess(session)});
+  const {data}=await sb.auth.getSession();
+  await checkAdminAccess(data.session);
 }
-
-
-/* =========================================================
-   CHECK ADMIN
-========================================================= */
 
 async function checkAdminAccess(session){
-
   if(!session?.user){
-
-    dashboardView.classList.add(
-      "hidden"
-    );
-
-    loginView.classList.remove(
-      "hidden"
-    );
-
-    document
-      .getElementById("authStatus")
-      .textContent =
-      "Belum login";
-
-    return;
+    dashboardView.classList.add("hidden");loginView.classList.remove("hidden");
+    document.getElementById("authStatus").textContent="Belum login";return;
   }
-
-
-  const email =
-    (session.user.email||"")
-      .toLowerCase()
-      .trim();
-
-
-  if(
-    email !==
-    ADMIN_EMAIL.toLowerCase()
-  ){
-
+  const email=(session.user.email||"").toLowerCase().trim();
+  if(email!==ADMIN_EMAIL.toLowerCase()){
     await sb.auth.signOut();
-
-    dashboardView.classList.add(
-      "hidden"
-    );
-
-    loginView.classList.remove(
-      "hidden"
-    );
-
-    showStatus(
-      "❌ Akses ditolak. Akun ini bukan akun admin."
-    );
-
+    dashboardView.classList.add("hidden");loginView.classList.remove("hidden");
+    showStatus("❌ Akses ditolak. Akun ini bukan akun admin.");
     return;
-
   }
-
-
-  showDashboard(
-    session.user
-  );
-
+  showDashboard(session.user);
 }
-
-
-/* =========================================================
-   SHOW DASHBOARD
-========================================================= */
 
 async function showDashboard(user){
-
-  loginView.classList.add(
-    "hidden"
-  );
-
-  dashboardView.classList.remove(
-    "hidden"
-  );
-
-
-  document
-    .getElementById("authStatus")
-    .textContent =
-    "Terhubung ✓";
-
-
-  document
-    .getElementById("authStatus")
-    .className =
-    "text-emerald-300";
-
-
-  document
-    .getElementById("userName")
-    .textContent =
-    user.user_metadata?.full_name ||
-    user.user_metadata?.name ||
-    "Admin";
-
-
-  document
-    .getElementById("userEmail")
-    .textContent =
-    user.email||"";
-
-
+  loginView.classList.add("hidden");dashboardView.classList.remove("hidden");
+  document.getElementById("authStatus").textContent="Terhubung ✓";
+  document.getElementById("authStatus").className="text-emerald-300";
+  document.getElementById("userName").textContent=user.user_metadata?.full_name||user.user_metadata?.name||"Admin";
+  document.getElementById("userEmail").textContent=user.email||"";
   await loadDashboardStats();
-
   await loadProducts();
-
 }
-
-
-/* =========================================================
-   COUNT TABLE
-========================================================= */
 
 async function countTable(table){
-
-  const {
-    count,
-    error
-  } =
-    await sb
-      .from(table)
-      .select(
-        "*",
-        {
-          count:"exact",
-          head:true
-        }
-      );
-
-
-  return error
-    ? null
-    : count;
-
+  const {count,error}=await sb.from(table).select("*",{count:"exact",head:true});
+  return error?null:count;
 }
-
-
-/* =========================================================
-   DASHBOARD STATS
-========================================================= */
 
 async function loadDashboardStats(){
-
-  const names = [
-
-    ["products","statProducts"],
-
-    ["orders","statOrders"],
-
-    ["comments","statComments"],
-
-    ["testimonials","statTestimonials"]
-
-  ];
-
-
-  for(
-    const [table,id]
-    of names
-  ){
-
-    const c =
-      await countTable(table);
-
-
-    document
-      .getElementById(id)
-      .textContent =
-      c===null
-        ? "—"
-        : c;
-
+  const names=[["products","statProducts"],["orders","statOrders"],["comments","statComments"],["testimonials","statTestimonials"]];
+  for(const [table,id] of names){
+    const c=await countTable(table);
+    document.getElementById(id).textContent=c===null?"—":c;
   }
-
-
-  document
-    .getElementById("statProductsText")
-    .textContent =
-    "Terhubung Supabase";
-
-
-  const {error} =
-    await sb
-      .from("products")
-      .select("id")
-      .limit(1);
-
-
-  const db =
-    document.getElementById(
-      "dbStatus"
-    );
-
-
-  if(error){
-
-    db.textContent =
-      "Error: " +
-      error.message;
-
-    db.className =
-      "text-red-300";
-
-  }else{
-
-    db.textContent =
-      "Terhubung ✓";
-
-    db.className =
-      "text-emerald-300";
-
-  }
-
+  document.getElementById("statProductsText").textContent="Terhubung Supabase";
+  const {error}=await sb.from("products").select("id").limit(1);
+  const db=document.getElementById("dbStatus");
+  if(error){db.textContent="Error: "+error.message;db.className="text-red-300"}else{db.textContent="Terhubung ✓";db.className="text-emerald-300"}
 }
-
-
-/* =========================================================
-   LOAD PRODUCTS
-========================================================= */
 
 async function loadProducts(){
+  const body=document.getElementById("productsBody");
+  body.innerHTML='<tr><td colspan="6" class="p-8 text-center text-white/40">Memuat produk...</td></tr>';
 
-  const body =
-    document.getElementById(
-      "productsBody"
-    );
-
-
-  body.innerHTML =
-    '<tr><td colspan="6" class="p-8 text-center text-white/40">Memuat produk...</td></tr>';
-
-
-  /*
-    Ambil semua produk berdasarkan
-    ID database asli.
-
-    ID DATABASE TIDAK DIUBAH.
-  */
-
-  const {
-    data,
-    error
-  } =
-    await sb
-      .from("products")
-      .select("*")
-      .order(
-        "id",
-        {
-          ascending:true
-        }
-      );
-
+  // Urutkan berdasarkan ID database dari yang paling lama ke paling baru.
+  // ID database asli TIDAK diubah.
+  const {data,error}=await sb.from("products").select("*").order("id",{ascending:true});
 
   if(error){
-
-    body.innerHTML =
-      `<tr>
-        <td
-          colspan="6"
-          class="p-8 text-center text-red-300"
-        >
-          ${esc(error.message)}
-        </td>
-      </tr>`;
-
+    body.innerHTML=`<tr><td colspan="6" class="p-8 text-center text-red-300">${esc(error.message)}</td></tr>`;
     return;
-
   }
 
-
-  productsCache =
-    data || [];
-
-
+  productsCache=data||[];
   renderProducts();
-
 }
-
-
-/* =========================================================
-   RENDER PRODUCTS
-========================================================= */
 
 function renderProducts(){
-
-  const q =
-    document
-      .getElementById(
-        "productSearch"
-      )
-      .value
-      .toLowerCase()
-      .trim();
-
-
-  const sort =
-    document.getElementById(
-      "productSort"
-    ).value;
-
-
-  /*
-    SEARCH
-  */
-
-  let rows =
-    productsCache.filter(
-      p =>
-        [
-          p.prod_id,
-          p.name,
-          p.category,
-          p.price
-        ].some(
-          v =>
-            String(v??"")
-              .toLowerCase()
-              .includes(q)
-        )
-    );
-
-
-  /*
-    FILTER URUTAN
-
-    oldest = ID kecil → besar
-    newest = ID besar → kecil
-
-    Hanya mengubah URUTAN TAMPILAN.
-    DATABASE TIDAK DIUBAH.
-  */
-
-  if(sort === "newest"){
-
-    rows.sort(
-      (a,b)=>
-        Number(b.id) -
-        Number(a.id)
-    );
-
-  }else{
-
-    rows.sort(
-      (a,b)=>
-        Number(a.id) -
-        Number(b.id)
-    );
-
-  }
-
-
-  const body =
-    document.getElementById(
-      "productsBody"
-    );
-
-
-  if(!rows.length){
-
-    body.innerHTML =
-      '<tr><td colspan="6" class="p-8 text-center text-white/40">Belum ada produk.</td></tr>';
-
-    return;
-
-  }
-
-
-  body.innerHTML =
-    rows.map(p=>{
-
-      /*
-        NOMOR TAMPILAN
-
-        Tetap mengikuti urutan
-        database asli.
-
-        Jadi walaupun filter "Terbaru"
-        dipilih, nomor produk tidak
-        berubah menjadi ID database palsu.
-      */
-
-      const displayNo =
-        productsCache.findIndex(
-          x =>
-            Number(x.id) ===
-            Number(p.id)
-        ) + 1;
-
-
-      return `
-
-      <tr
-        class="border-b border-white/5 hover:bg-white/[.025]"
-      >
-
-        <!-- NOMOR TAMPILAN -->
-
-        <td class="p-4 text-white/45">
-          #${displayNo}
-        </td>
-
-
-        <!-- PRODUK -->
-
-        <td class="p-4">
-
-          <div class="flex items-center gap-3">
-
-            ${
-              p.image_url
-
-              ?
-
-              `<img
-                src="${esc(p.image_url)}"
-                class="w-12 h-12 rounded-lg object-cover bg-black/30"
-                onerror="this.style.display='none'"
-              >`
-
-              :
-
-              ""
-            }
-
-
-            <div>
-
-              <div class="font-bold">
-                ${esc(p.name)}
-              </div>
-
-              <div class="text-xs text-white/40">
-                ${esc(p.prod_id)}
-              </div>
-
-            </div>
-
-          </div>
-
-        </td>
-
-
-        <!-- KATEGORI -->
-
-        <td class="p-4">
-          ${esc(p.category)}
-        </td>
-
-
-        <!-- HARGA -->
-
-        <td class="p-4 font-bold">
-          ${money(p.price)}
-        </td>
-
-
-        <!-- MEDIA -->
-
-        <td class="p-4">
-
-          ${
-            p.audio_url
-
-            ?
-
-            '<span class="text-emerald-300">Audio ✓</span>'
-
-            :
-
-            '<span class="text-white/35">—</span>'
-          }
-
-        </td>
-
-
-        <!-- AKSI -->
-
-        <td class="p-4">
-
-          <div
-            class="flex justify-end gap-2"
-          >
-
-            <button
-              class="edit-product rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10"
-              data-id="${esc(p.id)}"
-            >
-              Edit
-            </button>
-
-
-            <button
-              class="delete-product btn-danger rounded-lg px-3 py-2"
-              data-id="${esc(p.id)}"
-            >
-              Hapus
-            </button>
-
-          </div>
-
-        </td>
-
-      </tr>
-
-      `;
-
-    }).join("");
-
-
-  /*
-    EDIT BUTTON
-  */
-
-  body
-    .querySelectorAll(
-      ".edit-product"
-    )
-    .forEach(
-      b =>
-        b.addEventListener(
-          "click",
-          () =>
-            openEditProduct(
-              Number(
-                b.dataset.id
-              )
-            )
-        )
-    );
-
-
-  /*
-    DELETE BUTTON
-  */
-
-  body
-    .querySelectorAll(
-      ".delete-product"
-    )
-    .forEach(
-      b =>
-        b.addEventListener(
-          "click",
-          () =>
-            deleteProduct(
-              Number(
-                b.dataset.id
-              )
-            )
-        )
-    );
-
-}
-
-
-/* =========================================================
-   RESET PRODUCT FORM
-========================================================= */
-
-function resetProductForm(){
-
-  document
-    .getElementById(
-      "productFormEl"
-    )
-    .reset();
-
-
-  document
-    .getElementById(
-      "productId"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "productImageUrl"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "productAudioUrl"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "productImageCurrent"
-    )
-    .textContent = "";
-
-
-  document
-    .getElementById(
-      "productAudioCurrent"
-    )
-    .textContent = "";
-
-
-  document
-    .getElementById(
-      "productFormTitle"
-    )
-    .textContent =
-    "Tambah Produk";
-
-
-  document
-    .getElementById(
-      "productFormStatus"
-    )
-    .textContent = "";
-
-}
-
-
-/* =========================================================
-   ADD PRODUCT
-========================================================= */
-
-function openAddProduct(){
-
-  resetProductForm();
-
-
-  document
-    .getElementById(
-      "productForm"
-    )
-    .classList
-    .remove("hidden");
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-
-/* =========================================================
-   EDIT PRODUCT
-========================================================= */
-
-function openEditProduct(id){
-
-  const p =
-    productsCache.find(
-      x =>
-        Number(x.id) === id
-    );
-
-
-  if(!p)
-    return;
-
-
-  document
-    .getElementById(
-      "productId"
-    )
-    .value =
-    p.id;
-
-
-  document
-    .getElementById(
-      "prodId"
-    )
-    .value =
-    p.prod_id ?? "";
-
-
-  document
-    .getElementById(
-      "productName"
-    )
-    .value =
-    p.name ?? "";
-
-
-  document
-    .getElementById(
-      "productPrice"
-    )
-    .value =
-    p.price ?? 0;
-
-
-  document
-    .getElementById(
-      "productCategory"
-    )
-    .value =
-    p.category ?? "";
-
-
-  document
-    .getElementById(
-      "productImageUrl"
-    )
-    .value =
-    p.image_url ?? "";
-
-
-  document
-    .getElementById(
-      "productAudioUrl"
-    )
-    .value =
-    p.audio_url ?? "";
-
-
-  document
-    .getElementById(
-      "productImageCurrent"
-    )
-    .textContent =
-    p.image_url
-      ? "Gambar saat ini tersimpan. Pilih file baru jika ingin mengganti."
-      : "Belum ada gambar.";
-
-
-  document
-    .getElementById(
-      "productAudioCurrent"
-    )
-    .textContent =
-    p.audio_url
-      ? "Audio saat ini tersimpan. Pilih file baru jika ingin mengganti."
-      : "Belum ada audio.";
-
-
-  document
-    .getElementById(
-      "productFormTitle"
-    )
-    .textContent =
-    "Edit Produk #" +
-    p.id;
-
-
-  document
-    .getElementById(
-      "productFormStatus"
-    )
-    .textContent = "";
-
-
-  document
-    .getElementById(
-      "productForm"
-    )
-    .classList
-    .remove("hidden");
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-
-/* =========================================================
-   STORAGE HELPERS
-========================================================= */
-
-function storageSafeName(value){
-
-  return String(
-    value || "produk"
-  )
-    .trim()
-    .replace(
-      /[^a-zA-Z0-9_-]+/g,
-      "-"
-    )
-    .replace(
-      /^-+|-+$/g,
-      ""
-    )
-    .slice(
-      0,
-      80
-    ) || "produk";
-
-}
-
-
-function storageExt(
-  file,
-  fallback
-){
-
-  const name =
-    (
-      file?.name || ""
-    ).toLowerCase();
-
-
-  const ext =
-    name.includes(".")
-      ? name.split(".").pop()
-      : fallback;
-
-
-  return (
-    ext.replace(
-      /[^a-z0-9]/g,
-      ""
-    ) || fallback
-  );
-
-}
-
-
-/* =========================================================
-   UPLOAD PRODUCT FILE
-========================================================= */
-
-async function uploadProductFile(
-  file,
-  bucket,
-  folder,
-  baseName
-){
-
-  if(!file)
-    return null;
-
-
-  const ext =
-    storageExt(
-      file,
-      bucket === "images"
-        ? "webp"
-        : "mp3"
-    );
-
-
-  const path =
-    `${folder}/${baseName}-${Date.now()}.${ext}`;
-
-
-  const {error} =
-    await sb
-      .storage
-      .from(bucket)
-      .upload(
-        path,
-        file,
-        {
-          cacheControl:"3600",
-          upsert:false
-        }
-      );
-
-
-  if(error)
-    throw new Error(
-      `Upload ${bucket} gagal: ${error.message}`
-    );
-
-
-  const {data} =
-    sb
-      .storage
-      .from(bucket)
-      .getPublicUrl(path);
-
-
-  return data.publicUrl;
-
-}
-
-
-/* =========================================================
-   SAVE PRODUCT
-========================================================= */
-
-async function saveProduct(e){
-
-  e.preventDefault();
-
-
-  const id =
-    document
-      .getElementById(
-        "productId"
-      )
-      .value;
-
-
-  const prodId =
-    document
-      .getElementById(
-        "prodId"
-      )
-      .value
-      .trim();
-
-
-  const imageFile =
-    document
-      .getElementById(
-        "productImageFile"
-      )
-      .files[0] || null;
-
-
-  const audioFile =
-    document
-      .getElementById(
-        "productAudioFile"
-      )
-      .files[0] || null;
-
-
-  const status =
-    document
-      .getElementById(
-        "productFormStatus"
-      );
-
-
-  const btn =
-    document
-      .getElementById(
-        "saveProductBtn"
-      );
-
-
-  btn.disabled = true;
-
-
-  status.className =
-    "text-sm text-white/50 mt-3";
-
-
-  status.textContent =
-    "⏳ Menyimpan produk...";
-
-
-  try{
-
-    let imageUrl =
-      document
-        .getElementById(
-          "productImageUrl"
-        )
-        .value
-        .trim() || null;
-
-
-    let audioUrl =
-      document
-        .getElementById(
-          "productAudioUrl"
-        )
-        .value
-        .trim() || null;
-
-
-    const base =
-      storageSafeName(
-        prodId ||
-        document
-          .getElementById(
-            "productName"
-          )
-          .value
-      );
-
-
-    /* UPLOAD IMAGE */
-
-    if(imageFile){
-
-      status.textContent =
-        "⏳ Upload gambar...";
-
-
-      imageUrl =
-        await uploadProductFile(
-          imageFile,
-          "images",
-          "products",
-          base
-        );
-
-    }
-
-
-    /* UPLOAD AUDIO */
-
-    if(audioFile){
-
-      status.textContent =
-        "⏳ Upload audio...";
-
-
-      audioUrl =
-        await uploadProductFile(
-          audioFile,
-          "audio",
-          "products",
-          base
-        );
-
-    }
-
-
-    /* DATABASE PAYLOAD */
-
-    const payload = {
-
-      prod_id:
-        prodId,
-
-      name:
-        document
-          .getElementById(
-            "productName"
-          )
-          .value
-          .trim(),
-
-      price:
-        Number(
-          document
-            .getElementById(
-              "productPrice"
-            )
-            .value
-        ) || 0,
-
-      category:
-        document
-          .getElementById(
-            "productCategory"
-          )
-          .value
-          .trim(),
-
-      image_url:
-        imageUrl,
-
-      audio_url:
-        audioUrl
-
-    };
-
-
-    status.textContent =
-      "⏳ Menyimpan data ke database...";
-
-
-    let result;
-
-
-    /* EDIT */
-
-    if(id){
-
-      result =
-        await sb
-          .from("products")
-          .update(payload)
-          .eq(
-            "id",
-            Number(id)
-          );
-
-    }
-
-
-    /* ADD */
-
-    else{
-
-      result =
-        await sb
-          .from("products")
-          .insert(
-            payload
-          );
-
-    }
-
-
-    if(result.error)
-      throw new Error(
-        result.error.message
-      );
-
-
-    status.textContent =
-      "✅ Produk berhasil disimpan dan media berhasil diupload.";
-
-
-    status.className =
-      "text-sm text-emerald-300 mt-3";
-
-
-    document
-      .getElementById(
-        "productImageFile"
-      )
-      .value = "";
-
-
-    document
-      .getElementById(
-        "productAudioFile"
-      )
-      .value = "";
-
-
-    await loadProducts();
-
-    await loadDashboardStats();
-
-
-    setTimeout(
-      () =>
-        document
-          .getElementById(
-            "productForm"
-          )
-          .classList
-          .add("hidden"),
-      800
-    );
-
-
-  }catch(error){
-
-    console.error(error);
-
-
-    status.textContent =
-      "❌ " +
-      error.message;
-
-
-    status.className =
-      "text-sm text-red-300 mt-3";
-
-
-  }finally{
-
-    btn.disabled = false;
-
-  }
-
-}
-
-
-/* =========================================================
-   DELETE PRODUCT
-========================================================= */
-
-async function deleteProduct(id){
-
-  const p =
-    productsCache.find(
-      x =>
-        Number(x.id) === id
-    );
-
-
-  if(
-    !confirm(
-      `Hapus produk "${p?.name || id}"?`
-    )
-  )
-    return;
-
-
-  const {error} =
-    await sb
-      .from("products")
-      .delete()
-      .eq(
-        "id",
-        id
-      );
-
-
-  if(error){
-
-    alert(
-      "Gagal menghapus: " +
-      error.message
-    );
-
-    return;
-
-  }
-
-
-  await loadProducts();
-
-  await loadDashboardStats();
-
-}
-
-
-/* =========================================================
-   COMMENTS / RATING ADMIN
-========================================================= */
-
-let commentsCache = [];
-
-function commentStars(n){
-  const rating = Math.max(0, Math.min(5, Number(n)||0));
-  return "★".repeat(rating) + "☆".repeat(5-rating);
-}
-
-function commentDate(v){
-  try{
-    return new Intl.DateTimeFormat("id-ID",{
-      dateStyle:"medium",
-      timeStyle:"short"
-    }).format(new Date(v));
-  }catch{
-    return "-";
-  }
-}
-
-async function loadCommentsAdmin(){
-  const box = document.getElementById("commentsAdminList");
-  if(!box) return;
-
-  box.innerHTML = '<div class="text-center text-white/40 py-8">Memuat komentar...</div>';
-
-  const {data,error} = await sb
-    .from("comments")
-    .select("id,created_at,name,rating,comment,image_url,approved")
-    .order("created_at",{ascending:false});
-
-  if(error){
-    box.innerHTML = `<div class="rounded-xl p-5 bg-red-500/10 border border-red-400/20 text-red-300">Gagal memuat komentar: ${esc(error.message)}</div>`;
-    document.getElementById("commentsStatus").textContent = "Periksa RLS tabel comments dan pastikan SQL comments_setup.sql sudah dijalankan.";
-    return;
-  }
-
-  commentsCache = data || [];
-  updateCommentStats();
-  renderCommentsAdmin();
-}
-
-function updateCommentStats(){
-  const total = commentsCache.length;
-  const pending = commentsCache.filter(x => !x.approved).length;
-  const avg = total
-    ? commentsCache.reduce((sum,x)=>sum + Number(x.rating||0),0) / total
-    : 0;
-
-  document.getElementById("commentAdminTotal").textContent = total;
-  document.getElementById("commentAdminPending").textContent = pending;
-  document.getElementById("commentAdminAverage").textContent = total ? avg.toFixed(1) + " ★" : "—";
-}
-
-function renderCommentsAdmin(){
-  const box = document.getElementById("commentsAdminList");
-  const q = (document.getElementById("commentSearch")?.value || "").toLowerCase().trim();
-  const filter = document.getElementById("commentFilter")?.value || "all";
-
-  let rows = commentsCache.filter(x => {
-    const matchesSearch = [x.name,x.comment].some(v =>
-      String(v ?? "").toLowerCase().includes(q)
-    );
-
-    const matchesFilter =
-      filter === "all" ||
-      (filter === "pending" && !x.approved) ||
-      (filter === "approved" && x.approved);
-
-    return matchesSearch && matchesFilter;
-  });
-
-  if(!rows.length){
-    box.innerHTML = '<div class="glass rounded-2xl p-6 text-center text-white/40">Tidak ada komentar yang cocok.</div>';
-    return;
-  }
-
-  box.innerHTML = rows.map(x => {
-    const status = x.approved
-      ? '<span class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 text-xs font-bold">✓ Tampil di website</span>'
-      : '<span class="px-2 py-1 rounded-lg bg-yellow-500/10 text-yellow-300 text-xs font-bold">⏳ Menunggu persetujuan</span>';
-
-    const photo = x.image_url
-      ? `<a href="${esc(x.image_url)}" target="_blank" rel="noopener"><img src="${esc(x.image_url)}" class="comment-photo" alt="Foto ${esc(x.name)}" onerror="this.style.display='none'"></a>`
-      : '<div class="comment-photo grid place-items-center text-white/25 text-2xl">👤</div>';
-
-    const action = x.approved
-      ? `<button class="comment-unapprove rounded-lg px-3 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-300" data-id="${esc(x.id)}">Sembunyikan</button>`
-      : `<button class="comment-approve btn rounded-lg px-3 py-2" data-id="${esc(x.id)}">✓ Setujui</button>`;
+  const q=document.getElementById("productSearch").value.toLowerCase().trim();
+  const sort=document.getElementById("productSort")?.value||"newest";
+  const filtered=productsCache.filter(p=>[p.prod_id,p.name,p.category,p.price].some(v=>String(v??"").toLowerCase().includes(q)));
+  const rows=[...filtered].sort((a,b)=>sort==="oldest"?Number(a.id)-Number(b.id):Number(b.id)-Number(a.id));
+  const body=document.getElementById("productsBody");
+  if(!rows.length){body.innerHTML='<tr><td colspan="6" class="p-8 text-center text-white/40">Belum ada produk.</td></tr>';return}
+  body.innerHTML=rows.map(p=>{
+    // Nomor tampilan 1, 2, 3, ... mengikuti urutan produk lama.
+    // ID database asli tetap dipakai untuk Edit/Hapus.
+    const displayNo = productsCache.findIndex(x=>Number(x.id)===Number(p.id)) + 1;
 
     return `
-      <article class="comment-admin-card rounded-2xl p-4">
-        <div class="flex flex-col md:flex-row gap-4">
-          <div class="shrink-0">${photo}</div>
-
-          <div class="min-w-0 flex-1">
-            <div class="flex flex-wrap items-center gap-2">
-              <strong class="text-lg">${esc(x.name)}</strong>
-              <span class="text-yellow-300 tracking-wide">${commentStars(x.rating)}</span>
-              ${status}
-            </div>
-
-            <div class="text-xs text-white/35 mt-1">
-              ${esc(commentDate(x.created_at))} · Rating ${Number(x.rating)||0}/5
-            </div>
-
-            <p class="text-white/80 mt-3 whitespace-pre-wrap break-words">${esc(x.comment)}</p>
-
-            <div class="flex flex-wrap gap-2 mt-4">
-              ${action}
-              <button class="comment-delete btn-danger rounded-lg px-3 py-2" data-id="${esc(x.id)}">🗑 Hapus</button>
-            </div>
-          </div>
-        </div>
-      </article>
-    `;
+    <tr class="border-b border-white/5 hover:bg-white/[.025]">
+      <td class="p-4 text-white/45">#${displayNo}</td>
+      <td class="p-4"><div class="flex items-center gap-3">
+        ${p.image_url?`<img src="${esc(p.image_url)}" class="w-12 h-12 rounded-lg object-cover bg-black/30" onerror="this.style.display='none'">`:""}
+        <div><div class="font-bold">${esc(p.name)}</div><div class="text-xs text-white/40">${esc(p.prod_id)}</div></div>
+      </div></td>
+      <td class="p-4">${esc(p.category)}</td>
+      <td class="p-4 font-bold">${money(p.price)}</td>
+      <td class="p-4">${p.audio_url?'<span class="text-emerald-300">Audio ✓</span>':'<span class="text-white/35">—</span>'}</td>
+      <td class="p-4"><div class="flex justify-end gap-2">
+        <button class="edit-product rounded-lg px-3 py-2 bg-white/5 hover:bg-white/10" data-id="${esc(p.id)}">Edit</button>
+        <button class="delete-product btn-danger rounded-lg px-3 py-2" data-id="${esc(p.id)}">Hapus</button>
+      </div></td>
+    </tr>`;
   }).join("");
 
-  box.querySelectorAll(".comment-approve").forEach(btn => {
-    btn.addEventListener("click", () => setCommentApproval(btn.dataset.id,true));
-  });
-
-  box.querySelectorAll(".comment-unapprove").forEach(btn => {
-    btn.addEventListener("click", () => setCommentApproval(btn.dataset.id,false));
-  });
-
-  box.querySelectorAll(".comment-delete").forEach(btn => {
-    btn.addEventListener("click", () => deleteCommentAdmin(btn.dataset.id));
-  });
+  body.querySelectorAll(".edit-product").forEach(b=>b.addEventListener("click",()=>openEditProduct(Number(b.dataset.id))));
+  body.querySelectorAll(".delete-product").forEach(b=>b.addEventListener("click",()=>deleteProduct(Number(b.dataset.id))));
 }
 
-async function setCommentApproval(id,approved){
-  const row = commentsCache.find(x => String(x.id) === String(id));
-  if(!row) return;
+function resetProductForm(){
+  document.getElementById("productFormEl").reset();
+  document.getElementById("productId").value="";
+  document.getElementById("productImageUrl").value="";
+  document.getElementById("productAudioUrl").value="";
+  document.getElementById("productImageCurrent").textContent="";
+  document.getElementById("productAudioCurrent").textContent="";
+  document.getElementById("productFormTitle").textContent="Tambah Produk";
+  document.getElementById("productFormStatus").textContent="";
+}
+function openAddProduct(){resetProductForm();document.getElementById("productForm").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"})}
+function openEditProduct(id){
+  const p=productsCache.find(x=>Number(x.id)===id);if(!p)return;
+  document.getElementById("productId").value=p.id;
+  document.getElementById("prodId").value=p.prod_id??"";
+  document.getElementById("productName").value=p.name??"";
+  document.getElementById("productPrice").value=p.price??0;
+  document.getElementById("productCategory").value=p.category??"";
+  document.getElementById("productImageUrl").value=p.image_url??"";
+  document.getElementById("productAudioUrl").value=p.audio_url??"";
+  document.getElementById("productImageCurrent").textContent=p.image_url?"Gambar saat ini tersimpan. Pilih file baru jika ingin mengganti.":"Belum ada gambar.";
+  document.getElementById("productAudioCurrent").textContent=p.audio_url?"Audio saat ini tersimpan. Pilih file baru jika ingin mengganti.":"Belum ada audio.";
+  document.getElementById("productFormTitle").textContent="Edit Produk #"+p.id;
+  document.getElementById("productFormStatus").textContent="";
+  document.getElementById("productForm").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
 
-  const actionText = approved ? "menyetujui" : "menyembunyikan";
-  if(!confirm(`${approved ? "Tampilkan" : "Sembunyikan"} komentar dari "${row.name || "pengunjung"}"?`)) return;
+function storageSafeName(value){
+  return String(value||"produk").trim().replace(/[^a-zA-Z0-9_-]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80)||"produk";
+}
+function storageExt(file, fallback){
+  const name=(file?.name||"").toLowerCase();
+  const ext=name.includes(".")?name.split(".").pop():fallback;
+  return ext.replace(/[^a-z0-9]/g,"")||fallback;
+}
+async function uploadProductFile(file,bucket,folder,baseName){
+  if(!file)return null;
+  const ext=storageExt(file,bucket==="images"?"webp":"mp3");
+  const path=`${folder}/${baseName}-${Date.now()}.${ext}`;
+  const {error}=await sb.storage.from(bucket).upload(path,file,{cacheControl:"3600",upsert:false});
+  if(error)throw new Error(`Upload ${bucket} gagal: ${error.message}`);
+  const {data}=sb.storage.from(bucket).getPublicUrl(path);
+  return data.publicUrl;
+}
 
-  const {error} = await sb
-    .from("comments")
-    .update({approved})
-    .eq("id",id);
+async function saveProduct(e){
+  e.preventDefault();
+  const id=document.getElementById("productId").value;
+  const prodId=document.getElementById("prodId").value.trim();
+  const imageFile=document.getElementById("productImageFile").files[0]||null;
+  const audioFile=document.getElementById("productAudioFile").files[0]||null;
+  const status=document.getElementById("productFormStatus");
+  const btn=document.getElementById("saveProductBtn");
+  btn.disabled=true;
+  status.className="text-sm text-white/50 mt-3";
+  status.textContent="⏳ Menyimpan produk...";
 
-  if(error){
-    alert("Gagal " + actionText + ": " + error.message);
-    return;
+  try{
+    let imageUrl=document.getElementById("productImageUrl").value.trim()||null;
+    let audioUrl=document.getElementById("productAudioUrl").value.trim()||null;
+    const base=storageSafeName(prodId||document.getElementById("productName").value);
+
+    if(imageFile){
+      status.textContent="⏳ Upload gambar...";
+      imageUrl=await uploadProductFile(imageFile,"images","products",base);
+    }
+    if(audioFile){
+      status.textContent="⏳ Upload audio...";
+      audioUrl=await uploadProductFile(audioFile,"audio","products",base);
+    }
+
+    const payload={
+      prod_id:prodId,
+      name:document.getElementById("productName").value.trim(),
+      price:Number(document.getElementById("productPrice").value)||0,
+      category:document.getElementById("productCategory").value.trim(),
+      image_url:imageUrl,
+      audio_url:audioUrl
+    };
+
+    status.textContent="⏳ Menyimpan data ke database...";
+    let result;
+    if(id)result=await sb.from("products").update(payload).eq("id",Number(id));
+    else result=await sb.from("products").insert(payload);
+
+    if(result.error)throw new Error(result.error.message);
+
+    status.textContent="✅ Produk berhasil disimpan dan media berhasil diupload.";
+    status.className="text-sm text-emerald-300 mt-3";
+    document.getElementById("productImageFile").value="";
+    document.getElementById("productAudioFile").value="";
+    await loadProducts();
+    await loadDashboardStats();
+    setTimeout(()=>document.getElementById("productForm").classList.add("hidden"),800);
+  }catch(error){
+    console.error(error);
+    status.textContent="❌ "+error.message;
+    status.className="text-sm text-red-300 mt-3";
+  }finally{
+    btn.disabled=false;
   }
-
-  await loadCommentsAdmin();
-  await loadDashboardStats();
+}
+async function deleteProduct(id){
+  const p=productsCache.find(x=>Number(x.id)===id);
+  if(!confirm(`Hapus produk "${p?.name||id}"?`))return;
+  const {error}=await sb.from("products").delete().eq("id",id);
+  if(error){alert("Gagal menghapus: "+error.message);return}
+  await loadProducts();await loadDashboardStats();
 }
 
-async function deleteCommentAdmin(id){
-  const row = commentsCache.find(x => String(x.id) === String(id));
-  if(!row) return;
 
-  if(!confirm(`Hapus komentar dari "${row.name || "pengunjung"}" secara permanen?`)) return;
-
-  const {error} = await sb
-    .from("comments")
-    .delete()
-    .eq("id",id);
-
-  if(error){
-    alert("Gagal menghapus komentar: " + error.message);
-    return;
-  }
-
-  await loadCommentsAdmin();
-  await loadDashboardStats();
+function dateText(v){
+  try{return new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v))}catch{return "-"}
 }
+function stars(n){return "⭐".repeat(Math.max(0,Math.min(5,Number(n)||0)))}
 
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-document
-  .querySelectorAll(
-    ".nav-item[data-section]"
-  )
-  .forEach(
-    btn => {
-
-      btn.addEventListener(
-        "click",
-        async()=>{
-
-          document
-            .querySelectorAll(
-              ".nav-item[data-section]"
-            )
-            .forEach(
-              x =>
-                x.classList.remove(
-                  "active"
-                )
-            );
-
-
-          btn.classList.add(
-            "active"
-          );
-
-
-          document
-            .querySelectorAll(
-              ".admin-section"
-            )
-            .forEach(
-              s =>
-                s.classList.add(
-                  "hidden"
-                )
-            );
-
-
-          document
-            .getElementById(
-              btn.dataset.section
-            )
-            .classList.remove(
-              "hidden"
-            );
-
-
-          if(
-            btn.dataset.section ===
-            "products"
-          )
-            await loadProducts();
-
-
-          if(
-            btn.dataset.section ===
-            "overview"
-          )
-            await loadDashboardStats();
-
-          if(
-            btn.dataset.section ===
-            "comments"
-          )
-            await loadCommentsAdmin();
-
-        }
-      );
-
+async function loadComments(){
+  const body=document.getElementById("commentsBody");
+  body.innerHTML='<tr><td colspan="7" class="p-8 text-center text-white/40">Memuat komentar...</td></tr>';
+  const {data,error}=await sb.from("comments").select("*").order("created_at",{ascending:false});
+  if(error){commentsCache=[];body.innerHTML=`<tr><td colspan="7" class="p-8 text-center text-red-300">Gagal memuat komentar: ${esc(error.message)}</td></tr>`;return}
+  commentsCache=data||[];renderComments();
+}
+function renderComments(){
+  const q=(document.getElementById("commentSearch").value||"").toLowerCase().trim();
+  const filter=document.getElementById("commentFilter").value;
+  const rows=commentsCache.filter(x=>{
+    const text=[x.name,x.comment].join(" ").toLowerCase();
+    const status=filter==="all"||filter==="approved"?filter==="all"||(filter==="approved"&&x.approved):(!x.approved);
+    return text.includes(q)&&status;
+  });
+  const body=document.getElementById("commentsBody");
+  if(!rows.length){body.innerHTML='<tr><td colspan="7" class="p-8 text-center text-white/40">Belum ada komentar.</td></tr>';return}
+  body.innerHTML=rows.map(x=>`
+    <tr class="border-b border-white/5 hover:bg-white/[.025]">
+      <td class="p-4">${x.image_url?`<a href="${esc(x.image_url)}" target="_blank" rel="noopener"><img src="${esc(x.image_url)}" class="w-12 h-12 rounded-lg object-cover" onerror="this.style.display='none'"></a>`:'<span class="text-white/30">—</span>'}</td>
+      <td class="p-4 text-white/55 whitespace-nowrap">${esc(dateText(x.created_at))}</td>
+      <td class="p-4 font-bold">${esc(x.name)}</td>
+      <td class="p-4 whitespace-nowrap">${stars(x.rating)} <span class="text-white/40">${esc(x.rating)}/5</span></td>
+      <td class="p-4 max-w-xl">
+        <div>${esc(x.comment)}</div>
+        ${x.admin_reply?`<div class="mt-2 rounded-lg bg-[#106EBE]/15 border border-[#0FFCBE]/15 p-2 text-sm"><span class="text-[#0FFCBE] font-bold">↩ Balasan Admin:</span> ${esc(x.admin_reply)}</div>`:""}
+      </td>
+      <td class="p-4"><span class="rounded-full px-2.5 py-1 text-xs ${x.approved?'bg-emerald-400/15 text-emerald-300':'bg-yellow-400/15 text-yellow-300'}">${x.approved?'Tampil':'Menunggu'}</span></td>
+      <td class="p-4"><div class="flex flex-wrap justify-end gap-2">
+        <button class="btn rounded-lg px-3 py-2 text-xs toggle-comment" data-id="${esc(x.id)}" data-approved="${x.approved}">${x.approved?'Sembunyikan':'Tampilkan'}</button>
+        <button class="btn rounded-lg px-3 py-2 text-xs reply-comment" data-id="${esc(x.id)}">↩ Balas</button>
+        <button class="btn rounded-lg px-3 py-2 text-xs edit-comment" data-id="${esc(x.id)}">Edit</button>
+        <button class="btn-danger rounded-lg px-3 py-2 text-xs delete-comment" data-id="${esc(x.id)}">Hapus</button>
+      </div></td>
+    </tr>`).join("");
+  body.querySelectorAll(".toggle-comment").forEach(b=>b.onclick=async()=>{
+    const {error}=await sb.from("comments").update({approved:b.dataset.approved!=="true"}).eq("id",b.dataset.id);
+    if(error)alert("Gagal mengubah status: "+error.message);else{await loadComments();await loadDashboardStats()}
+  });
+  body.querySelectorAll(".delete-comment").forEach(b=>b.onclick=async()=>{
+    if(!confirm("Hapus komentar ini?"))return;
+    const {error}=await sb.from("comments").delete().eq("id",b.dataset.id);
+    if(error)alert("Gagal menghapus: "+error.message);else{await loadComments();await loadDashboardStats()}
+  });
+  body.querySelectorAll(".edit-comment").forEach(b=>b.onclick=()=>openCommentEdit(Number(b.dataset.id)));
+  body.querySelectorAll(".reply-comment").forEach(b=>b.onclick=()=>{
+    openCommentEdit(Number(b.dataset.id));
+    setTimeout(()=>{
+      const reply=document.getElementById("editCommentReply");
+      reply.focus();
+      reply.scrollIntoView({behavior:"smooth",block:"center"});
+    },50);
+  });
+}
+function openCommentEdit(id){
+  const x=commentsCache.find(c=>Number(c.id)===id);if(!x)return;
+  document.getElementById("editCommentId").value=x.id;
+  document.getElementById("editCommentName").value=x.name||"";
+  document.getElementById("editCommentRating").value=String(x.rating||5);
+  document.getElementById("editCommentText").value=x.comment||"";
+  document.getElementById("editCommentReply").value=x.admin_reply||"";
+  document.getElementById("editCommentPhoto").value="";
+  document.getElementById("commentEditStatus").textContent=x.image_url?"Foto saat ini tersimpan. Pilih file baru jika ingin mengganti.":"Tidak ada foto.";
+  document.getElementById("commentEditBox").classList.remove("hidden");
+  window.scrollTo({top:document.getElementById("commentEditBox").offsetTop-80,behavior:"smooth"});
+}
+async function saveCommentEdit(e){
+  e.preventDefault();
+  const id=document.getElementById("editCommentId").value;
+  const old=commentsCache.find(c=>String(c.id)===String(id));
+  const file=document.getElementById("editCommentPhoto").files[0]||null;
+  const status=document.getElementById("commentEditStatus");
+  status.textContent="Menyimpan...";
+  try{
+    let imageUrl=old?.image_url||null;
+    if(file){
+      if(file.size>5*1024*1024)throw new Error("Ukuran foto maksimal 5 MB.");
+      const ext=storageExt(file,"webp");
+      const path=`comments/admin-${Date.now()}-${storageSafeName(file.name)}.${ext}`;
+      const up=await sb.storage.from("images").upload(path,file,{cacheControl:"3600",upsert:false});
+      if(up.error)throw new Error("Upload foto gagal: "+up.error.message);
+      imageUrl=sb.storage.from("images").getPublicUrl(path).data.publicUrl;
     }
-  );
+    const {error}=await sb.from("comments").update({
+      name:document.getElementById("editCommentName").value.trim(),
+      rating:Number(document.getElementById("editCommentRating").value),
+      comment:document.getElementById("editCommentText").value.trim(),
+      admin_reply:document.getElementById("editCommentReply").value.trim()||null,
+      image_url:imageUrl
+    }).eq("id",id);
+    if(error)throw new Error(error.message);
+    status.className="text-sm text-emerald-300 mt-2";status.textContent="✅ Komentar diperbarui.";
+    await loadComments();await loadDashboardStats();
+    setTimeout(()=>document.getElementById("commentEditBox").classList.add("hidden"),700);
+  }catch(err){status.className="text-sm text-red-300 mt-2";status.textContent="❌ "+err.message}
+}
+function closeCommentEdit(){document.getElementById("commentEditBox").classList.add("hidden")}
 
+document.querySelectorAll(".nav-item[data-section]").forEach(btn=>{
+  btn.addEventListener("click",async()=>{
+    document.querySelectorAll(".nav-item[data-section]").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".admin-section").forEach(s=>s.classList.add("hidden"));
+    document.getElementById(btn.dataset.section).classList.remove("hidden");
+    if(btn.dataset.section==="products")await loadProducts();
+    if(btn.dataset.section==="comments")await loadComments();
+    if(btn.dataset.section==="overview")await loadDashboardStats();
+  });
+});
+document.getElementById("addProductBtn").addEventListener("click",openAddProduct);
+document.getElementById("cancelProductBtn").addEventListener("click",()=>document.getElementById("productForm").classList.add("hidden"));
+document.getElementById("cancelProductBtn2").addEventListener("click",()=>document.getElementById("productForm").classList.add("hidden"));
+document.getElementById("productFormEl").addEventListener("submit",saveProduct);
+document.getElementById("productSearch").addEventListener("input",renderProducts);
+document.getElementById("productSort").addEventListener("change",renderProducts);
+document.getElementById("refreshProductsBtn").addEventListener("click",loadProducts);
+document.getElementById("commentSearch").addEventListener("input",renderComments);
+document.getElementById("commentFilter").addEventListener("change",renderComments);
+document.getElementById("refreshCommentsBtn").addEventListener("click",loadComments);
+document.getElementById("commentEditForm").addEventListener("submit",saveCommentEdit);
+document.getElementById("cancelCommentEdit").addEventListener("click",closeCommentEdit);
+document.getElementById("cancelCommentEdit2").addEventListener("click",closeCommentEdit);
+document.getElementById("productImageFile").addEventListener("change",e=>{
+  const f=e.target.files[0];
+  document.getElementById("productImageCurrent").textContent=f?`File dipilih: ${f.name}`:"";
+});
+document.getElementById("productAudioFile").addEventListener("change",e=>{
+  const f=e.target.files[0];
+  document.getElementById("productAudioCurrent").textContent=f?`File dipilih: ${f.name}`:"";
+});
 
-/* =========================================================
-   PRODUCT BUTTONS
-========================================================= */
-
-document
-  .getElementById(
-    "addProductBtn"
-  )
-  .addEventListener(
-    "click",
-    openAddProduct
-  );
-
-
-document
-  .getElementById(
-    "cancelProductBtn"
-  )
-  .addEventListener(
-    "click",
-    () =>
-      document
-        .getElementById(
-          "productForm"
-        )
-        .classList
-        .add("hidden")
-  );
-
-
-document
-  .getElementById(
-    "cancelProductBtn2"
-  )
-  .addEventListener(
-    "click",
-    () =>
-      document
-        .getElementById(
-          "productForm"
-        )
-        .classList
-        .add("hidden")
-  );
-
-
-document
-  .getElementById(
-    "productFormEl"
-  )
-  .addEventListener(
-    "submit",
-    saveProduct
-  );
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-document
-  .getElementById(
-    "productSearch"
-  )
-  .addEventListener(
-    "input",
-    renderProducts
-  );
-
-
-/* =========================================================
-   FILTER TERLAMA / TERBARU
-========================================================= */
-
-document
-  .getElementById(
-    "productSort"
-  )
-  .addEventListener(
-    "change",
-    renderProducts
-  );
-
-
-/* =========================================================
-   REFRESH
-========================================================= */
-
-document
-  .getElementById(
-    "refreshProductsBtn"
-  )
-  .addEventListener(
-    "click",
-    loadProducts
-  );
-
-
-/* =========================================================
-   IMAGE FILE
-========================================================= */
-
-document
-  .getElementById(
-    "productImageFile"
-  )
-  .addEventListener(
-    "change",
-    e=>{
-
-      const f =
-        e.target.files[0];
-
-
-      document
-        .getElementById(
-          "productImageCurrent"
-        )
-        .textContent =
-        f
-          ? `File dipilih: ${f.name}`
-          : "";
-
-    }
-  );
-
-
-/* =========================================================
-   AUDIO FILE
-========================================================= */
-
-document
-  .getElementById(
-    "productAudioFile"
-  )
-  .addEventListener(
-    "change",
-    e=>{
-
-      const f =
-        e.target.files[0];
-
-
-      document
-        .getElementById(
-          "productAudioCurrent"
-        )
-        .textContent =
-        f
-          ? `File dipilih: ${f.name}`
-          : "";
-
-    }
-  );
-
-
-/* =========================================================
-   COMMENTS BUTTONS
-========================================================= */
-
-document
-  .getElementById("refreshCommentsBtn")
-  .addEventListener("click",loadCommentsAdmin);
-
-document
-  .getElementById("commentSearch")
-  .addEventListener("input",renderCommentsAdmin);
-
-document
-  .getElementById("commentFilter")
-  .addEventListener("change",renderCommentsAdmin);
-
-/* =========================================================
-   START
-========================================================= */
-
-if(
-  !SUPABASE_URL ||
-  !SUPABASE_ANON_KEY
-){
-
-  showStatus(
-    "Supabase belum dikonfigurasi."
-  );
-
-
-  document
-    .getElementById(
-      "googleLogin"
-    )
-    .disabled = true;
-
-
+if(!SUPABASE_URL||!SUPABASE_ANON_KEY){
+  showStatus("Supabase belum dikonfigurasi.");
+  document.getElementById("googleLogin").disabled=true;
 }else{
-
-  const script =
-    document.createElement(
-      "script"
-    );
-
-
-  script.src =
-    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-
-
-  script.onload =
-    initSupabase;
-
-
-  script.onerror =
-    () =>
-      showStatus(
-        "Gagal memuat Supabase JS."
-      );
-
-
-  document.head.appendChild(
-    script
-  );
-
+  const script=document.createElement("script");
+  script.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+  script.onload=initSupabase;
+  script.onerror=()=>showStatus("Gagal memuat Supabase JS.");
+  document.head.appendChild(script);
 }
-
 </script>
-
 </body>
 </html>
