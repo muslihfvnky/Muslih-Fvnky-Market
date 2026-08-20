@@ -15,18 +15,7 @@
     .btn{border:1px solid rgba(15,252,190,.55);background:rgba(16,110,190,.5);transition:.2s}.btn:hover{background:rgba(15,252,190,.16);transform:translateY(-1px)}
     input,textarea,select{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.14);color:#fff}
     input:focus,textarea:focus,select:focus{outline:none;border-color:rgba(15,252,190,.7);box-shadow:0 0 0 2px rgba(15,252,190,.08)}
-    .rating-btn input{display:none}
-.rating-btn span{
-  font-size:1.7rem;
-  color:#fff;
-  opacity:.35;
-  cursor:pointer;
-  transition:.15s;
-  user-select:none;
-}
-.rating-btn.active span,
-.rating-btn.hover span{opacity:1;color:#ffd84d}
-.rating-btn:hover span{transform:scale(1.08)}
+    .rating-btn input{display:none}.rating-btn span{font-size:1.7rem;opacity:.35;cursor:pointer;transition:.15s}.rating-btn input:checked+span,.rating-btn:hover span{opacity:1}
     .comment-card{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08)}
     .avatar{width:46px;height:46px;border-radius:999px;object-fit:cover;background:rgba(15,252,190,.1);display:grid;place-items:center;font-weight:900}
   </style>
@@ -66,7 +55,7 @@
             <label class="rating-btn"><input type="radio" name="rating" value="2"><span>★</span></label>
             <label class="rating-btn"><input type="radio" name="rating" value="3"><span>★</span></label>
             <label class="rating-btn"><input type="radio" name="rating" value="4"><span>★</span></label>
-            <label class="rating-btn"><input type="radio" name="rating" value="5"><span>★</span></label>
+            <label class="rating-btn"><input type="radio" name="rating" value="5" checked><span>★</span></label>
           </div>
         </div>
         <label class="text-sm text-white/70">Komentar
@@ -91,32 +80,6 @@ const SUPABASE_URL="https://zmccxgydzmfdldobqaav.supabase.co";
 const SUPABASE_KEY="sb_publishable_vqU2LP9ax5DLqfJY8y5h2A_j8mWbtdG";
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
-
-function updateRatingVisual(value){
-  document.querySelectorAll("#ratingGroup .rating-btn").forEach((label,index)=>{
-    label.classList.toggle("active", index < Number(value));
-  });
-}
-
-document.querySelectorAll("#ratingGroup .rating-btn").forEach((label,index)=>{
-  label.addEventListener("mouseenter",()=>{
-    document.querySelectorAll("#ratingGroup .rating-btn").forEach((item,i)=>{
-      item.classList.toggle("hover", i <= index);
-    });
-  });
-
-  label.addEventListener("mouseleave",()=>{
-    document.querySelectorAll("#ratingGroup .rating-btn").forEach(item=>{
-      item.classList.remove("hover");
-    });
-  });
-
-  label.querySelector("input").addEventListener("change",()=>{
-    updateRatingVisual(label.querySelector("input").value);
-  });
-});
-
-updateRatingVisual(document.querySelector('input[name="rating"]:checked')?.value || 0);
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
 function stars(n){return "★".repeat(Number(n)||0)+"☆".repeat(5-(Number(n)||0))}
 function dateText(v){try{return new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v))}catch{return "-"}}
@@ -124,7 +87,7 @@ function safeName(v){return String(v||"foto").replace(/[^a-zA-Z0-9._-]+/g,"-").s
 
 async function loadComments(){
   const box=$("commentsList");
-  const {data,error}=await sb.from("comments").select("id,created_at,name,rating,comment,image_url").eq("approved",true).order("created_at",{ascending:false});
+  const {data,error}=await sb.from("comments").select("id,created_at,name,rating,comment,image_url,admin_reply").eq("approved",true).order("created_at",{ascending:false});
   if(error){box.innerHTML=`<div class="glass rounded-2xl p-6 text-red-300">Gagal memuat komentar: ${esc(error.message)}</div>`;return}
   const rows=data||[];
   const avg=rows.length?rows.reduce((a,x)=>a+Number(x.rating||0),0)/rows.length:0;
@@ -134,7 +97,9 @@ async function loadComments(){
   if(!rows.length){box.innerHTML='<div class="glass rounded-2xl p-6 text-center text-white/45">Belum ada komentar. Jadilah yang pertama! 😊</div>';return}
   box.innerHTML=rows.map(x=>{
     const initial=(x.name||"?").trim().charAt(0).toUpperCase()||"?";
-    return `<article class="comment-card rounded-2xl p-5">\n      <div class="flex gap-3">\n        ${x.image_url?`<a href="${esc(x.image_url)}" target="_blank" rel="noopener"><img src="${esc(x.image_url)}" class="avatar" alt="Foto ${esc(x.name)}"></a>`:`<div class="avatar">${esc(initial)}</div>`}\n        <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><strong>${esc(x.name)}</strong><span class="text-yellow-300">${stars(x.rating)}</span></div><div class="text-xs text-white/35 mt-1">${esc(dateText(x.created_at))}</div></div>\n      </div>\n      <p class="text-white/80 mt-4 whitespace-pre-wrap break-words">${esc(x.comment)}</p>\n    </article>`;
+    return `<article class="comment-card rounded-2xl p-5">\n      <div class="flex gap-3">\n        ${x.image_url?`<a href="${esc(x.image_url)}" target="_blank" rel="noopener"><img src="${esc(x.image_url)}" class="avatar" alt="Foto ${esc(x.name)}"></a>`:`<div class="avatar">${esc(initial)}</div>`}\n        <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><strong>${esc(x.name)}</strong><span class="text-yellow-300">${stars(x.rating)}</span></div><div class="text-xs text-white/35 mt-1">${esc(dateText(x.created_at))}</div></div>\n      </div>\n      <p class="text-white/80 mt-4 whitespace-pre-wrap break-words">${esc(x.comment)}</p>
+      ${x.admin_reply?`<div class="mt-4 ml-2 rounded-xl bg-[#106EBE]/15 border border-[#0FFCBE]/15 p-3"><div class="text-sm font-black text-[#0FFCBE]">↩ Balasan Muslih Fvnky</div><p class="text-white/75 mt-1 whitespace-pre-wrap break-words">${esc(x.admin_reply)}</p></div>`:""}
+    </article>`;
   }).join("");
 }
 
@@ -142,8 +107,7 @@ $("commentForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const btn=$("submitBtn"),status=$("formStatus"),file=$("photo").files[0]||null;
   const name=$("name").value.trim(),comment=$("comment").value.trim();
-  const rating=Number(document.querySelector('input[name="rating"]:checked')?.value||0);
-  if(rating<1||rating>5){status.textContent="Pilih rating 1–5 terlebih dahulu.";return}
+  const rating=Number(document.querySelector('input[name="rating"]:checked')?.value||5);
   if(!name||!comment){status.textContent="Nama dan komentar wajib diisi.";return}
   if(file){
     if(file.size>5*1024*1024){status.textContent="❌ Foto maksimal 5 MB.";return}
@@ -161,7 +125,7 @@ $("commentForm").addEventListener("submit",async e=>{
     }
     const {error}=await sb.from("comments").insert({name,rating,comment,image_url:imageUrl,approved:false});
     if(error)throw new Error(error.message);
-    $("commentForm").reset();updateRatingVisual(0);
+    $("commentForm").reset();document.querySelector('input[name="rating"][value="5"]').checked=true;
     status.className="text-sm text-emerald-300";status.textContent="✅ Komentar terkirim. Tunggu persetujuan admin ya!";
   }catch(err){status.className="text-sm text-red-300";status.textContent="❌ "+err.message}
   finally{btn.disabled=false}
