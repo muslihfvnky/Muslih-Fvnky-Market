@@ -2708,27 +2708,47 @@
      ====================== -->
 <script>
 
-// 🔥 SETTING DISKON (ubah ini aja)
-const DISKON = 9;
-// contoh: 10 = 10%, 50 = 50%
+// ==========================================================
+// PENGATURAN DISKON DARI SUPABASE
+// Nilai default hanya sebagai fallback jika setting belum terbaca.
+// Admin Dashboard -> promo_settings menjadi sumber pengaturan.
+// ==========================================================
+window.shopPromoSettings = {
+  enabled: true,
+  percent: 9,
+  friday: true,
+  sunday: true,
+  loaded: false
+};
 
-// 📅 Hari diskon
-// 5 = Jumat, 0 = Minggu
-const HARI_DISKON = [5, 0];
-
-// ==============================
+// ==========================================================
 // TERAPKAN DISKON
-// ==============================
+// ==========================================================
 function applyDiskon() {
 
+  const settings = window.shopPromoSettings || {};
   const hariIni = new Date().getDay();
-  const diskonAktif = HARI_DISKON.includes(hariIni);
+
+  const hariAktif =
+    (hariIni === 5 && settings.friday) ||
+    (hariIni === 0 && settings.sunday);
+
+  const diskonAktif =
+    settings.enabled &&
+    Number(settings.percent) > 0 &&
+    hariAktif;
+
+  const persen = Math.max(
+    0,
+    Math.min(100, Number(settings.percent) || 0)
+  );
 
   document.querySelectorAll('#produk-grid li').forEach(produk => {
 
-    // Simpan harga asli supaya tidak ikut terpotong berkali-kali
     const hargaAsli = Number(
-      produk.dataset.originalPrice || produk.dataset.price || 0
+      produk.dataset.originalPrice ||
+      produk.dataset.price ||
+      0
     );
 
     if (!hargaAsli) return;
@@ -2741,11 +2761,9 @@ function applyDiskon() {
     if (diskonAktif) {
 
       const hargaDiskon = Math.floor(
-        hargaAsli - (hargaAsli * DISKON / 100)
+        hargaAsli - (hargaAsli * persen / 100)
       );
 
-      // Dataset harga mengikuti harga diskon
-      // supaya keranjang/filter juga memakai harga promo
       produk.dataset.price = hargaDiskon;
       produk.dataset.discountPrice = hargaDiskon;
 
@@ -2768,35 +2786,35 @@ function applyDiskon() {
           font-size:11px;
           margin-left:6px;
         ">
-          -${DISKON}%
+          -${persen}%
         </span>
       `;
 
     } else {
 
-      // Kembali ke harga asli di hari biasa
       produk.dataset.price = hargaAsli;
       delete produk.dataset.discountPrice;
 
-      hargaEl.innerHTML = `💲 Rp${hargaAsli.toLocaleString('id-ID')}`;
+      hargaEl.innerHTML =
+        `💲 Rp${hargaAsli.toLocaleString('id-ID')}`;
 
     }
   });
 
   console.log(
     diskonAktif
-      ? `🔥 Diskon ${DISKON}% aktif — Jumat/Minggu`
+      ? `🔥 Diskon ${persen}% aktif — ${hariIni === 5 ? 'Jumat' : 'Minggu'}`
       : 'ℹ️ Hari ini tidak ada diskon'
   );
 }
 
-// Terapkan ke produk lama setelah DOM siap
+// Terapkan fallback awal setelah DOM siap.
+// Nilai ini akan segera diganti ketika settings Supabase selesai dibaca.
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', applyDiskon);
 } else {
   applyDiskon();
 }
-
 </script>
   
 <!-- ==============================
@@ -2813,6 +2831,35 @@ const supabaseClient = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+
+
+async function loadShopPromoSettings() {
+  try {
+    const { data, error } = await supabaseClient
+      .from("promo_settings")
+      .select("shop_enabled,shop_percent,shop_friday,shop_sunday")
+      .eq("id", 1)
+      .single();
+
+    if (error) {
+      console.warn("⚠️ Gagal memuat promo_settings, memakai fallback:", error.message);
+      return window.shopPromoSettings;
+    }
+
+    window.shopPromoSettings = {
+      enabled: !!data.shop_enabled,
+      percent: Math.max(0, Math.min(100, Number(data.shop_percent) || 0)),
+      friday: !!data.shop_friday,
+      sunday: !!data.shop_sunday,
+      loaded: true
+    };
+
+    return window.shopPromoSettings;
+  } catch (error) {
+    console.warn("⚠️ Error membaca promo_settings, memakai fallback:", error);
+    return window.shopPromoSettings;
+  }
+}
 
 
 // ==============================
@@ -2955,6 +3002,9 @@ async function loadProductsFromSupabase() {
 
   try {
 
+    // Ambil pengaturan diskon terbaru dari Admin Dashboard lebih dulu.
+    await loadShopPromoSettings();
+
     const { data: products, error } = await supabaseClient
       .from("products")
       .select("*")
@@ -2965,6 +3015,7 @@ async function loadProductsFromSupabase() {
       return;
     }
 
+    console.log("✅ Promo Jual FLM:", window.shopPromoSettings);
     console.log("✅ Produk Supabase:", products);
 
     // ==========================================================
@@ -3111,7 +3162,7 @@ async function loadProductsFromSupabase() {
     }
 
     // Harga dasar dari Supabase sudah masuk.
-    // Baru setelah itu terapkan diskon Jumat/Minggu.
+    // Settings promo dari Admin juga sudah selesai dibaca.
     if (typeof applyDiskon === "function") {
       applyDiskon();
     }
