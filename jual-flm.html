@@ -2967,57 +2967,84 @@ async function loadProductsFromSupabase() {
 
     console.log("✅ Produk Supabase:", products);
 
-    const syncedIds = new Set();
+    // ==========================================================
+    // SUPABASE = SUMBER DATA UTAMA
+    //
+    // Semua card lama yang tertulis manual di HTML dibersihkan.
+    // Setelah itu seluruh katalog dibangun ulang dari database.
+    //
+    // Keuntungannya:
+    // - Edit produk lama langsung ikut berubah
+    // - Produk baru otomatis muncul
+    // - Harga lama tidak bisa "nyangkut" dari HTML
+    // - Nama/kategori/gambar/audio ikut sinkron
+    // ==========================================================
+
+    // Simpan pasangan prod_id -> audio id lama supaya durationMap
+    // yang sudah ada tetap bisa dipakai untuk preview produk lama.
+    const oldAudioIds = {};
+    Array.from(container.querySelectorAll(":scope > li")).forEach(li => {
+      const key = String(li.dataset.prodId || "").trim();
+      const audio = li.querySelector("audio");
+      if (key && audio?.id) {
+        oldAudioIds[key.toLowerCase()] = audio.id;
+      }
+    });
+
+    container.innerHTML = "";
 
     products.forEach(product => {
 
-      let li = findExistingProductCard(container, product);
+      const prodId = String(
+        product.prod_id ?? product.uid ?? product.id ?? ""
+      ).trim();
 
-      // --------------------------------------------------
-      // PRODUK LAMA:
-      // Cari berdasarkan prod_id / nama / database ID lalu
-      // TIMPA data card lama dengan data terbaru Supabase.
-      // --------------------------------------------------
-      if (li) {
-        syncExistingProductCard(li, product);
-        syncedIds.add(String(product.id ?? product.prod_id ?? ""));
-        console.log(
-          "🔄 Produk lama disinkronkan:",
-          product.name,
-          "→ Rp",
-          Number(product.price ?? 0).toLocaleString("id-ID")
-        );
-        return;
-      }
+      const uid = String(
+        product.uid ?? product.id ?? prodId
+      ).trim();
 
-      // --------------------------------------------------
-      // PRODUK BARU:
-      // Kalau belum ada card di HTML, buat card baru.
-      // --------------------------------------------------
-      const prodId = String(product.prod_id ?? product.uid ?? product.id ?? "");
-      const uid = String(product.uid ?? product.id ?? "");
-      const price = Number(product.price ?? 0);
-      const name = String(product.name ?? "Produk");
-      const imageUrl = String(product.image_url || "muslihpack.webp");
-      const audioUrl = String(product.audio_url || "");
+      const name = String(
+        product.name ?? "Produk"
+      ).trim();
 
-      const safeUid =
-        String(uid || prodId || "product")
-          .replace(/[^a-zA-Z0-9_-]/g, "");
+      const category = String(
+        product.category ?? ""
+      ).trim();
 
-      const audioId = `supabase-audio-${safeUid}`;
+      const price = Number(
+        product.price ?? 0
+      );
 
-      const liBaru = document.createElement("li");
+      const imageUrl = String(
+        product.image_url || "muslihpack.webp"
+      );
 
-      liBaru.dataset.uid = uid;
-      liBaru.dataset.prodId = prodId;
-      liBaru.dataset.price = String(price);
-      liBaru.dataset.category = String(product.category ?? "");
+      const audioUrl = String(
+        product.audio_url || ""
+      );
 
-      liBaru.className =
+      // Pertahankan ID audio lama kalau ada, supaya durasi lama
+      // yang tersimpan di durationMap tetap bekerja.
+      const oldAudioId = oldAudioIds[prodId.toLowerCase()];
+
+      const safeId = String(uid || prodId || "product")
+        .replace(/[^a-zA-Z0-9_-]/g, "");
+
+      const audioId =
+        oldAudioId ||
+        `supabase-audio-${safeId}`;
+
+      const li = document.createElement("li");
+
+      li.dataset.uid = uid;
+      li.dataset.prodId = prodId;
+      li.dataset.price = String(price);
+      li.dataset.category = category;
+
+      li.className =
         "overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow product-card";
 
-      liBaru.innerHTML = `
+      li.innerHTML = `
         <img
           src="${escapeHtml(imageUrl)}"
           alt="${escapeHtml(name)}"
@@ -3037,7 +3064,7 @@ async function loadProductsFromSupabase() {
           <div class="mt-2 flex gap-2 items-center">
 
             <button
-              data-audio="${audioId}"
+              data-audio="${escapeHtml(audioId)}"
               class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition"
             >
               ▶ Play Preview
@@ -3065,18 +3092,16 @@ async function loadProductsFromSupabase() {
         </div>
 
         <audio
-          id="${audioId}"
+          id="${escapeHtml(audioId)}"
           src="${escapeHtml(audioUrl)}"
           preload="none"
         ></audio>
       `;
 
-      container.appendChild(liBaru);
-
-      console.log("➕ Produk baru ditambahkan:", name);
+      container.appendChild(li);
     });
 
-    // Wire all current buttons after synchronization.
+    // Re-bind semua tombol setelah grid dibangun ulang.
     if (typeof wirePlayButtons === "function") {
       wirePlayButtons();
     }
@@ -3085,18 +3110,24 @@ async function loadProductsFromSupabase() {
       wireAddCartButtons();
     }
 
-    // Apply the current Friday/Sunday discount AFTER database prices
-    // have replaced the old static prices.
+    // Harga dasar dari Supabase sudah masuk.
+    // Baru setelah itu terapkan diskon Jumat/Minggu.
     if (typeof applyDiskon === "function") {
       applyDiskon();
     }
 
+    // Filter/sort membaca DOM terbaru.
     if (typeof window.__applyProductFilters === "function") {
       window.__applyProductFilters();
     }
 
+    // Produk populer membaca katalog terbaru.
+    if (typeof renderPopular === "function") {
+      renderPopular();
+    }
+
     console.log(
-      `✅ ${products.length} produk Supabase berhasil disinkronkan`
+      `✅ ${products.length} produk dari Supabase menjadi katalog utama`
     );
 
   } catch (error) {
@@ -3107,6 +3138,7 @@ async function loadProductsFromSupabase() {
     );
 
   }
+
 }
 
 // ==============================
