@@ -1322,6 +1322,33 @@
       }
     }
 
+
+    /* =========================================================
+       ALBUM COVER FIX
+       Cover Muslih Pack berbentuk square. Tampilkan utuh, isi
+       area gambar secara proporsional, tanpa crop/zoom.
+       ========================================================= */
+
+    #produk-grid > li > img{
+      aspect-ratio:1 / 1 !important;
+      width:100% !important;
+      height:auto !important;
+      object-fit:contain !important;
+      object-position:center !important;
+      display:block !important;
+      background:#071520 !important;
+      padding:0 !important;
+    }
+
+    @media (max-width:600px){
+      #produk-grid > li > img{
+        aspect-ratio:1 / 1 !important;
+        width:100% !important;
+        height:auto !important;
+        object-fit:contain !important;
+      }
+    }
+
 </style>
 </head>
 <body class="text-white font-sans p-4 bg-black/70">
