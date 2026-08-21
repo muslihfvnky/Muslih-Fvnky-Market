@@ -119,10 +119,379 @@
       .box { padding:14px; width:92%; }
       .qr-img { width:200px; }
     }
-  </style>
+  
+    /* =========================================================
+       MUSLIH FVNKY SHOP — PAYMENT PAGE MODERN RESTORATION
+       Visual-only overrides. Existing JS/IDs/functions preserved.
+       ========================================================= */
+    :root{
+      --mint:#0FFCBE;
+      --blue:#106EBE;
+      --panel:#071b27;
+      --panel2:#082a3b;
+      --text:#effffb;
+      --muted:#c7e8df;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      min-height:100vh;
+      padding:16px !important;
+      margin:0;
+      font-family:Inter,Arial,sans-serif !important;
+      text-align:center;
+      background:
+        linear-gradient(rgba(1,17,27,.40),rgba(1,17,27,.78)),
+        url('backgroundweb.webp') center/cover fixed no-repeat !important;
+      color:var(--text) !important;
+    }
+
+    .box{
+      width:min(100%, 780px) !important;
+      max-width:780px !important;
+      margin:0 auto !important;
+      padding:24px !important;
+      border-radius:26px !important;
+      background:
+        linear-gradient(145deg, rgba(8,58,86,.92), rgba(12,116,180,.78) 58%, rgba(4,150,146,.72)) !important;
+      border:1px solid rgba(15,252,190,.65) !important;
+      box-shadow:
+        0 24px 70px rgba(0,0,0,.38),
+        0 0 0 4px rgba(15,252,190,.05),
+        inset 0 1px 0 rgba(255,255,255,.12) !important;
+      backdrop-filter:blur(16px) saturate(1.08);
+      text-align:left !important;
+    }
+
+    .box::before{
+      content:"Pembayaran";
+      display:block;
+      width:max-content;
+      margin:0 auto 12px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:.72rem;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#06171f;
+      background:var(--mint);
+      box-shadow:0 6px 18px rgba(15,252,190,.14);
+    }
+
+    .box h2{
+      font-size:clamp(1.65rem,4vw,2.35rem);
+      line-height:1.12;
+      font-weight:900;
+      letter-spacing:.01em;
+      margin-bottom:10px !important;
+      text-align:center !important;
+      text-shadow:0 4px 22px rgba(0,0,0,.22);
+    }
+
+    .box > p.small{
+      text-align:center;
+      color:rgba(255,255,255,.78) !important;
+      font-size:.95rem !important;
+      line-height:1.55;
+      max-width:620px;
+      margin:0 auto 18px !important;
+    }
+
+    .box > p:nth-of-type(2){
+      text-align:center;
+      font-size:1.05rem;
+      margin:10px 0 16px !important;
+    }
+
+    .box > p:nth-of-type(2) span{
+      display:inline-block;
+      margin-left:6px;
+      padding:8px 12px !important;
+      border-radius:12px !important;
+      background:linear-gradient(135deg,#0FFCBE,#8fffe6) !important;
+      box-shadow:0 8px 22px rgba(15,252,190,.12);
+      color:#001820 !important;
+    }
+
+    .qr-img{
+      width:min(100%, 330px) !important;
+      max-height:none;
+      margin:14px auto 22px !important;
+      padding:8px;
+      border-radius:18px !important;
+      background:#fff;
+      border:2px solid rgba(15,252,190,.82) !important;
+      box-shadow:
+        0 16px 36px rgba(0,0,0,.26),
+        0 0 0 5px rgba(15,252,190,.05);
+    }
+
+    label{
+      margin-top:16px !important;
+      margin-bottom:6px;
+      font-size:.92rem;
+      font-weight:800 !important;
+      color:#effffb !important;
+    }
+
+    input, select, button, a, .link-btn{
+      width:100%;
+      min-height:48px;
+      margin:8px 0;
+      border-radius:14px !important;
+      font-size:15px !important;
+    }
+
+    input, select{
+      background:rgba(0,10,18,.38) !important;
+      color:#fff !important;
+      border:1px solid rgba(255,255,255,.14) !important;
+      padding:12px 14px !important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+      outline:none;
+    }
+
+    input:focus, select:focus{
+      border-color:rgba(15,252,190,.62) !important;
+      box-shadow:0 0 0 4px rgba(15,252,190,.07) !important;
+      background:rgba(0,18,29,.52) !important;
+    }
+
+    button,
+    .btn,
+    .btn-dana{
+      transition:transform .2s ease, box-shadow .2s ease, filter .2s ease, background .2s ease;
+      font-weight:850 !important;
+    }
+
+    button:hover,
+    .btn:hover,
+    .btn-dana:hover{
+      transform:translateY(-2px);
+      filter:saturate(1.03);
+    }
+
+    .btn-dana{
+      background:linear-gradient(135deg,#0FFCBE,#7fffe0) !important;
+      color:#03161c !important;
+      border:1px solid rgba(255,255,255,.12) !important;
+      box-shadow:0 12px 26px rgba(15,252,190,.12);
+    }
+
+    #btnWA{
+      background:linear-gradient(135deg,#147bc8,#106EBE) !important;
+      border:1px solid rgba(15,252,190,.28) !important;
+      color:#fff !important;
+      box-shadow:0 10px 24px rgba(16,110,190,.16);
+    }
+
+    /* Cart */
+    #cart-found{
+      margin:22px 0 6px;
+      padding:16px;
+      border-radius:20px;
+      background:rgba(2,18,28,.34);
+      border:1px solid rgba(15,252,190,.12);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    #cart-found label{
+      display:block;
+      margin-top:0 !important;
+      font-size:1.05rem;
+    }
+
+    .cart-list{
+      padding:10px !important;
+      border-radius:16px !important;
+      background:rgba(0,0,0,.16) !important;
+    }
+
+    .cart-item{
+      padding:11px 8px !important;
+      border-bottom:1px solid rgba(255,255,255,.08) !important;
+    }
+
+    .cart-item:last-child{border-bottom:0 !important}
+
+    .btn-clear-cart{
+      background:linear-gradient(135deg,#ff4d6d,#ff365a) !important;
+      border:1px solid rgba(255,255,255,.10) !important;
+      box-shadow:0 10px 22px rgba(255,77,109,.12);
+    }
+
+    #refresh-cart{
+      background:rgba(16,110,190,.55) !important;
+      border:1px solid rgba(15,252,190,.30) !important;
+    }
+
+    /* Receipt / WhatsApp preview */
+    .receipt-preview{
+      margin-top:18px !important;
+      padding:16px !important;
+      border-radius:18px !important;
+      background:
+        linear-gradient(145deg, rgba(5,92,59,.96), rgba(2,68,45,.94)) !important;
+      border:1px solid rgba(15,252,190,.26) !important;
+      box-shadow:
+        0 16px 38px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .receipt-preview .line{
+      margin:7px 0 !important;
+      line-height:1.45;
+    }
+
+    .receipt-actions{
+      gap:10px !important;
+      margin-top:14px !important;
+    }
+
+    .receipt-actions button{
+      flex:1;
+      margin:0 !important;
+    }
+
+    .copy-btn{
+      background:linear-gradient(135deg,#ffd24d,#ffc52f) !important;
+      border:0 !important;
+    }
+
+    #openWA{
+      background:linear-gradient(135deg,#1278c9,#0b8bd1) !important;
+      border:1px solid rgba(15,252,190,.35) !important;
+    }
+
+    .note{
+      margin-top:12px !important;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.06);
+      line-height:1.5;
+    }
+
+    /* Desktop spacing */
+    @media (min-width:850px){
+      .box{
+        padding:28px 32px !important;
+      }
+
+      #cart-found{
+        padding:18px;
+      }
+
+      .box form,
+      .box > label,
+      .box > input,
+      .box > select,
+      .box > a,
+      .box > button{
+        max-width:100%;
+      }
+
+      #btnDana, #btnWA{
+        width:100%;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width:600px){
+      body{
+        padding:10px !important;
+        background-attachment:scroll !important;
+      }
+
+      .box{
+        width:100% !important;
+        padding:18px 14px !important;
+        border-radius:22px !important;
+      }
+
+      .box h2{
+        font-size:1.65rem;
+      }
+
+      .box > p.small{
+        font-size:.86rem !important;
+      }
+
+      .qr-img{
+        width:min(100%, 310px) !important;
+      }
+
+      #cart-found > div[style*="display:flex"]{
+        flex-direction:column;
+      }
+
+      #cart-found > div[style*="display:flex"] button{
+        width:100% !important;
+        margin:0 !important;
+      }
+
+      .receipt-actions{
+        flex-direction:column !important;
+      }
+
+      .receipt-actions button{
+        width:100%;
+      }
+    }
+
+
+    .page-shell{
+      width:min(100%, 820px);
+      margin:0 auto;
+    }
+
+    .top-nav{
+      display:flex;
+      justify-content:flex-start;
+      margin:0 0 10px;
+    }
+
+    .back-home{
+      width:auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:0 14px !important;
+      margin:0 !important;
+      border-radius:12px !important;
+      color:#e9fff8 !important;
+      background:rgba(4,30,44,.72);
+      border:1px solid rgba(15,252,190,.22);
+      box-shadow:0 8px 22px rgba(0,0,0,.18);
+      backdrop-filter:blur(10px);
+      font-weight:800;
+      text-decoration:none;
+      transition:transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .back-home:hover{
+      transform:translateY(-2px);
+      background:rgba(15,252,190,.12);
+      border-color:rgba(15,252,190,.50);
+    }
+
+    @media (max-width:600px){
+      .top-nav{margin-bottom:8px}
+      .back-home{width:100%}
+    }
+
+</style>
 </head>
 <body>
-  <div class="box">
+  <div class="page-shell">
+    <div class="top-nav">
+      <a href="index.html" class="back-home" aria-label="Kembali ke Beranda">← Kembali ke Beranda</a>
+    </div>
+    <div class="box">
     <h2 style="margin:0 0 6px 0">Pembayaran Muslih Fvnky</h2>
     <p class="small" style="margin:0 0 12px 0">Nomor DANA & QRIS di bawah. Isi produk & nominal lalu tekan Bayar / Kirim WA.</p>
 
@@ -167,6 +536,7 @@
       <div class="note small">Pastikan kirim <strong>screenshot</strong> bukti transfer setelah melakukan pembayaran.</div>
     </div>
 
+    </div>
   </div>
 
   <script>
