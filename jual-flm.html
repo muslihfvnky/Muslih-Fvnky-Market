@@ -1085,21 +1085,19 @@
     .mf-floating-player{
       position:fixed !important;
       left:50% !important;
-      bottom:16px !important;
+      bottom:12px !important;
       transform:translateX(-50%) !important;
-      width:min(680px,calc(100vw - 24px)) !important;
-      min-height:78px;
-      padding:10px 12px !important;
+      width:min(680px,calc(100vw - 20px)) !important;
+      min-height:74px;
+      padding:9px 10px !important;
       display:none;
       align-items:center;
       gap:10px;
       z-index:2500 !important;
-      border-radius:20px !important;
-      background:linear-gradient(145deg,rgba(3,16,27,.97),rgba(6,34,48,.96)) !important;
+      border-radius:18px !important;
+      background:linear-gradient(145deg,rgba(3,16,27,.98),rgba(6,34,48,.97)) !important;
       border:1px solid rgba(15,252,190,.18) !important;
-      box-shadow:
-        0 18px 46px rgba(0,0,0,.48),
-        inset 0 1px 0 rgba(255,255,255,.07) !important;
+      box-shadow:0 18px 46px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.07) !important;
       backdrop-filter:blur(18px) saturate(1.05);
     }
 
@@ -1108,10 +1106,10 @@
     }
 
     .mf-player-thumb{
-      width:50px !important;
-      height:50px !important;
-      flex:0 0 50px;
-      border-radius:12px !important;
+      width:48px !important;
+      height:48px !important;
+      flex:0 0 48px;
+      border-radius:11px !important;
       object-fit:cover;
       background:#06151e;
       border:1px solid rgba(255,255,255,.08);
@@ -1120,30 +1118,35 @@
     .mf-player-main{
       min-width:0;
       flex:1;
-      display:grid;
-      grid-template-columns:auto minmax(80px,1fr) auto;
-      grid-template-rows:auto auto;
-      column-gap:8px;
-      align-items:center;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
     }
 
     .mf-player-name{
       min-width:0;
-      grid-column:1 / -1;
-      font-size:.86rem;
-      line-height:1.2;
+      font-size:.82rem;
+      line-height:1.15;
       font-weight:900;
       color:#f4fffb;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      margin-bottom:4px;
+    }
+
+    .mf-player-row{
+      min-width:0;
+      display:grid;
+      grid-template-columns:auto 1fr auto auto;
+      align-items:center;
+      gap:7px;
     }
 
     .mf-floating-player .mf-time{
-      min-width:35px;
-      color:rgba(255,255,255,.60);
-      font-size:.68rem;
+      min-width:34px;
+      color:rgba(255,255,255,.62);
+      font-size:.66rem;
+      line-height:1;
       text-align:center;
       white-space:nowrap;
     }
@@ -1170,9 +1173,9 @@
 
     .mf-floating-player .progress::-webkit-slider-thumb{
       -webkit-appearance:none;
-      width:16px;
-      height:16px;
-      margin-top:-4.5px;
+      width:14px;
+      height:14px;
+      margin-top:-3.5px;
       border-radius:50%;
       background:#0FFCBE;
       border:0;
@@ -1186,18 +1189,42 @@
     }
 
     .mf-floating-player .progress::-moz-range-thumb{
-      width:16px;
-      height:16px;
+      width:14px;
+      height:14px;
       border-radius:50%;
       background:#0FFCBE;
       border:0;
     }
 
+    .mf-player-skip{
+      width:30px !important;
+      min-width:30px !important;
+      height:28px !important;
+      min-height:28px !important;
+      padding:0 !important;
+      border-radius:8px !important;
+      border:1px solid rgba(15,252,190,.22) !important;
+      background:rgba(16,110,190,.24) !important;
+      color:#dffbf2 !important;
+      font-size:.58rem !important;
+      font-weight:900;
+      cursor:pointer;
+      display:inline-flex !important;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .mf-player-skip:hover{
+      background:rgba(15,252,190,.15) !important;
+      color:#fff !important;
+    }
+
     .mf-player-action{
-      width:52px !important;
-      height:52px !important;
-      min-width:52px !important;
-      min-height:52px !important;
+      width:50px !important;
+      height:50px !important;
+      min-width:50px !important;
+      min-height:50px !important;
+      flex:0 0 50px;
       border-radius:50% !important;
       border:0 !important;
       padding:0 !important;
@@ -1206,7 +1233,7 @@
       justify-content:center !important;
       background:#1686ff !important;
       color:#04131d !important;
-      font-size:1.15rem !important;
+      font-size:1.08rem !important;
       font-weight:900 !important;
       cursor:pointer;
       box-shadow:0 8px 20px rgba(0,0,0,.28);
@@ -1217,68 +1244,80 @@
       transform:scale(1.03);
     }
 
-    .mf-player-skip{
-      width:28px !important;
-      min-width:28px !important;
-      height:30px !important;
-      min-height:30px !important;
-      padding:0 !important;
-      border-radius:8px !important;
-      border:1px solid rgba(15,252,190,.24) !important;
-      background:rgba(16,110,190,.24) !important;
-      color:rgba(255,255,255,.75) !important;
-      font-size:.62rem !important;
-      font-weight:900;
-      cursor:pointer;
-    }
-
-    .mf-player-skip:hover{
-      background:rgba(15,252,190,.15) !important;
-      color:#fff !important;
-    }
-
-    /* product cards no longer reserve space for player */
     #produk-grid > li .player-controls-container{
       display:none !important;
     }
 
     @media (max-width:600px){
       .mf-floating-player{
-        bottom:12px !important;
-        width:calc(100vw - 20px) !important;
-        min-height:72px;
-        padding:9px 10px !important;
-        border-radius:18px !important;
+        bottom:10px !important;
+        width:calc(100vw - 14px) !important;
+        min-height:70px;
+        padding:8px 9px !important;
+        gap:8px;
+        border-radius:17px !important;
       }
 
       .mf-player-thumb{
-        width:44px !important;
-        height:44px !important;
-        flex-basis:44px;
-        border-radius:10px !important;
+        width:42px !important;
+        height:42px !important;
+        flex-basis:42px;
+        border-radius:9px !important;
       }
 
       .mf-player-main{
-        grid-template-columns:30px minmax(50px,1fr) 30px;
+        gap:4px;
       }
 
       .mf-player-name{
-        font-size:.78rem;
+        font-size:.76rem;
       }
 
-      .mf-player-action{
-        width:46px !important;
-        height:46px !important;
-        min-width:46px !important;
-        min-height:46px !important;
+      .mf-player-row{
+        grid-template-columns:auto 1fr auto auto;
+        gap:5px;
+      }
+
+      .mf-floating-player .mf-time{
+        min-width:30px;
+        font-size:.60rem;
       }
 
       .mf-player-skip{
-        width:24px !important;
-        min-width:24px !important;
+        width:28px !important;
+        min-width:28px !important;
         height:26px !important;
         min-height:26px !important;
-        font-size:.56rem !important;
+        font-size:.52rem !important;
+      }
+
+      .mf-player-action{
+        width:45px !important;
+        height:45px !important;
+        min-width:45px !important;
+        min-height:45px !important;
+        flex-basis:45px;
+        font-size:.98rem !important;
+      }
+
+      .mf-floating-player .progress{
+        height:6px !important;
+      }
+    }
+
+    @media (max-width:360px){
+      .mf-player-thumb{display:none}
+      .mf-player-row{
+        grid-template-columns:auto 1fr auto auto;
+        gap:4px;
+      }
+      .mf-player-skip{
+        width:25px !important;
+        min-width:25px !important;
+      }
+      .mf-floating-player .mf-time{
+        min-width:27px;
+        font-size:.56rem;
       }
     }
 
@@ -2450,8 +2489,8 @@
 
     // Create player controls markup inside container for each card
     function createControls(container, audio, sourceBtn = null) {
-      // Reuse a single floating player for the whole page.
       let host = document.getElementById('mf-floating-player');
+
       if (!host) {
         host = document.createElement('div');
         host.id = 'mf-floating-player';
@@ -2464,16 +2503,19 @@
       const title = sourceLi?.querySelector('.font-semibold')?.textContent?.trim()
         || audio.getAttribute('data-title')
         || 'Preview FLM';
-      const thumb = sourceLi?.querySelector('img')?.src
-        || 'muslihpack.webp';
+      const thumb = sourceLi?.querySelector('img')?.src || 'muslihpack.webp';
 
       host.innerHTML = `
         <img class="mf-player-thumb" src="${escapeHtml(thumb)}" alt="">
         <div class="mf-player-main">
           <div class="mf-player-name" title="${escapeHtml(title)}">${escapeHtml(title)}</div>
-          <button class="mf-player-skip" data-floating-skip="-3" title="Mundur 3 detik">3s</button>
-          <input type="range" class="progress" min="0" max="100" value="0" step="0.1" aria-label="Progress audio">
-          <button class="mf-player-skip" data-floating-skip="3" title="Maju 3 detik">3s</button>
+          <div class="mf-player-row">
+            <button class="mf-player-skip" data-floating-skip="-3" title="Mundur 3 detik">−3s</button>
+            <span class="mf-time mf-current-time">0:00</span>
+            <input type="range" class="progress" min="0" max="100" value="0" step="0.1" aria-label="Progress audio">
+            <span class="mf-time mf-duration">0:00</span>
+            <button class="mf-player-skip" data-floating-skip="3" title="Maju 3 detik">+3s</button>
+          </div>
         </div>
         <button class="mf-player-action" type="button" aria-label="Pause/Play">▶</button>
       `;
@@ -2481,61 +2523,61 @@
       host.classList.add('is-visible');
 
       const progress = host.querySelector('.progress');
-      const currentTimeEl = document.createElement('span');
-      currentTimeEl.className = 'mf-time';
-      currentTimeEl.textContent = '0:00';
-      const durationEl = document.createElement('span');
-      durationEl.className = 'mf-time';
-      durationEl.textContent = '0:00';
-
-      const main = host.querySelector('.mf-player-main');
-      const oldProgress = host.querySelector('.progress');
+      const currentTimeEl = host.querySelector('.mf-current-time');
+      const durationEl = host.querySelector('.mf-duration');
       const skipBack = host.querySelector('[data-floating-skip="-3"]');
       const skipForward = host.querySelector('[data-floating-skip="3"]');
-
-      // Row 2 layout: current / progress / duration.
-      oldProgress.before(currentTimeEl);
-      oldProgress.after(durationEl);
-
       const action = host.querySelector('.mf-player-action');
-
       const known = durationMap[audio.id];
+
       if (known && typeof known === 'number' && known > 0) {
         durationEl.textContent = formatTime(known);
         progress.max = known;
-        progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
       }
+
+      const updateProgressVisual = (current, total) => {
+        const pct = total > 0 ? Math.max(0, Math.min(100, (current / total) * 100)) : 0;
+        progress.style.background =
+          `linear-gradient(90deg,#0FFCBE ${pct}%,rgba(255,255,255,.12) ${pct}%)`;
+      };
 
       audio.addEventListener('loadedmetadata', () => {
         if (!known || isNaN(known)) {
           if (!isNaN(audio.duration) && audio.duration > 0) {
-            durationEl.textContent = formatTime(audio.duration);
             progress.max = audio.duration;
+            durationEl.textContent = formatTime(audio.duration);
           }
         } else {
           progress.max = known;
+          durationEl.textContent = formatTime(known);
         }
       });
 
       audio.addEventListener('timeupdate', () => {
-        if (!isNaN(audio.currentTime)) {
-          const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? 0 : audio.duration);
-          const current = Math.min(audio.currentTime, total || audio.currentTime);
-          progress.value = current;
-          const pct = (total > 0) ? (current / total) * 100 : 0;
-          progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
-          currentTimeEl.textContent = formatTime(current);
-          durationEl.textContent = formatTime(total);
-        }
+        if (isNaN(audio.currentTime)) return;
+
+        const total = (known && !isNaN(known))
+          ? known
+          : (isNaN(audio.duration) ? 0 : audio.duration);
+
+        const current = Math.max(0, Math.min(audio.currentTime, total || audio.currentTime));
+        progress.value = current;
+        currentTimeEl.textContent = formatTime(current);
+        durationEl.textContent = formatTime(total);
+        updateProgressVisual(current, total);
       });
 
       const resetFloating = () => {
         action.textContent = '▶';
         progress.value = 0;
         currentTimeEl.textContent = '0:00';
-        const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? 0 : audio.duration);
+
+        const total = (known && !isNaN(known))
+          ? known
+          : (isNaN(audio.duration) ? 0 : audio.duration);
+
         durationEl.textContent = formatTime(total);
-        progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
+        updateProgressVisual(0, total);
       };
 
       action.addEventListener('click', async () => {
@@ -2557,30 +2599,38 @@
       });
 
       progress.addEventListener('input', (e) => {
-        const val = parseFloat(e.target.value);
-        const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? null : audio.duration);
+        const value = parseFloat(e.target.value);
+        const total = (known && !isNaN(known))
+          ? known
+          : (isNaN(audio.duration) ? null : audio.duration);
+
         if (total !== null) {
-          const newTime = Math.max(0, Math.min(total, val));
+          const newTime = Math.max(0, Math.min(total, value));
           audio.currentTime = newTime;
           currentTimeEl.textContent = formatTime(newTime);
-          const pct = (total > 0) ? (newTime / total) * 100 : 0;
-          progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
-        } else {
-          audio.currentTime = val;
-          currentTimeEl.textContent = formatTime(val);
+          updateProgressVisual(newTime, total);
         }
       });
 
       [skipBack, skipForward].forEach(btn => {
         btn.addEventListener('click', () => {
-          const skip = parseFloat(btn.getAttribute('data-floating-skip')) || 0;
-          const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? null : audio.duration);
-          let newTime = audio.currentTime + skip;
-          if (total !== null) newTime = Math.max(0, Math.min(total, newTime));
-          else newTime = Math.max(0, newTime);
+          const amount = parseFloat(btn.getAttribute('data-floating-skip')) || 0;
+          const total = (known && !isNaN(known))
+            ? known
+            : (isNaN(audio.duration) ? null : audio.duration);
+
+          let newTime = audio.currentTime + amount;
+
+          if (total !== null) {
+            newTime = Math.max(0, Math.min(total, newTime));
+          } else {
+            newTime = Math.max(0, newTime);
+          }
+
           audio.currentTime = newTime;
           progress.value = newTime;
           currentTimeEl.textContent = formatTime(newTime);
+          updateProgressVisual(newTime, total || 0);
         });
       });
 
@@ -2590,10 +2640,9 @@
         host.classList.remove('is-visible');
       };
 
-      // Set initial button according to current audio state.
       action.textContent = audio.paused ? '▶' : '⏸';
 
-      return host.querySelector('.mf-player-main');
+      return host;
     }
 
     // Utility to pause all audios except the one provided
