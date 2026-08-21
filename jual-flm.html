@@ -1075,6 +1075,213 @@
       }
     }
 
+
+    /* =========================================================
+       FLOATING AUDIO PLAYER
+       Player keluar dari kartu produk dan tetap memakai audio
+       + progress/skip logic yang sama.
+       ========================================================= */
+
+    .mf-floating-player{
+      position:fixed !important;
+      left:50% !important;
+      bottom:16px !important;
+      transform:translateX(-50%) !important;
+      width:min(680px,calc(100vw - 24px)) !important;
+      min-height:78px;
+      padding:10px 12px !important;
+      display:none;
+      align-items:center;
+      gap:10px;
+      z-index:2500 !important;
+      border-radius:20px !important;
+      background:linear-gradient(145deg,rgba(3,16,27,.97),rgba(6,34,48,.96)) !important;
+      border:1px solid rgba(15,252,190,.18) !important;
+      box-shadow:
+        0 18px 46px rgba(0,0,0,.48),
+        inset 0 1px 0 rgba(255,255,255,.07) !important;
+      backdrop-filter:blur(18px) saturate(1.05);
+    }
+
+    .mf-floating-player.is-visible{
+      display:flex !important;
+    }
+
+    .mf-player-thumb{
+      width:50px !important;
+      height:50px !important;
+      flex:0 0 50px;
+      border-radius:12px !important;
+      object-fit:cover;
+      background:#06151e;
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .mf-player-main{
+      min-width:0;
+      flex:1;
+      display:grid;
+      grid-template-columns:auto minmax(80px,1fr) auto;
+      grid-template-rows:auto auto;
+      column-gap:8px;
+      align-items:center;
+    }
+
+    .mf-player-name{
+      min-width:0;
+      grid-column:1 / -1;
+      font-size:.86rem;
+      line-height:1.2;
+      font-weight:900;
+      color:#f4fffb;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      margin-bottom:4px;
+    }
+
+    .mf-floating-player .mf-time{
+      min-width:35px;
+      color:rgba(255,255,255,.60);
+      font-size:.68rem;
+      text-align:center;
+      white-space:nowrap;
+    }
+
+    .mf-floating-player .progress{
+      width:100% !important;
+      min-width:0 !important;
+      height:7px !important;
+      padding:0 !important;
+      margin:0 !important;
+      border-radius:999px !important;
+      -webkit-appearance:none !important;
+      appearance:none !important;
+      background:linear-gradient(90deg,#0FFCBE 0%,rgba(255,255,255,.12) 0%) !important;
+      outline:none;
+      cursor:pointer;
+    }
+
+    .mf-floating-player .progress::-webkit-slider-runnable-track{
+      height:7px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+    }
+
+    .mf-floating-player .progress::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:16px;
+      height:16px;
+      margin-top:-4.5px;
+      border-radius:50%;
+      background:#0FFCBE;
+      border:0;
+      box-shadow:0 0 0 3px rgba(15,252,190,.10);
+    }
+
+    .mf-floating-player .progress::-moz-range-track{
+      height:7px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+    }
+
+    .mf-floating-player .progress::-moz-range-thumb{
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:#0FFCBE;
+      border:0;
+    }
+
+    .mf-player-action{
+      width:52px !important;
+      height:52px !important;
+      min-width:52px !important;
+      min-height:52px !important;
+      border-radius:50% !important;
+      border:0 !important;
+      padding:0 !important;
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+      background:#1686ff !important;
+      color:#04131d !important;
+      font-size:1.15rem !important;
+      font-weight:900 !important;
+      cursor:pointer;
+      box-shadow:0 8px 20px rgba(0,0,0,.28);
+    }
+
+    .mf-player-action:hover{
+      filter:brightness(1.06);
+      transform:scale(1.03);
+    }
+
+    .mf-player-skip{
+      width:28px !important;
+      min-width:28px !important;
+      height:30px !important;
+      min-height:30px !important;
+      padding:0 !important;
+      border-radius:8px !important;
+      border:1px solid rgba(15,252,190,.24) !important;
+      background:rgba(16,110,190,.24) !important;
+      color:rgba(255,255,255,.75) !important;
+      font-size:.62rem !important;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .mf-player-skip:hover{
+      background:rgba(15,252,190,.15) !important;
+      color:#fff !important;
+    }
+
+    /* product cards no longer reserve space for player */
+    #produk-grid > li .player-controls-container{
+      display:none !important;
+    }
+
+    @media (max-width:600px){
+      .mf-floating-player{
+        bottom:12px !important;
+        width:calc(100vw - 20px) !important;
+        min-height:72px;
+        padding:9px 10px !important;
+        border-radius:18px !important;
+      }
+
+      .mf-player-thumb{
+        width:44px !important;
+        height:44px !important;
+        flex-basis:44px;
+        border-radius:10px !important;
+      }
+
+      .mf-player-main{
+        grid-template-columns:30px minmax(50px,1fr) 30px;
+      }
+
+      .mf-player-name{
+        font-size:.78rem;
+      }
+
+      .mf-player-action{
+        width:46px !important;
+        height:46px !important;
+        min-width:46px !important;
+        min-height:46px !important;
+      }
+
+      .mf-player-skip{
+        width:24px !important;
+        min-width:24px !important;
+        height:26px !important;
+        min-height:26px !important;
+        font-size:.56rem !important;
+      }
+    }
+
 </style>
 </head>
 <body class="text-white font-sans p-4 bg-black/70">
@@ -2242,25 +2449,55 @@
     }
 
     // Create player controls markup inside container for each card
-    function createControls(container, audio) {
-      let existing = container.querySelector('.player-controls');
-      if (existing) return existing;
+    function createControls(container, audio, sourceBtn = null) {
+      // Reuse a single floating player for the whole page.
+      let host = document.getElementById('mf-floating-player');
+      if (!host) {
+        host = document.createElement('div');
+        host.id = 'mf-floating-player';
+        host.className = 'mf-floating-player';
+        host.setAttribute('aria-label', 'Pemutar audio');
+        document.body.appendChild(host);
+      }
 
-      const controls = document.createElement('div');
-      controls.className = 'player-controls';
-      controls.innerHTML = `
-        <button class="skip-btn" data-skip="-3" title="Mundur 3 detik">3s</button>
-        <span class="time current">0:00</span>
-        <input type="range" class="progress" min="0" max="100" value="0" step="0.1">
-        <span class="time duration">0:00</span>
-        <button class="skip-btn" data-skip="3" title="Maju 3 detik">3s</button>
+      const sourceLi = sourceBtn?.closest('li');
+      const title = sourceLi?.querySelector('.font-semibold')?.textContent?.trim()
+        || audio.getAttribute('data-title')
+        || 'Preview FLM';
+      const thumb = sourceLi?.querySelector('img')?.src
+        || 'muslihpack.webp';
+
+      host.innerHTML = `
+        <img class="mf-player-thumb" src="${escapeHtml(thumb)}" alt="">
+        <div class="mf-player-main">
+          <div class="mf-player-name" title="${escapeHtml(title)}">${escapeHtml(title)}</div>
+          <button class="mf-player-skip" data-floating-skip="-3" title="Mundur 3 detik">3s</button>
+          <input type="range" class="progress" min="0" max="100" value="0" step="0.1" aria-label="Progress audio">
+          <button class="mf-player-skip" data-floating-skip="3" title="Maju 3 detik">3s</button>
+        </div>
+        <button class="mf-player-action" type="button" aria-label="Pause/Play">▶</button>
       `;
-      container.appendChild(controls);
 
-      const progress = controls.querySelector('.progress');
-      const currentTimeEl = controls.querySelector('.current');
-      const durationEl = controls.querySelector('.duration');
-      const skipButtons = controls.querySelectorAll('.skip-btn');
+      host.classList.add('is-visible');
+
+      const progress = host.querySelector('.progress');
+      const currentTimeEl = document.createElement('span');
+      currentTimeEl.className = 'mf-time';
+      currentTimeEl.textContent = '0:00';
+      const durationEl = document.createElement('span');
+      durationEl.className = 'mf-time';
+      durationEl.textContent = '0:00';
+
+      const main = host.querySelector('.mf-player-main');
+      const oldProgress = host.querySelector('.progress');
+      const skipBack = host.querySelector('[data-floating-skip="-3"]');
+      const skipForward = host.querySelector('[data-floating-skip="3"]');
+
+      // Row 2 layout: current / progress / duration.
+      oldProgress.before(currentTimeEl);
+      oldProgress.after(durationEl);
+
+      const action = host.querySelector('.mf-player-action');
 
       const known = durationMap[audio.id];
       if (known && typeof known === 'number' && known > 0) {
@@ -2288,13 +2525,35 @@
           const pct = (total > 0) ? (current / total) * 100 : 0;
           progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
           currentTimeEl.textContent = formatTime(current);
+          durationEl.textContent = formatTime(total);
         }
       });
 
-      audio.addEventListener('ended', () => {
+      const resetFloating = () => {
+        action.textContent = '▶';
         progress.value = 0;
         currentTimeEl.textContent = '0:00';
+        const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? 0 : audio.duration);
+        durationEl.textContent = formatTime(total);
         progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
+      };
+
+      action.addEventListener('click', async () => {
+        if (audio.paused) {
+          try {
+            pauseOthers(audio);
+            await audio.play();
+            action.textContent = '⏸';
+            if (sourceBtn) sourceBtn.textContent = '⏸ Pause Preview';
+          } catch (err) {
+            console.warn('play failed', err);
+            alert('Audio tidak bisa diputar otomatis. Silakan tekan lagi untuk memulai.');
+          }
+        } else {
+          audio.pause();
+          action.textContent = '▶';
+          if (sourceBtn) sourceBtn.textContent = '▶ Play Preview';
+        }
       });
 
       progress.addEventListener('input', (e) => {
@@ -2312,26 +2571,29 @@
         }
       });
 
-      skipButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const skip = parseFloat(btn.getAttribute('data-skip')) || 0;
-          if (isNaN(skip) || skip === 0) return;
+      [skipBack, skipForward].forEach(btn => {
+        btn.addEventListener('click', () => {
+          const skip = parseFloat(btn.getAttribute('data-floating-skip')) || 0;
           const total = (known && !isNaN(known)) ? known : (isNaN(audio.duration) ? null : audio.duration);
           let newTime = audio.currentTime + skip;
-          if (total !== null) {
-            newTime = Math.max(0, Math.min(total, newTime));
-          } else {
-            newTime = Math.max(0, newTime);
-          }
+          if (total !== null) newTime = Math.max(0, Math.min(total, newTime));
+          else newTime = Math.max(0, newTime);
           audio.currentTime = newTime;
           progress.value = newTime;
           currentTimeEl.textContent = formatTime(newTime);
-          const pct = (total && total > 0) ? (newTime / total) * 100 : 0;
-          progress.style.background = `linear-gradient(90deg, #0FFCBE ${pct}%, rgba(255,255,255,0.12) ${pct}%)`;
         });
       });
 
-      return controls;
+      audio.onended = () => {
+        resetFloating();
+        if (sourceBtn) sourceBtn.textContent = '▶ Play Preview';
+        host.classList.remove('is-visible');
+      };
+
+      // Set initial button according to current audio state.
+      action.textContent = audio.paused ? '▶' : '⏸';
+
+      return host.querySelector('.mf-player-main');
     }
 
     // Utility to pause all audios except the one provided
@@ -2444,11 +2706,9 @@
           const audio = document.getElementById(audioId);
           if (!audio) return;
 
-          const container = btn.closest('li')?.querySelector('.player-controls-container') || btn.closest('div')?.querySelector('.player-controls-container');
-          if (!container) return;
-
-          createControls(container, audio);
           pauseOthers(audio);
+
+          createControls(null, audio, btn);
 
           if (audio.paused) {
             try {
@@ -2462,16 +2722,9 @@
           } else {
             audio.pause();
             btn.textContent = '▶ Play Preview';
+            const host = document.getElementById('mf-floating-player');
+            if (host) host.classList.remove('is-visible');
           }
-
-          const controls = container.querySelector('.player-controls');
-          const progress = controls.querySelector('.progress');
-
-          audio.onended = () => {
-            btn.textContent = '▶ Play Preview';
-            progress.value = 0;
-            progress.style.background = `linear-gradient(90deg, #0FFCBE 0%, rgba(255,255,255,0.12) 0%)`;
-          };
         };
         btn.addEventListener('click', clicker);
         btn._clicker = clicker;
@@ -2819,6 +3072,8 @@
       if (document.hidden) {
         document.querySelectorAll('audio').forEach(a => a.pause());
         document.querySelectorAll('.play-btn').forEach(b => b.textContent = '▶ Play Preview');
+        const host = document.getElementById('mf-floating-player');
+        if (host) host.classList.remove('is-visible');
       }
     });
     
