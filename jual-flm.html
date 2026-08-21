@@ -813,6 +813,13 @@
 
 </style>
 </head>
+
+<!--
+  PRODUCT SYNC:
+  Produk lama yang sudah ada di HTML akan disinkronkan berdasarkan prod_id
+  dengan data terbaru dari Supabase. Produk baru tetap dibuat otomatis.
+  Jadi edit dari admin berlaku untuk produk lama maupun produk baru.
+-->
 <body class="text-white font-sans p-4 bg-black/70">
   <header class="max-w-5xl mx-auto">
     <h1 class="text-2xl font-bold mb-1">MUSLIH FVNKY SHOP</h1>
@@ -2862,188 +2869,196 @@ async function loadProductsFromSupabase() {
 
     console.log('✅ Produk Supabase:', products);
 
-
     products.forEach(product => {
-
-      // ==============================
-      // ID PRODUK
-      // ==============================
 
       const prodId = String(
         product.prod_id ?? product.uid ?? product.id
       );
 
       const uid = product.uid ?? product.id;
-
       const price = Number(product.price ?? 0);
+      const name = String(product.name ?? 'Produk');
+      const category = String(product.category ?? '');
+      const imageUrl = String(product.image_url || 'muslihpack.webp');
+      const audioUrl = String(product.audio_url || '');
 
-      const name = String(
-        product.name ?? 'Produk'
-      );
-
-      const category = String(
-        product.category ?? ''
-      );
-
-
-      // ==============================
-      // CEGAH DUPLIKAT
-      // ==============================
-
-      const sudahAda = Array.from(
+      // ======================================================
+      // PENTING:
+      // Kalau produk lama sudah ada di HTML, JANGAN dilewati.
+      // Sinkronkan card lama dengan data terbaru dari Supabase.
+      // Ini membuat EDIT di admin langsung terlihat di jual-flm.
+      // ======================================================
+      let li = Array.from(
         container.querySelectorAll('li')
-      ).some(li =>
-        String(li.dataset.prodId || '') === prodId
+      ).find(item =>
+        String(item.dataset.prodId || '') === prodId
       );
 
-      if (sudahAda) {
-        console.log(
-          '⚠️ Produk sudah ada, dilewati:',
-          prodId
+      if (li) {
+
+        // Update data yang dipakai search/filter/diskon.
+        li.dataset.uid = uid;
+        li.dataset.prodId = prodId;
+        li.dataset.price = price;
+        li.dataset.category = category;
+
+        // Update gambar.
+        const img = li.querySelector('img');
+        if (img) {
+          img.src = imageUrl;
+          img.alt = name;
+        }
+
+        // Update nama produk.
+        const nameEl = li.querySelector('.font-semibold');
+        if (nameEl) {
+          nameEl.textContent = name;
+        }
+
+        // Update harga dasar.
+        const priceEl = li.querySelector('.text-sm');
+        if (priceEl) {
+          priceEl.innerHTML = `💲 Rp ${price.toLocaleString('id-ID')}`;
+        }
+
+        // Update link pembelian.
+        const buyBtn = li.querySelector('[data-buy]');
+        if (buyBtn) {
+          buyBtn.dataset.buy = prodId;
+          buyBtn.href =
+            `pembayaran.html?produk=${encodeURIComponent(name)}`;
+        }
+
+        // Update tombol keranjang.
+        const cartBtn = li.querySelector('[data-cart]');
+        if (cartBtn) {
+          cartBtn.dataset.cart = prodId;
+        }
+
+        // Pastikan audio card lama menggunakan audio terbaru dari Admin.
+        let audio = li.querySelector('audio');
+        const oldAudioId = audio?.id || (
+          'supabase-audio-' +
+          String(uid).replace(/[^a-zA-Z0-9_-]/g, '')
         );
+
+        if (!audio) {
+          audio = document.createElement('audio');
+          li.appendChild(audio);
+        }
+
+        audio.id = oldAudioId;
+        audio.src = audioUrl;
+        audio.preload = 'none';
+
+        const playBtn = li.querySelector('.play-btn');
+        if (playBtn) {
+          playBtn.dataset.audio = oldAudioId;
+        }
+
+        console.log('🔄 Produk lama disinkronkan:', prodId);
         return;
       }
 
-
-      // ==============================
-      // AUDIO ID UNIK
-      // ==============================
-
+      // ======================================================
+      // Kalau belum ada di HTML lama, berarti produk baru.
+      // Buat card baru seperti sebelumnya.
+      // ======================================================
       const audioId =
         'supabase-audio-' +
-        String(uid).replace(
-          /[^a-zA-Z0-9_-]/g,
-          ''
-        );
+        String(uid).replace(/[^a-zA-Z0-9_-]/g, '');
 
+      const liBaru = document.createElement('li');
 
-      // ==============================
-      // BUAT CARD PRODUK
-      // ==============================
+      liBaru.dataset.uid = uid;
+      liBaru.dataset.prodId = prodId;
+      liBaru.dataset.price = price;
+      liBaru.dataset.category = category;
 
-      const li = document.createElement('li');
-
-      li.dataset.uid = uid;
-      li.dataset.prodId = prodId;
-      li.dataset.price = price;
-      li.dataset.category = category;
-
-      li.className =
+      liBaru.className =
         'overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow product-card';
 
+      liBaru.innerHTML = `
 
-li.innerHTML = `
+        <img
+          src="${escapeHtml(imageUrl)}"
+          alt="${escapeHtml(name)}"
+          class="w-20 h-20 rounded-xl object-cover flex-shrink-0"
+        >
 
-  <img
-    src="${escapeHtml(product.image_url || 'muslihpack.webp')}"
-    alt="${escapeHtml(name)}"
-    class="w-20 h-20 rounded-xl object-cover flex-shrink-0"
-  >
+        <div class="flex-1">
 
-  <div class="flex-1">
+          <div class="font-semibold leading-tight">
+            ${escapeHtml(name)}
+          </div>
 
-    <div class="font-semibold leading-tight">
-      ${escapeHtml(name)}
-    </div>
+          <div class="text-sm opacity-90">
+            💲 Rp ${price.toLocaleString('id-ID')}
+          </div>
 
-    <div class="text-sm opacity-90">
-      💲 Rp${price.toLocaleString('id-ID')}
-    </div>
+          <div class="mt-2 flex gap-2 items-center">
 
-    <div class="mt-2 flex gap-2 items-center">
+            <button
+              data-audio="${audioId}"
+              class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition"
+            >
+              ▶ Play Preview
+            </button>
 
-      <!-- PLAY PREVIEW -->
+            <a
+              data-buy="${escapeHtml(prodId)}"
+              href="pembayaran.html?produk=${encodeURIComponent(name)}"
+              class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition"
+            >
+              🛒 Beli
+            </a>
 
-      <button
-        data-audio="${audioId}"
-        class="play-btn px-3 py-2 rounded-xl bg-[#0FFCBE] text-black hover:bg-[#106EBE] hover:text-white transition"
-      >
-        ▶ Play Preview
-      </button>
+            <button
+              data-cart="${escapeHtml(prodId)}"
+              class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold"
+            >
+              Tambah ke Keranjang
+            </button>
 
+          </div>
 
-      <!-- BELI -->
+          <div class="player-controls-container"></div>
 
-      <a
-        data-buy="${escapeHtml(prodId)}"
-        href="pembayaran.html?produk=${encodeURIComponent(name)}"
-        class="px-3 py-2 rounded-xl bg-[#106EBE] hover:bg-[#0FFCBE] hover:text-black font-medium transition"
-      >
-        🛒 Beli
-      </a>
+        </div>
 
+        <audio
+          id="${audioId}"
+          src="${escapeHtml(audioUrl)}"
+          preload="none"
+        ></audio>
 
-      <!-- KERANJANG -->
+      `;
 
-      <button
-        data-cart="${escapeHtml(prodId)}"
-        class="add-cart-btn px-3 py-2 rounded-xl bg-[#ffd24d] text-black font-semibold"
-      >
-        Tambah ke Keranjang
-      </button>
+      container.appendChild(liBaru);
 
-    </div>
-
-    <div class="player-controls-container"></div>
-
-  </div>
-
-
-  <!-- AUDIO -->
-
-  <audio
-    id="${audioId}"
-    src="${escapeHtml(product.audio_url || '')}"
-    preload="none"
-  ></audio>
-
-`;
-
-
-      // ==============================
-      // MASUKKAN KE PRODUK GRID LAMA
-      // ==============================
-
-      container.appendChild(li);
+      console.log('➕ Produk baru ditambahkan:', prodId);
 
     });
 
-
-    // ==============================
-    // AKTIFKAN PLAY PREVIEW
-    // ==============================
-
+    // Re-wire after both old-card updates and new cards.
     if (typeof wirePlayButtons === 'function') {
       wirePlayButtons();
     }
-
-
-    // ==============================
-    // AKTIFKAN KERANJANG
-    // ==============================
 
     if (typeof wireAddCartButtons === 'function') {
       wireAddCartButtons();
     }
 
-
-    // ==============================
-    // AKTIFKAN DISKON SETELAH PRODUK SUPABASE MASUK
-    // ==============================
-
     if (typeof applyDiskon === 'function') {
       applyDiskon();
     }
 
-    // Re-apply whatever filter/sort the user selected, including
-    // products loaded asynchronously from Supabase.
     if (typeof window.__applyProductFilters === 'function') {
       window.__applyProductFilters();
     }
 
-
     console.log(
-      `✅ ${products.length} produk Supabase berhasil dimuat`
+      `✅ ${products.length} produk Supabase berhasil disinkronkan`
     );
 
   } catch (error) {
@@ -3056,7 +3071,6 @@ li.innerHTML = `
   }
 
 }
-
 
 // ==============================
 // JALANKAN SAAT HTML SELESAI
