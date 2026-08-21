@@ -813,13 +813,6 @@
 
 </style>
 </head>
-
-<!--
-  PRODUCT SYNC:
-  Produk lama yang sudah ada di HTML akan disinkronkan berdasarkan prod_id
-  dengan data terbaru dari Supabase. Produk baru tetap dibuat otomatis.
-  Jadi edit dari admin berlaku untuk produk lama maupun produk baru.
--->
 <body class="text-white font-sans p-4 bg-black/70">
   <header class="max-w-5xl mx-auto">
     <h1 class="text-2xl font-bold mb-1">MUSLIH FVNKY SHOP</h1>
@@ -2846,140 +2839,185 @@ function escapeHtml(value) {
 // LOAD PRODUK DARI SUPABASE
 // ==============================
 
+function normalizeProductKey(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "")
+    .trim();
+}
+
+function findExistingProductCard(container, product) {
+  const dbProdId = normalizeProductKey(product.prod_id);
+  const dbName = normalizeProductKey(product.name);
+  const dbId = String(product.id ?? "");
+
+  const cards = Array.from(container.querySelectorAll(":scope > li"));
+
+  // 1) Match exact prod_id from data-prod-id.
+  let card = cards.find(li =>
+    normalizeProductKey(li.dataset.prodId) === dbProdId && dbProdId
+  );
+  if (card) return card;
+
+  // 2) Match the displayed product name.
+  card = cards.find(li => {
+    const nameEl = li.querySelector(".font-semibold");
+    return normalizeProductKey(nameEl?.textContent) === dbName && dbName;
+  });
+  if (card) return card;
+
+  // 3) Match the visible data-uid to database id when applicable.
+  card = cards.find(li =>
+    String(li.dataset.uid ?? "") === dbId && dbId
+  );
+  if (card) return card;
+
+  return null;
+}
+
+function syncExistingProductCard(li, product) {
+  const prodId = String(product.prod_id ?? product.uid ?? product.id ?? "");
+  const uid = String(product.uid ?? product.id ?? "");
+  const name = String(product.name ?? "Produk");
+  const category = String(product.category ?? "");
+  const price = Number(product.price ?? 0);
+  const imageUrl = String(product.image_url || "muslihpack.webp");
+  const audioUrl = String(product.audio_url || "");
+
+  li.dataset.uid = uid;
+  li.dataset.prodId = prodId;
+  li.dataset.price = String(price);
+  li.dataset.category = category;
+
+  const img = li.querySelector("img");
+  if (img) {
+    img.src = imageUrl;
+    img.alt = name;
+  }
+
+  const nameEl = li.querySelector(".font-semibold");
+  if (nameEl) {
+    nameEl.textContent = name;
+  }
+
+  const priceEl = li.querySelector(".text-sm");
+  if (priceEl) {
+    priceEl.innerHTML = `💲 Rp ${price.toLocaleString("id-ID")}`;
+  }
+
+  const buyBtn = li.querySelector("[data-buy]");
+  if (buyBtn) {
+    buyBtn.dataset.buy = prodId;
+    buyBtn.href =
+      `pembayaran.html?produk=${encodeURIComponent(name)}`;
+  }
+
+  const cartBtn = li.querySelector("[data-cart]");
+  if (cartBtn) {
+    cartBtn.dataset.cart = prodId;
+  }
+
+  let audio = li.querySelector("audio");
+  if (!audio) {
+    audio = document.createElement("audio");
+    li.appendChild(audio);
+  }
+
+  const safeUid =
+    String(uid || prodId || "product")
+      .replace(/[^a-zA-Z0-9_-]/g, "");
+
+  const audioId =
+    audio.id ||
+    `supabase-audio-${safeUid}`;
+
+  audio.id = audioId;
+  audio.src = audioUrl;
+  audio.preload = "none";
+
+  const playBtn = li.querySelector(".play-btn");
+  if (playBtn) {
+    playBtn.dataset.audio = audioId;
+  }
+}
+
 async function loadProductsFromSupabase() {
 
-  const container = document.getElementById('produk-grid');
+  const container = document.getElementById("produk-grid");
 
   if (!container) {
-    console.error('❌ #produk-grid tidak ditemukan');
+    console.error("❌ #produk-grid tidak ditemukan");
     return;
   }
 
   try {
 
     const { data: products, error } = await supabaseClient
-      .from('products')
-      .select('*')
-      .order('id', { ascending: true });
+      .from("products")
+      .select("*")
+      .order("id", { ascending: true });
 
     if (error) {
-      console.error('❌ Gagal mengambil produk Supabase:', error);
+      console.error("❌ Gagal mengambil produk Supabase:", error);
       return;
     }
 
-    console.log('✅ Produk Supabase:', products);
+    console.log("✅ Produk Supabase:", products);
+
+    const syncedIds = new Set();
 
     products.forEach(product => {
 
-      const prodId = String(
-        product.prod_id ?? product.uid ?? product.id
-      );
+      let li = findExistingProductCard(container, product);
 
-      const uid = product.uid ?? product.id;
-      const price = Number(product.price ?? 0);
-      const name = String(product.name ?? 'Produk');
-      const category = String(product.category ?? '');
-      const imageUrl = String(product.image_url || 'muslihpack.webp');
-      const audioUrl = String(product.audio_url || '');
-
-      // ======================================================
-      // PENTING:
-      // Kalau produk lama sudah ada di HTML, JANGAN dilewati.
-      // Sinkronkan card lama dengan data terbaru dari Supabase.
-      // Ini membuat EDIT di admin langsung terlihat di jual-flm.
-      // ======================================================
-      let li = Array.from(
-        container.querySelectorAll('li')
-      ).find(item =>
-        String(item.dataset.prodId || '') === prodId
-      );
-
+      // --------------------------------------------------
+      // PRODUK LAMA:
+      // Cari berdasarkan prod_id / nama / database ID lalu
+      // TIMPA data card lama dengan data terbaru Supabase.
+      // --------------------------------------------------
       if (li) {
-
-        // Update data yang dipakai search/filter/diskon.
-        li.dataset.uid = uid;
-        li.dataset.prodId = prodId;
-        li.dataset.price = price;
-        li.dataset.category = category;
-
-        // Update gambar.
-        const img = li.querySelector('img');
-        if (img) {
-          img.src = imageUrl;
-          img.alt = name;
-        }
-
-        // Update nama produk.
-        const nameEl = li.querySelector('.font-semibold');
-        if (nameEl) {
-          nameEl.textContent = name;
-        }
-
-        // Update harga dasar.
-        const priceEl = li.querySelector('.text-sm');
-        if (priceEl) {
-          priceEl.innerHTML = `💲 Rp ${price.toLocaleString('id-ID')}`;
-        }
-
-        // Update link pembelian.
-        const buyBtn = li.querySelector('[data-buy]');
-        if (buyBtn) {
-          buyBtn.dataset.buy = prodId;
-          buyBtn.href =
-            `pembayaran.html?produk=${encodeURIComponent(name)}`;
-        }
-
-        // Update tombol keranjang.
-        const cartBtn = li.querySelector('[data-cart]');
-        if (cartBtn) {
-          cartBtn.dataset.cart = prodId;
-        }
-
-        // Pastikan audio card lama menggunakan audio terbaru dari Admin.
-        let audio = li.querySelector('audio');
-        const oldAudioId = audio?.id || (
-          'supabase-audio-' +
-          String(uid).replace(/[^a-zA-Z0-9_-]/g, '')
+        syncExistingProductCard(li, product);
+        syncedIds.add(String(product.id ?? product.prod_id ?? ""));
+        console.log(
+          "🔄 Produk lama disinkronkan:",
+          product.name,
+          "→ Rp",
+          Number(product.price ?? 0).toLocaleString("id-ID")
         );
-
-        if (!audio) {
-          audio = document.createElement('audio');
-          li.appendChild(audio);
-        }
-
-        audio.id = oldAudioId;
-        audio.src = audioUrl;
-        audio.preload = 'none';
-
-        const playBtn = li.querySelector('.play-btn');
-        if (playBtn) {
-          playBtn.dataset.audio = oldAudioId;
-        }
-
-        console.log('🔄 Produk lama disinkronkan:', prodId);
         return;
       }
 
-      // ======================================================
-      // Kalau belum ada di HTML lama, berarti produk baru.
-      // Buat card baru seperti sebelumnya.
-      // ======================================================
-      const audioId =
-        'supabase-audio-' +
-        String(uid).replace(/[^a-zA-Z0-9_-]/g, '');
+      // --------------------------------------------------
+      // PRODUK BARU:
+      // Kalau belum ada card di HTML, buat card baru.
+      // --------------------------------------------------
+      const prodId = String(product.prod_id ?? product.uid ?? product.id ?? "");
+      const uid = String(product.uid ?? product.id ?? "");
+      const price = Number(product.price ?? 0);
+      const name = String(product.name ?? "Produk");
+      const imageUrl = String(product.image_url || "muslihpack.webp");
+      const audioUrl = String(product.audio_url || "");
 
-      const liBaru = document.createElement('li');
+      const safeUid =
+        String(uid || prodId || "product")
+          .replace(/[^a-zA-Z0-9_-]/g, "");
+
+      const audioId = `supabase-audio-${safeUid}`;
+
+      const liBaru = document.createElement("li");
 
       liBaru.dataset.uid = uid;
       liBaru.dataset.prodId = prodId;
-      liBaru.dataset.price = price;
-      liBaru.dataset.category = category;
+      liBaru.dataset.price = String(price);
+      liBaru.dataset.category = String(product.category ?? "");
 
       liBaru.className =
-        'overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow product-card';
+        "overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow product-card";
 
       liBaru.innerHTML = `
-
         <img
           src="${escapeHtml(imageUrl)}"
           alt="${escapeHtml(name)}"
@@ -2993,7 +3031,7 @@ async function loadProductsFromSupabase() {
           </div>
 
           <div class="text-sm opacity-90">
-            💲 Rp ${price.toLocaleString('id-ID')}
+            💲 Rp ${price.toLocaleString("id-ID")}
           </div>
 
           <div class="mt-2 flex gap-2 items-center">
@@ -3031,29 +3069,29 @@ async function loadProductsFromSupabase() {
           src="${escapeHtml(audioUrl)}"
           preload="none"
         ></audio>
-
       `;
 
       container.appendChild(liBaru);
 
-      console.log('➕ Produk baru ditambahkan:', prodId);
-
+      console.log("➕ Produk baru ditambahkan:", name);
     });
 
-    // Re-wire after both old-card updates and new cards.
-    if (typeof wirePlayButtons === 'function') {
+    // Wire all current buttons after synchronization.
+    if (typeof wirePlayButtons === "function") {
       wirePlayButtons();
     }
 
-    if (typeof wireAddCartButtons === 'function') {
+    if (typeof wireAddCartButtons === "function") {
       wireAddCartButtons();
     }
 
-    if (typeof applyDiskon === 'function') {
+    // Apply the current Friday/Sunday discount AFTER database prices
+    // have replaced the old static prices.
+    if (typeof applyDiskon === "function") {
       applyDiskon();
     }
 
-    if (typeof window.__applyProductFilters === 'function') {
+    if (typeof window.__applyProductFilters === "function") {
       window.__applyProductFilters();
     }
 
@@ -3064,12 +3102,11 @@ async function loadProductsFromSupabase() {
   } catch (error) {
 
     console.error(
-      '❌ Error Supabase:',
+      "❌ Error Supabase:",
       error
     );
 
   }
-
 }
 
 // ==============================
