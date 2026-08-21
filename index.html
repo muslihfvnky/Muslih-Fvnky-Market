@@ -63,6 +63,7 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root{
@@ -760,44 +761,87 @@
       return Number(num).toLocaleString('id-ID');
     }
 
-    // ---------- Jumat Berkah visibility & countdown ----------
-    (function(){
-      const urlParams = new URLSearchParams(window.location.search);
-      const force = urlParams.get('forceFlash') === '1'; // for testing
+    // ---------- Jumat Berkah visibility, price, and countdown ----------
+    (async function(){
+      const SUPABASE_URL = "https://zmccxgydzmfdldobqaav.supabase.co";
+      const SUPABASE_ANON_KEY = "sb_publishable_vqU2LP9ax5DLqfJY8y5h2A_j8mWbtdG";
+      const force = new URLSearchParams(window.location.search).get('forceFlash') === '1';
       const today = new Date().getDay(); // 0=Sun ... 5=Fri
       const isFriday = (today === 5);
       const jbSection = document.getElementById('jumat-berkah');
 
-      if (force || isFriday) {
+      // Fallback keeps the old 49%/20%/30%/... values only if Supabase
+      // cannot be reached. Once settings load successfully, the dashboard
+      // percentage becomes the single percentage used for all Jumat Berkah cards.
+      let indexEnabled = true;
+      let indexPercent = null;
+
+      try {
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const { data, error } = await sb
+          .from("promo_settings")
+          .select("index_enabled,index_percent")
+          .eq("id", 1)
+          .single();
+
+        if (error) throw error;
+
+        indexEnabled = !!data.index_enabled;
+        indexPercent = Math.max(0, Math.min(100, Number(data.index_percent) || 0));
+
+        console.log("✅ Pengaturan Jumat Berkah:", {
+          enabled: indexEnabled,
+          percent: indexPercent
+        });
+      } catch (error) {
+        console.warn("⚠️ Gagal membaca promo_settings, memakai pengaturan fallback:", error.message);
+      }
+
+      // Promo hanya muncul saat Jumat dan status aktif.
+      // forceFlash=1 tetap dipertahankan untuk testing, tetapi status OFF
+      // tetap dihormati agar dashboard benar-benar bisa mematikan promo.
+      if ((force || isFriday) && indexEnabled) {
         jbSection.style.display = 'block';
       } else {
         jbSection.style.display = 'none';
         return;
       }
 
-      // render prices for each jb-card: show original struck + discounted + percent badge
+      // Jika setting Supabase berhasil terbaca, semua card mengikuti satu
+      // persentase global dari Admin Dashboard.
       document.querySelectorAll('.jb-card').forEach(card => {
         const origAttr = card.getAttribute('data-original');
-        const discAttr = card.getAttribute('data-discount-percent');
+        const oldDiscAttr = card.getAttribute('data-discount-percent');
         const priceWrap = card.querySelector('.jb-price-wrap');
 
         const original = origAttr ? Math.round(Number(origAttr)) : null;
-        const discountPercent = discAttr ? Number(discAttr) : 0;
+        const fallbackPercent = oldDiscAttr ? Number(oldDiscAttr) : 0;
+        const discountPercent = indexPercent !== null ? indexPercent : fallbackPercent;
 
         if (original && discountPercent > 0) {
           const discounted = Math.round(original * (1 - discountPercent / 100));
+
           priceWrap.innerHTML = `
             <div class="orig-price">Rp ${formatRupiah(original)}</div>
             <div class="disc-price">Rp ${formatRupiah(discounted)}</div>
             <div class="percent-badge">-${discountPercent}%</div>
           `;
-          // attach discounted nominal to buy button (so pembayaran gets the discounted amount)
+
           const buyBtn = card.querySelector('.jb-buy');
           if (buyBtn) {
             buyBtn.setAttribute('data-nominal', String(discounted));
           }
+        } else if (original) {
+          priceWrap.innerHTML = `
+            <div class="disc-price">Rp ${formatRupiah(original)}</div>
+          `;
+
+          const buyBtn = card.querySelector('.jb-buy');
+          if (buyBtn) {
+            buyBtn.setAttribute('data-nominal', String(original));
+          }
         } else {
-          // fallback: if no original/discount provided, try data-nominal
           const nominal = card.getAttribute('data-nominal') || card.querySelector('.jb-buy')?.getAttribute('data-nominal');
           if (nominal) {
             priceWrap.innerHTML = `<div class="disc-price">Rp ${formatRupiah(nominal)}</div>`;
@@ -807,45 +851,59 @@
         }
       });
 
-      // countdown to end of Friday (23:59:59 local time)
+      // Tampilkan persentase global di judul promo agar admin/user langsung melihat
+      // angka yang sedang aktif.
+      const titleEl = jbSection.querySelector('.jb-title');
+      if (titleEl && indexPercent !== null && indexPercent > 0) {
+        titleEl.textContent = `✨ Jumat Berkah · Diskon ${indexPercent}%`;
+      }
+
+      // Countdown to end of Friday (23:59:59 local time)
       const timerEl = document.getElementById('jb-timer');
+
       function updateTimer() {
         const now = new Date();
         const end = new Date();
         end.setHours(23,59,59,999);
         const diff = end - now;
+
         if (diff <= 0) {
           timerEl.textContent = 'Berakhir';
           setTimeout(()=> { jbSection.style.display = 'none'; }, 1500);
           return;
         }
+
         const hh = String(Math.floor(diff / (1000*60*60))).padStart(2,'0');
         const mm = String(Math.floor((diff % (1000*60*60)) / (1000*60))).padStart(2,'0');
         const ss = String(Math.floor((diff % (1000*60)) / 1000)).padStart(2,'0');
         timerEl.textContent = `${hh}:${mm}:${ss}`;
       }
+
       updateTimer();
       setInterval(updateTimer, 1000);
 
-      // Beli -> open pembayaran.html with product & nominal (discounted)
+      // Beli -> open pembayaran.html with product & nominal (discounted/global)
       document.querySelectorAll('.jb-buy').forEach(btn => {
         btn.addEventListener('click', function(e){
           e.preventDefault();
+
           const produk = this.dataset.produk || this.getAttribute('data-produk') || '';
-          const nominal = this.dataset.nominal || this.getAttribute('data-nominal') || this.getAttribute('data-nominal') || '';
-          // if nominal not found on button, try card attribute
+          const nominal = this.dataset.nominal || this.getAttribute('data-nominal') || '';
+
           let finalNom = nominal;
+
           if (!finalNom) {
             const card = this.closest('.jb-card');
             finalNom = card ? (card.getAttribute('data-nominal') || '') : '';
           }
-          // if still empty, try calculate from original & discount-percent
+
           if (!finalNom) {
             const card = this.closest('.jb-card');
             if (card) {
               const o = Number(card.getAttribute('data-original') || 0);
-              const p = Number(card.getAttribute('data-discount-percent') || 0);
-              if (o && p) finalNom = Math.round(o * (1 - p/100));
+              const p = indexPercent !== null ? indexPercent : Number(card.getAttribute('data-discount-percent') || 0);
+              if (o && p > 0) finalNom = Math.round(o * (1 - p/100));
+              else if (o) finalNom = o;
             }
           }
 
