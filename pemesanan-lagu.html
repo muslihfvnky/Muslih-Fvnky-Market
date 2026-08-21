@@ -27,123 +27,279 @@
   <!-- =================================================================== -->
 
   <style>
+    :root{
+      --mint:#0FFCBE;
+      --blue:#106EBE;
+      --green:#25D366;
+    }
+
+    *{box-sizing:border-box}
+
     body {
-      font-family: Arial, sans-serif;
-      background-image: url('backgroundweb.webp');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      color: #fff;
-      margin: 0;
-      padding: 20px;
+      min-height:100vh;
+      font-family:Inter,Arial,sans-serif;
+      background:
+        linear-gradient(rgba(1,16,25,.42),rgba(1,16,25,.76)),
+        url('backgroundweb.webp') center/cover fixed no-repeat;
+      color:#fff;
+      margin:0;
+      padding:18px;
     }
+
+    .page-wrap{
+      width:min(100%, 760px);
+      margin:0 auto;
+    }
+
+    .top-nav{
+      margin-bottom:10px;
+    }
+
+    .back-home{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:0 14px;
+      border-radius:12px;
+      color:#eafff8;
+      background:rgba(4,26,38,.72);
+      border:1px solid rgba(15,252,190,.25);
+      box-shadow:0 10px 24px rgba(0,0,0,.20);
+      backdrop-filter:blur(10px);
+      font-weight:800;
+      font-size:13px;
+      text-decoration:none;
+      transition:transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .back-home:hover{
+      transform:translateY(-2px);
+      background:rgba(15,252,190,.12);
+      border-color:rgba(15,252,190,.55);
+    }
+
     .overlay {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 25px;
-      border-radius: 12px;
-      max-width: 420px;
-      margin: auto;
-      box-shadow: 0 0 20px rgba(15, 252, 190, 0.3);
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(145deg, rgba(4,34,48,.92), rgba(7,90,124,.78) 58%, rgba(6,143,140,.66));
+      padding:28px;
+      border-radius:26px;
+      width:100%;
+      margin:0 auto 28px;
+      border:1px solid rgba(15,252,190,.58);
+      box-shadow:
+        0 24px 70px rgba(0,0,0,.38),
+        0 0 0 4px rgba(15,252,190,.05),
+        inset 0 1px 0 rgba(255,255,255,.11);
+      backdrop-filter:blur(16px) saturate(1.08);
     }
+
+    .overlay::after{
+      content:"";
+      position:absolute;
+      width:240px;
+      height:240px;
+      right:-100px;
+      top:-110px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(15,252,190,.18),transparent 68%);
+      pointer-events:none;
+    }
+
     h2 {
-      text-align: center;
-      margin-bottom: 5px;
-      font-size: 1.6em;
+      position:relative;
+      z-index:1;
+      text-align:center;
+      margin:0 0 8px;
+      font-size:clamp(1.7rem,4vw,2.35rem);
+      line-height:1.15;
+      font-weight:900;
+      letter-spacing:.01em;
+      text-shadow:0 4px 22px rgba(0,0,0,.25);
     }
+
     p.price {
-      text-align: center;
-      color: #0FFCBE;
-      margin-bottom: 5px;
-      font-weight: bold;
+      position:relative;
+      z-index:1;
+      text-align:center;
+      color:#7dffe4;
+      margin:0;
+      font-size:1.2rem;
+      font-weight:900;
     }
+
     p.note {
-      text-align: center;
-      font-size: 0.9em;
-      color: #ccc;
-      margin-bottom: 20px;
+      position:relative;
+      z-index:1;
+      text-align:center;
+      max-width:540px;
+      color:rgba(255,255,255,.78);
+      margin:8px auto 22px;
+      padding:9px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.08);
+      line-height:1.45;
     }
+
     label {
-      display: block;
-      font-weight: bold;
-      margin-top: 15px;
-      margin-bottom: 5px;
+      display:block;
+      font-weight:850;
+      margin-top:18px;
+      margin-bottom:7px;
+      color:#effffb;
+      font-size:.96rem;
     }
+
     input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 6px;
-      border: 2px solid #0FFCBE;
-      background-color: rgba(255, 255, 255, 0.05);
-      font-size: 16px;
-      color: white;
-      box-sizing: border-box;
-      outline: none;
-      transition: 0.3s ease;
+      width:100%;
+      min-height:54px;
+      padding:13px 15px;
+      border-radius:14px;
+      border:1px solid rgba(15,252,190,.42);
+      background:rgba(0,11,18,.38);
+      font-size:16px;
+      color:#fff;
+      outline:none;
+      transition:border-color .2s ease,box-shadow .2s ease,background .2s ease,transform .2s ease;
     }
+
+    input::placeholder{color:rgba(255,255,255,.38)}
+
     input:focus {
-      box-shadow: 0 0 8px #0FFCBE;
-      border-color: #0FFCBE;
+      box-shadow:0 0 0 4px rgba(15,252,190,.07),0 10px 24px rgba(0,0,0,.16);
+      border-color:var(--mint);
+      background:rgba(0,17,26,.55);
+      transform:translateY(-1px);
     }
+
     button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 20px;
-      border-radius: 6px;
-      border: none;
-      background-color: #0FFCBE;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 16px;
-      transition: all 0.3s ease;
+      width:100%;
+      min-height:54px;
+      padding:13px 16px;
+      margin-top:22px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(135deg,#0FFCBE,#75f9db);
+      color:#04171d;
+      font-weight:900;
+      cursor:pointer;
+      font-size:16px;
+      box-shadow:0 12px 28px rgba(15,252,190,.12);
+      transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
     }
+
     button:hover {
-      background-color: #09cfa3;
-      box-shadow: 0 0 15px #0FFCBE, 0 0 25px #106EBE;
+      background:linear-gradient(135deg,#15e5b0,#8bffe7);
+      box-shadow:0 16px 34px rgba(15,252,190,.17);
+      transform:translateY(-2px);
+      filter:saturate(1.04);
     }
+
+    button:active{transform:translateY(0) scale(.99)}
+
     /* Tombol WA melayang */
     .wa-floating {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #25D366;
-      padding: 15px 20px;
-      border-radius: 50px;
-      color: white;
-      font-weight: bold;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      font-size: 14px;
+      position:fixed;
+      bottom:18px;
+      right:18px;
+      z-index:20;
+      background:linear-gradient(135deg,#25D366,#20b858);
+      padding:11px 16px;
+      min-height:48px;
+      border-radius:999px;
+      color:white;
+      font-weight:900;
+      box-shadow:0 14px 34px rgba(0,0,0,.26),0 0 0 3px rgba(37,211,102,.08);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+      text-decoration:none;
+      font-size:14px;
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter:blur(10px);
+      transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
     }
+
     .wa-floating:hover {
-      background: #20b858;
+      background:linear-gradient(135deg,#20c85f,#19a84f);
+      transform:translateY(-3px);
+      box-shadow:0 18px 42px rgba(0,0,0,.30),0 0 0 3px rgba(37,211,102,.10);
+      filter:saturate(1.04);
     }
+
     .wa-floating img {
-      width: 20px;
-      height: 20px;
+      width:22px;
+      height:22px;
+      margin:0;
+    }
+
+    @media (max-width:700px){
+      body{
+        padding:10px;
+        background-attachment:scroll;
+      }
+
+      .top-nav{
+        width:100%;
+        margin-bottom:8px;
+      }
+
+      .back-home{
+        width:100%;
+        min-height:44px;
+      }
+
+      .overlay{
+        padding:18px;
+        border-radius:22px;
+      }
+
+      .wa-floating{
+        right:12px;
+        bottom:12px;
+        padding:10px 14px;
+        min-height:46px;
+      }
+    }
+
+    @media (max-width:390px){
+      .overlay{padding:15px}
+      h2{font-size:1.48rem}
+      .wa-floating{
+        font-size:13px;
+        padding:9px 12px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="overlay">
-    <h2>🎶 Pemesanan Remix Lagu</h2>
-    <p class="price">💲 80K – 125K</p>
-    <p class="note">💡 Harga tergantung kesulitan style & lagu</p>
+  <div class="page-wrap">
+    <div class="top-nav">
+      <a href="index.html" class="back-home" aria-label="Kembali ke Beranda">← Kembali ke Beranda</a>
+    </div>
 
-    <label for="Judul">1️⃣ Judul Lagu</label>
-    <input type="text" id="Judul" placeholder="Contoh: Empat Mata" required />
+    <div class="overlay">
+      <h2>🎶 Pemesanan Remix Lagu</h2>
+      <p class="price">💲 80K – 125K</p>
+      <p class="note">💡 Harga tergantung kesulitan style & lagu</p>
 
-    <label for="Style">2️⃣ Style Remix</label>
-    <input type="text" id="Style" placeholder="Contoh: Style Candu" required />
+      <label for="Judul">1️⃣ Judul Lagu</label>
+      <input type="text" id="Judul" placeholder="Contoh: Empat Mata" required />
 
-    <label for="LinkYT">3️⃣ Link Referensi Style</label>
-    <input type="url" id="LinkYT" placeholder="Contoh: https://youtu.be/abcd1234" required />
+      <label for="Style">2️⃣ Style Remix</label>
+      <input type="text" id="Style" placeholder="Contoh: Style Candu" required />
 
-    <button onclick="kirimWA()">🟢 Kirim Pesanan</button>
+      <label for="LinkYT">3️⃣ Link Referensi Style</label>
+      <input type="url" id="LinkYT" placeholder="Contoh: https://youtu.be/abcd1234" required />
+
+      <button onclick="kirimWA()">🟢 Kirim Pesanan</button>
+    </div>
   </div>
 
   <!-- Tombol WA melayang -->
