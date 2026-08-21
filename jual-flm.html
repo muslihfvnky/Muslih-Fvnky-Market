@@ -221,7 +221,597 @@
       #filter-panel { right: 10px; top: 120px; width: 220px; }
       #cart-panel { right: 10px; top: 420px; width: 260px; }
     }
-  </style>
+  
+    /* =========================================================
+       MUSLIH FVNKY SHOP — MODERN CATALOG RESTORATION
+       Visual-only overrides; functionality/IDs/data-* preserved.
+       ========================================================= */
+    .back-home-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:0 14px;
+      border-radius:13px;
+      color:#eafff8;
+      background:rgba(4,34,49,.72);
+      border:1px solid rgba(15,252,190,.24);
+      box-shadow:0 8px 22px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.06);
+      backdrop-filter:blur(10px);
+      font-weight:800;
+      text-decoration:none;
+      transition:transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .back-home-btn:hover {
+      transform:translateY(-2px);
+      background:rgba(15,252,190,.14);
+      border-color:rgba(15,252,190,.55);
+      box-shadow:0 12px 26px rgba(0,0,0,.24), 0 0 0 3px rgba(15,252,190,.05);
+    }
+    .back-home-btn:active {
+      transform:translateY(0) scale(.99);
+    }
+    @media (max-width:600px) {
+      .back-home-btn {
+        width:100%;
+        min-height:44px;
+        border-radius:14px;
+      }
+    }
+
+
+    body {
+      background-color:#03131c;
+      background-image:
+        linear-gradient(rgba(1,17,27,.40), rgba(1,17,27,.72)),
+        url('backgroundweb.webp');
+      background-size:cover;
+      background-position:center;
+      background-attachment:fixed;
+      min-height:100vh;
+      padding:18px !important;
+    }
+
+    header.max-w-5xl,
+    main.max-w-5xl {
+      max-width:1200px !important;
+    }
+
+    header.max-w-5xl {
+      padding:18px 22px 14px;
+      border-radius:26px;
+      background:
+        linear-gradient(135deg, rgba(8,31,46,.88), rgba(13,119,177,.76) 55%, rgba(4,177,164,.68));
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.30),
+        inset 0 1px 0 rgba(255,255,255,.12);
+      backdrop-filter:blur(16px) saturate(1.08);
+    }
+
+    header.max-w-5xl h1 {
+      letter-spacing:.03em;
+      font-size:clamp(1.55rem,3vw,2.25rem) !important;
+      text-shadow:0 4px 20px rgba(0,0,0,.25);
+    }
+
+    header.max-w-5xl > p {
+      color:rgba(255,255,255,.78);
+      font-weight:600;
+      margin-bottom:14px !important;
+    }
+
+    header.max-w-5xl img {
+      width:92px !important;
+      height:92px !important;
+      border-radius:50%;
+      border:2px solid rgba(15,252,190,.72);
+      box-shadow:
+        0 0 0 7px rgba(15,252,190,.06),
+        0 18px 38px rgba(0,0,0,.35);
+    }
+
+    header.max-w-5xl > p:last-child {
+      background:rgba(2,15,24,.60) !important;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px !important;
+      box-shadow:0 12px 30px rgba(0,0,0,.22);
+      padding:16px 18px !important;
+      line-height:1.65;
+    }
+
+    #popular-section {
+      margin-top:22px;
+      margin-bottom:22px !important;
+    }
+
+    #popular-section h2,
+    #request-flm-section h2 {
+      font-size:clamp(1.25rem,2.5vw,1.55rem);
+      letter-spacing:.01em;
+      text-shadow:0 3px 16px rgba(0,0,0,.25);
+    }
+
+    #popular-grid {
+      gap:14px;
+      padding:4px 2px 12px;
+      scrollbar-width:thin;
+    }
+
+    .popular-card {
+      min-width:320px;
+      max-width:350px;
+      min-height:116px;
+      padding:14px;
+      border-radius:18px;
+      background:
+        linear-gradient(145deg, rgba(4,37,55,.88), rgba(5,74,92,.72));
+      border:1px solid rgba(15,252,190,.16);
+      box-shadow:
+        0 12px 34px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.07);
+      transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .popular-card:hover {
+      transform:translateY(-3px);
+      border-color:rgba(15,252,190,.42);
+      box-shadow:
+        0 18px 40px rgba(0,0,0,.32),
+        0 0 0 3px rgba(15,252,190,.05);
+    }
+
+    .popular-card img {
+      width:72px !important;
+      height:72px !important;
+      border-radius:14px !important;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 8px 20px rgba(0,0,0,.22);
+    }
+
+    .popular-meta .title {
+      font-size:.98rem;
+      line-height:1.25;
+    }
+
+    .popular-meta .price {
+      color:#67f7ca;
+      font-weight:900;
+      font-size:1rem;
+    }
+
+    #request-flm-section {
+      margin-bottom:22px !important;
+    }
+
+    .special-card {
+      transform:none !important;
+      border:1px solid rgba(15,252,190,.72) !important;
+      border-radius:22px !important;
+      background:
+        linear-gradient(145deg, rgba(3,39,56,.92), rgba(5,77,80,.68)) !important;
+      box-shadow:
+        0 16px 38px rgba(0,0,0,.28),
+        0 0 0 3px rgba(15,252,190,.04) !important;
+      padding:18px !important;
+    }
+
+    .special-card img {
+      width:88px !important;
+      height:88px !important;
+      border-radius:16px !important;
+      box-shadow:0 10px 24px rgba(0,0,0,.22);
+    }
+
+    .special-card .text-lg {
+      font-size:1.15rem !important;
+    }
+
+    .special-badge {
+      padding:5px 10px !important;
+      background:#0FFCBE !important;
+      box-shadow:0 6px 16px rgba(15,252,190,.12);
+    }
+
+    .special-card a {
+      min-height:44px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 16px !important;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 8px 20px rgba(0,0,0,.20);
+    }
+
+    /* Filter + cart controls */
+    #filter-toggle,
+    #cart-toggle {
+      min-height:46px;
+      border-radius:14px !important;
+      padding:0 16px !important;
+      border:1px solid rgba(255,255,255,.10);
+      font-weight:850 !important;
+      box-shadow:0 9px 24px rgba(0,0,0,.20);
+      transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    }
+
+    #filter-toggle:hover,
+    #cart-toggle:hover {
+      transform:translateY(-2px);
+      box-shadow:0 13px 28px rgba(0,0,0,.26);
+      filter:saturate(1.04);
+    }
+
+    #filter-toggle::before { content:"⚙ "; }
+    #cart-toggle::before { content:"🛒 "; }
+
+    #filter-panel,
+    #cart-panel {
+      border-radius:20px !important;
+      border:1px solid rgba(15,252,190,.20) !important;
+      background:
+        linear-gradient(145deg, rgba(4,22,32,.96), rgba(6,52,65,.93)) !important;
+      box-shadow:
+        0 22px 55px rgba(0,0,0,.42),
+        inset 0 1px 0 rgba(255,255,255,.07) !important;
+      backdrop-filter:blur(18px) saturate(1.05) !important;
+    }
+
+    #filter-panel {
+      right:24px !important;
+      top:110px !important;
+      width:300px !important;
+      padding:16px !important;
+    }
+
+    #cart-panel {
+      right:24px !important;
+      top:170px !important;
+      width:370px !important;
+      max-width:calc(100% - 32px) !important;
+      padding:16px !important;
+    }
+
+    #filter-panel h4,
+    #cart-panel h4 {
+      font-size:1rem;
+      color:#dffff5;
+      letter-spacing:.01em;
+    }
+
+    #filter-panel label {
+      padding:8px 10px;
+      margin:4px 0 !important;
+      border-radius:10px;
+      background:rgba(255,255,255,.035);
+      transition:background .2s ease;
+    }
+
+    #filter-panel label:hover {
+      background:rgba(15,252,190,.08);
+    }
+
+    #filter-panel input[type="radio"],
+    #filter-panel input[type="checkbox"] {
+      accent-color:#0FFCBE;
+    }
+
+    #close-cart,
+    #btn-checkout,
+    #btn-clear-cart {
+      min-height:42px;
+      border-radius:11px !important;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    #btn-checkout:hover,
+    #close-cart:hover {
+      background:#0FFCBE !important;
+      color:#001827 !important;
+    }
+
+    /* Search */
+    #search {
+      min-height:52px;
+      border-radius:16px !important;
+      background:rgba(2,20,30,.62) !important;
+      border:1px solid rgba(15,252,190,.16) !important;
+      box-shadow:
+        0 12px 30px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.05) !important;
+      font-size:1rem;
+      padding-left:16px !important;
+      transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    #search:focus {
+      border-color:rgba(15,252,190,.60) !important;
+      background:rgba(3,28,40,.78) !important;
+      box-shadow:
+        0 0 0 4px rgba(15,252,190,.07),
+        0 14px 32px rgba(0,0,0,.20) !important;
+    }
+
+    /* Main product grid */
+    #produk-grid {
+      grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+      gap:16px !important;
+      align-items:stretch;
+    }
+
+    #produk-grid > li {
+      position:relative;
+      min-width:0;
+      display:grid !important;
+      grid-template-columns:96px minmax(0,1fr);
+      align-items:center !important;
+      gap:16px !important;
+      min-height:154px;
+      padding:16px !important;
+      border-radius:22px !important;
+      background:
+        linear-gradient(145deg, rgba(4,35,52,.94), rgba(4,63,74,.80)) !important;
+      border:1px solid rgba(15,252,190,.10);
+      box-shadow:
+        0 14px 34px rgba(0,0,0,.26),
+        inset 0 1px 0 rgba(255,255,255,.06);
+      backdrop-filter:blur(10px);
+      transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+    }
+
+    #produk-grid > li:hover {
+      transform:translateY(-3px);
+      border-color:rgba(15,252,190,.28);
+      box-shadow:
+        0 18px 40px rgba(0,0,0,.31),
+        0 0 0 3px rgba(15,252,190,.04);
+    }
+
+    #produk-grid > li > img {
+      width:96px !important;
+      height:96px !important;
+      border-radius:16px !important;
+      object-fit:cover;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 10px 24px rgba(0,0,0,.28);
+      background:#06151e;
+    }
+
+    #produk-grid > li > div {
+      min-width:0;
+    }
+
+    #produk-grid > li .font-semibold {
+      font-size:1rem;
+      font-weight:900 !important;
+      line-height:1.25;
+      color:#f5fffc;
+      letter-spacing:.005em;
+      display:block;
+      margin-bottom:6px;
+    }
+
+    #produk-grid > li .text-sm {
+      color:rgba(255,255,255,.72);
+      min-height:24px;
+    }
+
+    #produk-grid > li .text-sm span[style*="line-through"] {
+      color:rgba(255,255,255,.42) !important;
+      font-size:.82rem;
+    }
+
+    #produk-grid > li .text-sm span[style*="color:#0FFCBE"] {
+      display:inline-block;
+      color:#53f4c7 !important;
+      font-size:1.05rem;
+      margin-top:2px;
+    }
+
+    #produk-grid > li .text-sm span[style*="background:red"] {
+      display:inline-flex;
+      align-items:center;
+      height:24px;
+      padding:2px 8px !important;
+      font-weight:900;
+      box-shadow:0 5px 12px rgba(255,0,0,.16);
+    }
+
+    #produk-grid > li > div > .mt-2 {
+      display:flex !important;
+      align-items:center;
+      gap:8px !important;
+      flex-wrap:wrap;
+      margin-top:10px !important;
+    }
+
+    #produk-grid .play-btn,
+    #produk-grid a[data-buy],
+    #produk-grid .add-cart-btn {
+      min-height:42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px !important;
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:850;
+      line-height:1.15;
+      transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+
+    #produk-grid .play-btn {
+      background:linear-gradient(135deg,#0FFCBE,#77f9dc) !important;
+      color:#03151b !important;
+      box-shadow:0 8px 20px rgba(15,252,190,.10);
+    }
+
+    #produk-grid a[data-buy] {
+      background:linear-gradient(135deg,#1278c9,#106EBE) !important;
+      color:white !important;
+      box-shadow:0 8px 20px rgba(16,110,190,.15);
+    }
+
+    #produk-grid .add-cart-btn {
+      background:linear-gradient(135deg,#ffd24d,#ffc62d) !important;
+      color:#171100 !important;
+      box-shadow:0 8px 20px rgba(255,210,77,.11);
+    }
+
+    #produk-grid .play-btn:hover,
+    #produk-grid a[data-buy]:hover,
+    #produk-grid .add-cart-btn:hover {
+      transform:translateY(-2px);
+      filter:saturate(1.05);
+      box-shadow:0 12px 24px rgba(0,0,0,.22);
+    }
+
+    #produk-grid .player-controls {
+      margin-top:9px !important;
+      padding:8px 10px;
+      border-radius:12px;
+      background:rgba(255,255,255,.035);
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    /* Popular action buttons */
+    #popular-grid .popular-card button,
+    #popular-grid .popular-card a {
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:800;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+
+    /* Desktop: give the page more breathing room */
+    @media (min-width:1100px) {
+      #produk-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+    }
+
+    /* Tablet */
+    @media (max-width:900px) {
+      #produk-grid { grid-template-columns:1fr !important; }
+      .popular-card { min-width:300px; max-width:340px; }
+      #cart-panel { width:340px !important; }
+    }
+
+    /* Mobile */
+    @media (max-width:600px) {
+      body { padding:10px !important; background-attachment:scroll; }
+
+      header.max-w-5xl {
+        padding:16px 14px 12px;
+        border-radius:20px;
+      }
+
+      header.max-w-5xl img {
+        width:78px !important;
+        height:78px !important;
+      }
+
+      header.max-w-5xl > p:last-child {
+        margin-bottom:0 !important;
+        font-size:.88rem;
+      }
+
+      main.max-w-5xl {
+        padding-left:2px;
+        padding-right:2px;
+      }
+
+      #popular-grid {
+        margin-right:-2px;
+        padding-right:4px;
+      }
+
+      .popular-card {
+        min-width:290px;
+        max-width:310px;
+        min-height:108px;
+      }
+
+      .special-card {
+        align-items:flex-start !important;
+        padding:14px !important;
+      }
+
+      .special-card img {
+        width:76px !important;
+        height:76px !important;
+      }
+
+      #filter-panel {
+        left:10px !important;
+        right:10px !important;
+        top:86px !important;
+        width:auto !important;
+        max-width:none !important;
+      }
+
+      #cart-panel {
+        left:10px !important;
+        right:10px !important;
+        top:120px !important;
+        width:auto !important;
+        max-width:none !important;
+      }
+
+      #produk-grid > li {
+        grid-template-columns:86px minmax(0,1fr);
+        min-height:0;
+        padding:13px !important;
+        gap:12px !important;
+        border-radius:20px !important;
+      }
+
+      #produk-grid > li > img {
+        width:86px !important;
+        height:86px !important;
+        border-radius:14px !important;
+      }
+
+      #produk-grid > li .font-semibold {
+        font-size:.98rem;
+      }
+
+      #produk-grid .play-btn,
+      #produk-grid a[data-buy],
+      #produk-grid .add-cart-btn {
+        min-height:44px;
+        padding:8px 12px !important;
+        font-size:.88rem;
+      }
+
+      #produk-grid > li > div > .mt-2 {
+        gap:7px !important;
+      }
+    }
+
+    @media (max-width:390px) {
+      #produk-grid > li {
+        grid-template-columns:76px minmax(0,1fr);
+        padding:11px !important;
+      }
+
+      #produk-grid > li > img {
+        width:76px !important;
+        height:76px !important;
+      }
+
+      #produk-grid .play-btn,
+      #produk-grid a[data-buy],
+      #produk-grid .add-cart-btn {
+        font-size:.82rem;
+        padding:7px 10px !important;
+      }
+    }
+
+</style>
 </head>
 <body class="text-white font-sans p-4 bg-black/70">
   <header class="max-w-5xl mx-auto">
@@ -235,6 +825,13 @@
     KALO AUDIO PAS DIPUTAR MACET HARAP DITUNGGU AJA!!!
     </p>
   </header>
+
+  <div class="max-w-5xl mx-auto mt-4">
+    <a href="index.html" class="back-home-btn" aria-label="Kembali ke Beranda">
+      <span aria-hidden="true">←</span>
+      <span>Kembali ke Beranda</span>
+    </a>
+  </div>
 
   <main class="max-w-5xl mx-auto">
 
@@ -1653,10 +2250,6 @@
       const filterToggle = document.getElementById('filter-toggle');
       const filterPanel = document.getElementById('filter-panel');
       const produkGrid = document.getElementById('produk-grid');
-      const allItems = Array.from(produkGrid.querySelectorAll('li'));
-      // keep original order copy
-      const originalOrder = allItems.slice();
-
       const radios = Array.from(filterPanel.querySelectorAll('input[name="sort"]'));
       const catChecks = Array.from(filterPanel.querySelectorAll('.filter-cat'));
 
@@ -1690,6 +2283,7 @@
       catChecks.forEach(c => c.addEventListener('change', applyFilters));
 
       function applyFilters() {
+        const allItems = Array.from(produkGrid.querySelectorAll('li'));
         const selectedCats = catChecks.filter(c=>c.checked).map(c=>c.value.toLowerCase());
         const sortValue = filterPanel.querySelector('input[name="sort"]:checked')?.value || null;
 
@@ -1705,8 +2299,7 @@
         let visible = Array.from(produkGrid.querySelectorAll('li')).filter(li => li.style.display !== 'none');
 
         if (!sortValue) {
-          // keep original order for visible items
-          visible.sort((a,b) => originalOrder.indexOf(a) - originalOrder.indexOf(b));
+          // keep current DOM order when no explicit sort is selected
         } else if (sortValue === 'baru') {
           visible.sort((a,b) => {
             return Number(b.dataset.uid || 0) - Number(a.dataset.uid || 0);
@@ -1936,6 +2529,7 @@
 
       // setup filters
       const f = setupFilters();
+      window.__applyProductFilters = f.applyFilters;
       f.applyFilters();
 
       // wire players
@@ -2335,7 +2929,7 @@ async function loadProductsFromSupabase() {
       li.dataset.category = category;
 
       li.className =
-        'overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow';
+        'overlay-card bg-black/60 rounded-2xl p-3 flex gap-3 items-center shadow product-card';
 
 
 li.innerHTML = `
@@ -2439,6 +3033,12 @@ li.innerHTML = `
 
     if (typeof applyDiskon === 'function') {
       applyDiskon();
+    }
+
+    // Re-apply whatever filter/sort the user selected, including
+    // products loaded asynchronously from Supabase.
+    if (typeof window.__applyProductFilters === 'function') {
+      window.__applyProductFilters();
     }
 
 
