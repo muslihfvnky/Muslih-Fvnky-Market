@@ -3286,15 +3286,9 @@
   mo.observe(container, { childList: true, subtree: true });
 
   // initial apply (in case user opens with query param)
+  // Hasil pencarian langsung disaring; produk yang tidak cocok disembunyikan
+  // dan produk yang cocok menempati posisi teratas tanpa auto-scroll.
   applyFilter();
-
-  // enter to scroll to first visible
-  input.addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter'){
-      const first = index.find(i => i.el.style.display !== 'none');
-      if(first) first.el.scrollIntoView({behavior:'smooth', block:'center'});
-    }
-  });
 
 })();
   </script>
