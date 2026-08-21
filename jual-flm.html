@@ -1137,13 +1137,14 @@
     .mf-player-row{
       min-width:0;
       display:grid;
-      grid-template-columns:auto 1fr auto auto;
+      grid-template-columns:auto auto minmax(70px,1fr) auto auto;
       align-items:center;
       gap:7px;
+      width:100%;
     }
 
     .mf-floating-player .mf-time{
-      min-width:34px;
+      min-width:32px;
       color:rgba(255,255,255,.62);
       font-size:.66rem;
       line-height:1;
@@ -1274,7 +1275,7 @@
       }
 
       .mf-player-row{
-        grid-template-columns:auto 1fr auto auto;
+        grid-template-columns:auto auto minmax(45px,1fr) auto auto;
         gap:5px;
       }
 
@@ -1308,7 +1309,7 @@
     @media (max-width:360px){
       .mf-player-thumb{display:none}
       .mf-player-row{
-        grid-template-columns:auto 1fr auto auto;
+        grid-template-columns:auto auto minmax(38px,1fr) auto auto;
         gap:4px;
       }
       .mf-player-skip{
