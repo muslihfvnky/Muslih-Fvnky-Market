@@ -551,7 +551,8 @@
 
     const WA_NUMBER = '6283821665970';
     const DANA_LINK = 'https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012012022011164159294';
-    const CART_KEY = 'keranjang'; // key yang digunakan di jual-flm.html
+    const CART_KEY = 'keranjang'; // keranjang utama
+    const DIRECT_BUY_KEY = 'mf_direct_buy'; // Beli langsung satu produk
 
     // helper
     function q(sel){ return document.querySelector(sel); }
@@ -586,6 +587,23 @@
       }
     }
 
+    function loadDirectBuy(){
+      try {
+        const raw = localStorage.getItem(DIRECT_BUY_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed;
+      } catch(e){
+        console.warn('gagal parse direct buy', e);
+        return [];
+      }
+    }
+
+    function clearDirectBuy(){
+      localStorage.removeItem(DIRECT_BUY_KEY);
+    }
+
     function calcTotal(cart){
       return cart.reduce((s,it)=>{
         const harga = Number(it.harga ?? it.price ?? it.data_price ?? 0);
@@ -595,7 +613,8 @@
     }
 
     function renderCartIfAny(){
-      const cart = loadCart();
+      const directBuy = getQueryParam('produk') ? loadDirectBuy() : [];
+      const cart = directBuy.length ? directBuy : loadCart();
       const cartFound = q('#cart-found');
       const cartList = q('#cart-list');
       if (cart && cart.length > 0) {
@@ -654,7 +673,8 @@
       const produkInput = (q('#produk').value || '').trim();
       const nominalRaw = q('#nominal').value;
       const metode = q('#metode').value || 'DANA';
-      if (!produkInput && (!loadCart() || loadCart().length === 0)) {
+      const hasDirectBuy = getQueryParam('produk') && loadDirectBuy().length > 0;
+      if (!produkInput && !hasDirectBuy && (!loadCart() || loadCart().length === 0)) {
         alert('Mohon isi jenis produk atau isi keranjang terlebih dahulu.');
         return null;
       }
@@ -670,10 +690,15 @@
 
       const { jam, tanggal } = getTimeDate();
       const id = genTxID();
-      const cart = loadCart();
+
+      const isDirectBuy = !!getQueryParam('produk');
+      const directBuy = isDirectBuy ? loadDirectBuy() : [];
+      const cart = isDirectBuy ? [] : loadCart();
+      const source = directBuy.length ? directBuy : cart;
+
       let produkArr = [];
-      if (cart.length > 0){
-        produkArr = cart.map(it => {
+      if (source.length > 0){
+        produkArr = source.map(it => {
           const name = it.nama ?? it.title ?? it.name ?? it.id ?? 'Produk';
           const harga = Number(it.harga ?? it.price ?? it.data_price ?? 0);
           const qty = Number(it.qty ?? it.quantity ?? 1);
@@ -681,11 +706,12 @@
           return { name, harga, qty, sub };
         });
       }
+
       return {
         id,
         produkArr: produkArr.length ? produkArr : null,
         produkSingle: produkArr.length ? null : (produkInput || getQueryParam('produk') || 'Produk manual'),
-        nominal: (produkArr.length ? calcTotal(cart) : (nominal || 0)),
+        nominal: (produkArr.length ? calcTotal(source) : (nominal || 0)),
         metode,
         jam,
         tanggal
@@ -753,6 +779,7 @@
         const msg = buildWAMessage(tx);
         // open WA in new tab (user initiated click)
         openWAWithText(msg);
+        if (getQueryParam('produk') && typeof clearDirectBuy === 'function') clearDirectBuy();
       });
 
       // btnWA: just open WA (validate + preview)
@@ -763,6 +790,7 @@
         showPreview(tx);
         const msg = buildWAMessage(tx);
         openWAWithText(msg);
+        if (getQueryParam('produk') && typeof clearDirectBuy === 'function') clearDirectBuy();
       });
 
       // openWA inside preview (rebuild to ensure correctness)
