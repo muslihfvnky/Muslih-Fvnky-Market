@@ -2757,7 +2757,7 @@
             <div class="price">${escapeHtml(item.price)}</div>
             <div class="count">Pembelian: <strong>${item.count}</strong></div>
             <div style="margin-top:8px">
-              <a href="pembayaran.html?produk=${encodeURIComponent(item.title)}" class="px-2 py-1 rounded-md bg-[#106EBE] text-sm inline-block">🛒 Beli</a>
+              <a data-buy="${escapeHtml(item.id)}" href="pembayaran.html?produk=${encodeURIComponent(item.title)}" class="px-2 py-1 rounded-md bg-[#106EBE] text-sm inline-block">🛒 Beli</a>
               <button data-preview="${item.li.querySelector('audio')?.id || ''}" class="px-2 py-1 ml-2 rounded-md bg-[#0FFCBE] text-sm text-black">▶ Preview</button>
             </div>
           </div>
@@ -2815,13 +2815,13 @@
         const id = a.getAttribute('data-buy');
         if (id) incrementPopularity(id, 1);
 
-        // prepare single-item cart for langsung beli
+        // Beli langsung: jangan timpa keranjang utama.
         const li = document.querySelector(`#produk-grid > li[data-prod-id="${id}"]`);
         if (li) {
           const name = li.querySelector('.font-semibold')?.textContent?.trim() || id;
           const price = Number(li.dataset.price || li.getAttribute('data-price') || 0);
           const single = [{ id, nama: name, harga: price, qty: 1 }];
-          localStorage.setItem('keranjang', JSON.stringify(single));
+          localStorage.setItem('mf_direct_buy', JSON.stringify(single));
         }
         // allow navigation to pembayaran.html as link is natural
       }
