@@ -115,6 +115,58 @@
       .promo-grid{grid-template-columns:1fr}
     }
 
+    .popular-admin-card{
+      background:linear-gradient(145deg,rgba(16,110,190,.16),rgba(15,252,190,.06));
+      border:1px solid rgba(15,252,190,.16);
+      border-radius:18px;
+      padding:18px;
+    }
+    .popular-row{
+      display:grid;
+      grid-template-columns:minmax(0,2fr) 130px 110px 84px 42px;
+      gap:10px;
+      align-items:end;
+      padding:12px;
+      border-radius:14px;
+      background:rgba(0,0,0,.16);
+      border:1px solid rgba(255,255,255,.07);
+    }
+    .popular-row select,
+    .popular-row input{
+      width:100%;
+      border-radius:12px;
+      padding:10px 12px;
+    }
+    .popular-row .popular-remove{
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .popular-head{
+      display:grid;
+      grid-template-columns:minmax(0,2fr) 130px 110px 84px 42px;
+      gap:10px;
+      padding:0 12px 7px;
+      color:rgba(255,255,255,.42);
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      font-weight:800;
+    }
+    @media(max-width:760px){
+      .popular-head{display:none}
+      .popular-row{
+        grid-template-columns:1fr 1fr;
+      }
+      .popular-row > div:first-child{grid-column:1 / -1}
+      .popular-row .popular-remove{
+        width:100%;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -404,6 +456,48 @@
               <button id="savePromoSettingsBtn" class="btn save-promo-btn">💾 Simpan Pengaturan</button>
             </div>
 
+            <div class="popular-admin-card">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <h3 class="text-lg font-black">🔥 Atur Produk Populer</h3>
+                  <p class="promo-help mt-1">
+                    Pilih produk, atur jumlah pembelian yang ditampilkan, urutan, dan status tampil.
+                  </p>
+                </div>
+                <button id="addPopularProductBtn" type="button" class="btn rounded-xl px-4 py-2.5 font-bold">
+                  ＋ Tambah Produk
+                </button>
+              </div>
+
+              <div class="mt-4">
+                <div class="popular-head">
+                  <div>Produk</div>
+                  <div>Jumlah Pembelian</div>
+                  <div>Urutan</div>
+                  <div>Aktif</div>
+                  <div></div>
+                </div>
+
+                <div id="popularProductsList" class="space-y-2">
+                  <div class="text-sm text-white/40 p-3 rounded-xl bg-white/5">
+                    Memuat produk populer...
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
+                <div>
+                  <div class="font-bold">💾 Simpan Produk Populer</div>
+                  <p id="popularProductsStatus" class="text-sm text-white/45 mt-1 promo-status">
+                    Belum dimuat.
+                  </p>
+                </div>
+                <button id="savePopularProductsBtn" type="button" class="btn save-promo-btn">
+                  💾 Simpan Produk Populer
+                </button>
+              </div>
+            </div>
+
             <div class="glass rounded-2xl p-5">
               <h3 class="font-black text-lg">Konfigurasi Supabase</h3>
               <p class="text-sm text-white/50 mt-2">Frontend memakai publishable/anon key. Jangan masukkan Client Secret Google OAuth atau service_role key ke file ini.</p>
@@ -429,6 +523,7 @@ const loginStatus=document.getElementById("loginStatus");
 let sb=null;
 let productsCache=[];
 let commentsCache=[];
+let popularProductsCache=[];
 
 function showStatus(t){loginStatus.textContent=t}
 function money(v){return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(v)||0)}
@@ -812,6 +907,231 @@ function clampPercent(value){
   return Math.max(0,Math.min(100,Math.round(n)));
 }
 
+async function loadPopularProducts(){
+  const list=document.getElementById("popularProductsList");
+  const status=document.getElementById("popularProductsStatus");
+  if(!list||!sb)return;
+
+  status.textContent="⏳ Memuat produk populer...";
+  list.innerHTML='<div class="text-sm text-white/40 p-3 rounded-xl bg-white/5">Memuat...</div>';
+
+  try{
+    if(!productsCache.length) await loadProducts();
+
+    const {data,error}=await sb
+      .from("popular_products")
+      .select("id,product_id,purchase_count,display_order,enabled,updated_at")
+      .order("display_order",{ascending:true})
+      .order("id",{ascending:true});
+
+    if(error)throw new Error(error.message);
+
+    popularProductsCache=data||[];
+
+    if(!popularProductsCache.length){
+      renderPopularProducts([
+        {id:null,product_id:"",purchase_count:0,display_order:1,enabled:true}
+      ]);
+      status.textContent="Belum ada pengaturan. Tambahkan produk populer lalu simpan.";
+    }else{
+      renderPopularProducts(popularProductsCache);
+      const updated=popularProductsCache
+        .map(x=>x.updated_at)
+        .filter(Boolean)
+        .sort()
+        .pop();
+      status.textContent=updated
+        ? `✅ ${popularProductsCache.length} produk populer dimuat. Terakhir diubah ${new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeStyle:"short"}).format(new Date(updated))}.`
+        : `✅ ${popularProductsCache.length} produk populer dimuat.`;
+    }
+  }catch(error){
+    console.error(error);
+    list.innerHTML=`<div class="text-sm text-red-300 p-3 rounded-xl bg-red-500/10">❌ ${esc(error.message)}</div>`;
+    status.textContent="❌ Gagal memuat produk populer.";
+  }
+}
+
+function popularProductOptions(selected){
+  const current=String(selected??"");
+  const options=[
+    `<option value="">— Pilih produk —</option>`,
+    ...productsCache.map(p=>`
+      <option value="${esc(p.id)}" ${String(p.id)===current?"selected":""}>
+        ${esc(p.name)}${p.prod_id?` — ${esc(p.prod_id)}`:""}
+      </option>
+    `)
+  ];
+  return options.join("");
+}
+
+function renderPopularProducts(rows){
+  const list=document.getElementById("popularProductsList");
+  if(!list)return;
+
+  list.innerHTML=rows.map((row,index)=>`
+    <div class="popular-row" data-popular-row>
+      <div>
+        <label class="text-xs text-white/45 block mb-1">Produk</label>
+        <select class="popular-product-select" aria-label="Produk populer">
+          ${popularProductOptions(row.product_id)}
+        </select>
+      </div>
+
+      <div>
+        <label class="text-xs text-white/45 block mb-1">Pembelian</label>
+        <input class="popular-count-input" type="number" min="0" step="1"
+          value="${Number(row.purchase_count)||0}" aria-label="Jumlah pembelian">
+      </div>
+
+      <div>
+        <label class="text-xs text-white/45 block mb-1">Urutan</label>
+        <input class="popular-order-input" type="number" min="1" step="1"
+          value="${Math.max(1,Number(row.display_order)||index+1)}" aria-label="Urutan">
+      </div>
+
+      <div>
+        <label class="text-xs text-white/45 block mb-1">Aktif</label>
+        <label class="promo-switch">
+          <input class="popular-enabled-input" type="checkbox" ${row.enabled!==false?"checked":""}>
+          <span class="promo-slider"></span>
+        </label>
+      </div>
+
+      <div>
+        <button type="button" class="popular-remove btn-danger" title="Hapus baris">✕</button>
+      </div>
+
+      <input type="hidden" class="popular-row-id" value="${row.id??""}">
+    </div>
+  `).join("");
+
+  list.querySelectorAll(".popular-remove").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const rowsNow=list.querySelectorAll("[data-popular-row]");
+      const row=btn.closest("[data-popular-row]");
+      if(rowsNow.length===1){
+        row.querySelector(".popular-product-select").value="";
+        row.querySelector(".popular-count-input").value="0";
+        row.querySelector(".popular-order-input").value="1";
+        row.querySelector(".popular-enabled-input").checked=true;
+        row.querySelector(".popular-row-id").value="";
+        return;
+      }
+      row.remove();
+    });
+  });
+}
+
+function addPopularProductRow(){
+  const list=document.getElementById("popularProductsList");
+  if(!list)return;
+  const currentRows=Array.from(list.querySelectorAll("[data-popular-row]")).map((row,index)=>({
+    id:row.querySelector(".popular-row-id")?.value||null,
+    product_id:row.querySelector(".popular-product-select")?.value||"",
+    purchase_count:Number(row.querySelector(".popular-count-input")?.value)||0,
+    display_order:Number(row.querySelector(".popular-order-input")?.value)||index+1,
+    enabled:!!row.querySelector(".popular-enabled-input")?.checked
+  }));
+
+  currentRows.push({
+    id:null,
+    product_id:"",
+    purchase_count:0,
+    display_order:currentRows.length+1,
+    enabled:true
+  });
+
+  renderPopularProducts(currentRows);
+}
+
+async function savePopularProducts(){
+  const btn=document.getElementById("savePopularProductsBtn");
+  const status=document.getElementById("popularProductsStatus");
+  const list=document.getElementById("popularProductsList");
+  if(!btn||!list||!sb)return;
+
+  btn.disabled=true;
+  btn.textContent="⏳ Menyimpan...";
+  status.textContent="⏳ Menyimpan produk populer...";
+
+  try{
+    const rows=Array.from(list.querySelectorAll("[data-popular-row]")).map((row,index)=>({
+      id:row.querySelector(".popular-row-id")?.value
+        ? Number(row.querySelector(".popular-row-id").value)
+        : null,
+      product_id:row.querySelector(".popular-product-select")?.value
+        ? Number(row.querySelector(".popular-product-select").value)
+        : null,
+      purchase_count:Math.max(0,Math.round(Number(row.querySelector(".popular-count-input")?.value)||0)),
+      display_order:Math.max(1,Math.round(Number(row.querySelector(".popular-order-input")?.value)||index+1)),
+      enabled:!!row.querySelector(".popular-enabled-input")?.checked
+    })).filter(row=>row.product_id);
+
+    const seen=new Set();
+    for(const row of rows){
+      if(seen.has(row.product_id)){
+        throw new Error("Satu produk tidak boleh dipilih lebih dari sekali.");
+      }
+      seen.add(row.product_id);
+    }
+
+    // Existing DB rows not present anymore are removed.
+    const existingById=new Map(
+      popularProductsCache
+        .filter(x=>x.id!=null)
+        .map(x=>[Number(x.id),x])
+    );
+
+    const keepIds=new Set(rows.filter(x=>x.id!=null).map(x=>Number(x.id)));
+    const deleteIds=popularProductsCache
+      .filter(x=>x.id!=null && !keepIds.has(Number(x.id)))
+      .map(x=>Number(x.id));
+
+    if(deleteIds.length){
+      const {error}=await sb
+        .from("popular_products")
+        .delete()
+        .in("id",deleteIds);
+      if(error)throw new Error(error.message);
+    }
+
+    for(const row of rows){
+      const payload={
+        product_id:row.product_id,
+        purchase_count:row.purchase_count,
+        display_order:row.display_order,
+        enabled:row.enabled,
+        updated_at:new Date().toISOString()
+      };
+
+      let result;
+      if(row.id && existingById.has(row.id)){
+        result=await sb
+          .from("popular_products")
+          .update(payload)
+          .eq("id",row.id);
+      }else{
+        result=await sb
+          .from("popular_products")
+          .insert(payload);
+      }
+
+      if(result.error)throw new Error(result.error.message);
+    }
+
+    await loadPopularProducts();
+    status.className="text-sm text-emerald-300 mt-1 promo-status";
+    status.textContent="✅ Pengaturan produk populer berhasil disimpan.";
+  }catch(error){
+    console.error(error);
+    status.className="text-sm text-red-300 mt-1 promo-status";
+    status.textContent="❌ Gagal menyimpan: "+error.message;
+  }finally{
+    btn.disabled=false;
+    btn.textContent="💾 Simpan Produk Populer";
+  }
+}
+
 function updatePromoBadges(){
   const indexEnabled=document.getElementById("indexPromoEnabled")?.checked;
   const indexPercent=clampPercent(document.getElementById("indexPromoPercent")?.value);
@@ -903,6 +1223,14 @@ async function savePromoSettings(){
   }
 }
 
+function bindPopularProductsUI(){
+  document.getElementById("addPopularProductBtn")
+    .addEventListener("click",addPopularProductRow);
+
+  document.getElementById("savePopularProductsBtn")
+    .addEventListener("click",savePopularProducts);
+}
+
 function bindPromoSettingsUI(){
   [
     "indexPromoEnabled",
@@ -931,7 +1259,10 @@ document.querySelectorAll(".nav-item[data-section]").forEach(btn=>{
     if(btn.dataset.section==="products")await loadProducts();
     if(btn.dataset.section==="comments")await loadComments();
     if(btn.dataset.section==="overview")await loadDashboardStats();
-    if(btn.dataset.section==="settings")await loadPromoSettings();
+    if(btn.dataset.section==="settings"){
+      await loadPromoSettings();
+      await loadPopularProducts();
+    }
   });
 });
 document.getElementById("addProductBtn").addEventListener("click",openAddProduct);
@@ -956,6 +1287,7 @@ document.getElementById("productAudioFile").addEventListener("change",e=>{
   document.getElementById("productAudioCurrent").textContent=f?`File dipilih: ${f.name}`:"";
 });
 
+bindPopularProductsUI();
 bindPromoSettingsUI();
 
 if(!SUPABASE_URL||!SUPABASE_ANON_KEY){
