@@ -588,10 +588,27 @@ function storageExt(file, fallback){
 }
 async function uploadProductFile(file,bucket,folder,baseName){
   if(!file)return null;
+
   const ext=storageExt(file,bucket==="images"?"webp":"mp3");
   const path=`${folder}/${baseName}-${Date.now()}.${ext}`;
-  const {error}=await sb.storage.from(bucket).upload(path,file,{cacheControl:"3600",upsert:false});
+
+  // Supaya file .mpeg/.mpg tidak dikirim browser sebagai video/mpeg.
+  // Untuk semua audio preview, paksa MIME menjadi audio/mpeg.
+  const isAudio = bucket === "audio";
+  const contentType = isAudio
+    ? "audio/mpeg"
+    : (file.type || "application/octet-stream");
+
+  const {error}=await sb.storage
+    .from(bucket)
+    .upload(path,file,{
+      cacheControl:"3600",
+      upsert:false,
+      contentType
+    });
+
   if(error)throw new Error(`Upload ${bucket} gagal: ${error.message}`);
+
   const {data}=sb.storage.from(bucket).getPublicUrl(path);
   return data.publicUrl;
 }
