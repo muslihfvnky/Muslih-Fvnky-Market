@@ -2690,85 +2690,167 @@
     }
 
     // --------------------
-    // POPULARITY STORAGE
+    // PRODUK POPULER — SUPABASE
+    // Pengaturan diambil dari Admin Dashboard -> popular_products.
     // --------------------
-    const POP_KEY = 'mf_popularity_v1'; // localStorage key
+    let popularProductsState = [];
 
-    function loadPopularity(){
-      try {
-        return JSON.parse(localStorage.getItem(POP_KEY) || '{}');
-      } catch(e){ return {}; }
+    function getMainProductByProdId(prodId){
+      if(!prodId) return null;
+      const wanted = String(prodId).trim().toLowerCase();
+
+      return Array.from(
+        document.querySelectorAll('#produk-grid > li')
+      ).find(li =>
+        String(li.dataset.prodId || '').trim().toLowerCase() === wanted
+      ) || null;
     }
 
-    function savePopularity(obj){
-      localStorage.setItem(POP_KEY, JSON.stringify(obj));
-    }
-
-    function incrementPopularity(prodId, amount = 1){
-      if (!prodId) return;
-      const obj = loadPopularity();
-      obj[prodId] = (obj[prodId] || 0) + amount;
-      savePopularity(obj);
-      renderPopular(); // update UI immediately
-    }
-
-    function renderPopular(n = 5){
+    async function loadPopularFromSupabase(){
       const grid = document.getElementById('popular-grid');
-      if (!grid) return;
-      const pop = loadPopularity();
+      if(!grid || !window.supabaseClient) return;
 
-      const getItem = (id) => {
-        const li = document.querySelector(`#produk-grid > li[data-prod-id="${id}"]`);
-        if (!li) return null;
-        const title = li.querySelector('.font-semibold')?.textContent?.trim() || 'Produk';
-        const price = li.querySelector('.text-sm')?.textContent || '';
-        const img = li.querySelector('img')?.src || '';
-        const count = pop[id] || 0;
-        return { id, title, price, img, count, li };
-      };
+      try{
+        const {data,error} = await window.supabaseClient
+          .from('popular_products')
+          .select(`
+            id,
+            product_id,
+            purchase_count,
+            display_order,
+            enabled,
+            products (
+              id,
+              prod_id,
+              name,
+              price,
+              image_url,
+              audio_url
+            )
+          `)
+          .eq('enabled', true)
+          .order('display_order', {ascending:true})
+          .order('id', {ascending:true})
+          .limit(10);
 
-      const fixedOrder = ['rully', 'maman'];
-      const fixedItems = fixedOrder.map(getItem).filter(Boolean);
+        if(error) throw error;
 
-      const allItems = Array.from(document.querySelectorAll('#produk-grid > li')).map(li => {
-        const id = li.getAttribute('data-prod-id') || '';
-        const title = li.querySelector('.font-semibold')?.textContent?.trim() || 'Produk';
-        const price = li.querySelector('.text-sm')?.textContent || '';
-        const img = li.querySelector('img')?.src || '';
-        const count = pop[id] || 0;
-        return { id, title, price, img, count, li };
-      }).filter(it => !fixedOrder.includes(it.id));
+        popularProductsState = Array.isArray(data) ? data : [];
+        renderPopularFromSupabase();
 
-      allItems.sort((a,b) => b.count - a.count);
+      }catch(error){
+        console.error('❌ Gagal memuat Produk Populer:', error);
+        grid.innerHTML = `
+          <div class="popular-card">
+            <div class="popular-meta">
+              <div class="title">Produk populer belum tersedia</div>
+              <div class="count">Silakan atur dari Admin Dashboard.</div>
+            </div>
+          </div>
+        `;
+      }
+    }
 
-      const finalList = [...fixedItems, ...allItems].slice(0, Math.min(n, (fixedItems.length + allItems.length)));
+    function renderPopularFromSupabase(){
+      const grid = document.getElementById('popular-grid');
+      if(!grid) return;
+
+      const items = popularProductsState.map(row=>{
+        const product = Array.isArray(row.products)
+          ? row.products[0]
+          : row.products;
+
+        if(!product) return null;
+
+        const prodId = String(
+          product.prod_id ?? product.id ?? ''
+        ).trim();
+
+        const li = getMainProductByProdId(prodId);
+        if(!li) return null;
+
+        const title =
+          product.name ||
+          li.querySelector('.font-semibold')?.textContent?.trim() ||
+          'Produk';
+
+        const priceHtml =
+          li.querySelector('.text-sm')?.innerHTML ||
+          `💲 Rp ${Number(
+            product.price || li.dataset.price || 0
+          ).toLocaleString('id-ID')}`;
+
+        const img =
+          product.image_url ||
+          li.querySelector('img')?.src ||
+          'muslihpack.webp';
+
+        const audioId = li.querySelector('audio')?.id || '';
+
+        return {
+          id: prodId,
+          title,
+          priceHtml,
+          img,
+          count: Number(row.purchase_count) || 0,
+          audioId
+        };
+      }).filter(Boolean);
 
       grid.innerHTML = '';
-      finalList.forEach(item => {
+
+      if(!items.length){
+        grid.innerHTML = `
+          <div class="popular-card">
+            <div class="popular-meta">
+              <div class="title">Belum ada Produk Populer</div>
+              <div class="count">Atur dari Admin Dashboard → Pengaturan.</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach(item=>{
         const card = document.createElement('div');
         card.className = 'popular-card';
+
         card.innerHTML = `
           <img src="${item.img}" alt="${escapeHtml(item.title)}">
           <div class="popular-meta">
             <div style="display:flex;gap:8px;align-items:center">
               <div class="title">${escapeHtml(item.title)}</div>
-              <div style="margin-left:auto"><span class="popular-badge">POP</span></div>
+              <div style="margin-left:auto">
+                <span class="popular-badge">POP</span>
+              </div>
             </div>
-            <div class="price">${escapeHtml(item.price)}</div>
-            <div class="count">Pembelian: <strong>${item.count}</strong></div>
+
+            <div class="price">${item.priceHtml}</div>
+            <div class="count">
+              Pembelian: <strong>${item.count}</strong>
+            </div>
+
             <div style="margin-top:8px">
-              <a data-buy="${escapeHtml(item.id)}" href="pembayaran.html?produk=${encodeURIComponent(item.title)}" class="px-2 py-1 rounded-md bg-[#106EBE] text-sm inline-block">🛒 Beli</a>
-              <button data-preview="${item.li.querySelector('audio')?.id || ''}" class="px-2 py-1 ml-2 rounded-md bg-[#0FFCBE] text-sm text-black">▶ Preview</button>
+              <a
+                data-buy="${escapeHtml(item.id)}"
+                href="pembayaran.html?produk=${encodeURIComponent(item.title)}"
+                class="px-2 py-1 rounded-md bg-[#106EBE] text-sm inline-block"
+              >🛒 Beli</a>
+
+              <button
+                data-preview="${escapeHtml(item.audioId)}"
+                class="px-2 py-1 ml-2 rounded-md bg-[#0FFCBE] text-sm text-black"
+              >▶ Preview</button>
             </div>
           </div>
         `;
+
         grid.appendChild(card);
       });
     }
 
-    function escapeHtml(s){
-      return (''+s).replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]);
-    }
+    // Dipakai oleh loadProductsFromSupabase setelah katalog selesai dibangun.
+    window.loadPopularFromSupabase = loadPopularFromSupabase;
 
     // --------------------
     // PLAY-BTN & BUY interaction wiring
@@ -2813,7 +2895,7 @@
       const a = e.target.closest('a[data-buy]');
       if (a) {
         const id = a.getAttribute('data-buy');
-        if (id) incrementPopularity(id, 1);
+        // Jumlah pembelian Produk Populer sekarang diatur dari Admin Dashboard.
 
         // Beli langsung: jangan timpa keranjang utama.
         const li = document.querySelector(`#produk-grid > li[data-prod-id="${id}"]`);
@@ -3106,20 +3188,10 @@
 
     // when DOM ready
     document.addEventListener('DOMContentLoaded', () => {
-      // ensure default starting popularity (only set when missing)
-      const defaults = { rully: 7, maman: 5 };
-      const pop = loadPopularity();
-      let changed = false;
-      for (const k in defaults) {
-        if (!Object.prototype.hasOwnProperty.call(pop, k)) {
-          pop[k] = defaults[k];
-          changed = true;
-        }
-      }
-      if (changed) savePopularity(pop);
-
-      renderPopular(5);
-      setInterval(renderPopular, 20000);
+      // Produk Populer dikendalikan dari Admin Dashboard / Supabase.
+      // Katalog utama tetap memakai wiring lama di bawahnya.
+      loadPopularFromSupabase();
+      setInterval(loadPopularFromSupabase, 20000);
 
       // setup filters
       const f = setupFilters();
@@ -3140,7 +3212,6 @@
 
     // listen to storage events (update across tabs)
     window.addEventListener('storage', (e) => {
-      if (e.key === POP_KEY) renderPopular();
       if (e.key === CART_KEY) renderCart();
     });
 
@@ -3427,6 +3498,9 @@ const supabaseClient = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+
+// Dipakai oleh Produk Populer dari Admin Dashboard.
+window.supabaseClient = supabaseClient;
 
 
 async function loadShopPromoSettings() {
@@ -3768,9 +3842,9 @@ async function loadProductsFromSupabase() {
       window.__applyProductFilters();
     }
 
-    // Produk populer membaca katalog terbaru.
-    if (typeof renderPopular === "function") {
-      renderPopular();
+    // Produk Populer membaca pengaturan terbaru dari Admin Dashboard.
+    if (typeof window.loadPopularFromSupabase === "function") {
+      await window.loadPopularFromSupabase();
     }
 
     console.log(
