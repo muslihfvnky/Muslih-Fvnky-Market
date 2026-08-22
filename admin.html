@@ -30,91 +30,6 @@
     table{min-width:850px}
     th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.45);font-weight:700}
     td{font-size:.85rem;color:rgba(255,255,255,.82)}
-    .promo-card{
-      background:linear-gradient(145deg,rgba(16,110,190,.16),rgba(15,252,190,.06));
-      border:1px solid rgba(15,252,190,.16);
-      border-radius:18px;
-      padding:18px;
-    }
-    .promo-card h3{display:flex;align-items:center;gap:8px}
-    .promo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-    .promo-control{
-      background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.07);
-      border-radius:14px;
-      padding:13px;
-    }
-    .promo-switch{
-      position:relative;
-      width:48px;
-      height:26px;
-      flex:0 0 48px;
-    }
-    .promo-switch input{
-      opacity:0;
-      width:0;
-      height:0;
-      position:absolute;
-    }
-    .promo-slider{
-      position:absolute;
-      inset:0;
-      cursor:pointer;
-      border-radius:999px;
-      background:rgba(255,255,255,.16);
-      transition:.2s;
-    }
-    .promo-slider:before{
-      content:"";
-      position:absolute;
-      width:20px;
-      height:20px;
-      left:3px;
-      top:3px;
-      border-radius:50%;
-      background:#fff;
-      transition:.2s;
-      box-shadow:0 2px 8px rgba(0,0,0,.25);
-    }
-    .promo-switch input:checked + .promo-slider{
-      background:var(--mint);
-    }
-    .promo-switch input:checked + .promo-slider:before{
-      transform:translateX(22px);
-      background:#04171e;
-    }
-    .promo-day{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:12px;
-      background:rgba(255,255,255,.035);
-      border:1px solid rgba(255,255,255,.06);
-    }
-    .promo-percent{
-      font-size:1.05rem;
-      font-weight:900;
-    }
-    .promo-help{
-      color:rgba(255,255,255,.48);
-      font-size:.78rem;
-      line-height:1.5;
-    }
-    .promo-status{
-      min-height:22px;
-    }
-    .save-promo-btn{
-      min-height:46px;
-      border-radius:12px;
-      padding:0 18px;
-      font-weight:800;
-    }
-    @media(max-width:900px){
-      .promo-grid{grid-template-columns:1fr}
-    }
-
   </style>
 </head>
 <body>
@@ -199,7 +114,7 @@
                 <span id="productImageCurrent" class="block text-xs text-white/40 mt-1"></span>
               </label>
               <label class="text-sm text-white/70">Audio Preview
-                <input id="productAudioFile" type="file" accept="audio/mpeg,audio/mp3" class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black">
+                <input id="productAudioFile" type="file" accept=".mp3,.mpeg,.mpg,audio/mpeg,audio/mp3" class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black">
                 <input type="hidden" id="productAudioUrl">
                 <span id="productAudioCurrent" class="block text-xs text-white/40 mt-1"></span>
               </label>
@@ -208,7 +123,7 @@
                 <button type="button" id="cancelProductBtn2" class="rounded-xl px-5 py-2.5 bg-white/5 hover:bg-white/10">Batal</button>
               </div>
             </form>
-            <p class="text-xs text-white/40 mt-3">Gambar: JPG, PNG, WEBP · Audio: MP3. Saat edit, file boleh dikosongkan agar media lama tetap dipakai.</p>
+            <p class="text-xs text-white/40 mt-3">Gambar: JPG, PNG, WEBP · Audio: MP3, MPEG (.mpeg/.mpg). Saat edit, file boleh dikosongkan agar media lama tetap dipakai.</p>
             <p id="productFormStatus" class="text-sm text-white/50 mt-2"></p>
           </div>
 
@@ -272,10 +187,6 @@
               <label class="text-sm text-white/70">Nama<input id="editCommentName" class="w-full rounded-xl px-3 py-2.5 mt-1" required></label>
               <label class="text-sm text-white/70">Rating<select id="editCommentRating" class="w-full rounded-xl px-3 py-2.5 mt-1"><option value="1">⭐ 1</option><option value="2">⭐⭐ 2</option><option value="3">⭐⭐⭐ 3</option><option value="4">⭐⭐⭐⭐ 4</option><option value="5">⭐⭐⭐⭐⭐ 5</option></select></label>
               <label class="text-sm text-white/70 md:col-span-2">Komentar<textarea id="editCommentText" class="w-full rounded-xl px-3 py-2.5 mt-1 bg-black/25 border border-white/10 text-white" rows="4" required></textarea></label>
-              <label class="text-sm text-white/70 md:col-span-2">Balasan Admin
-                <textarea id="editCommentReply" maxlength="500" class="w-full rounded-xl px-3 py-2.5 mt-1 bg-black/25 border border-white/10 text-white" rows="3" placeholder="Tulis balasan untuk pelanggan..."></textarea>
-                <span class="block text-xs text-white/35 mt-1">Balasan akan tampil di bawah komentar setelah disimpan.</span>
-              </label>
               <label class="text-sm text-white/70">Ganti Foto (opsional)<input id="editCommentPhoto" type="file" accept="image/jpeg,image/png,image/webp" class="w-full rounded-xl px-3 py-2.5 mt-1 file:mr-3 file:rounded-lg file:border-0 file:bg-[#0FFCBE] file:px-3 file:py-2 file:font-bold file:text-black"></label>
               <div class="flex items-end gap-2"><button class="btn rounded-xl px-5 py-2.5 font-bold">Simpan Perubahan</button><button type="button" id="cancelCommentEdit2" class="rounded-xl px-5 py-2.5 bg-white/5">Batal</button></div>
             </form>
@@ -292,126 +203,10 @@
         </section>
 
         <section id="settings" class="admin-section hidden">
-          <div class="mb-6">
-            <h2 class="text-2xl font-black">⚙️ Pengaturan</h2>
-            <p class="text-white/55 mt-1">Atur promo website langsung dari dashboard tanpa mengubah kode.</p>
-          </div>
-
-          <div class="grid gap-5">
-            <div class="promo-card">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="text-lg font-black">⚡ Jumat Berkah — Index</h3>
-                  <p class="promo-help mt-1">Khusus promo yang tampil di <b>index.html</b>.</p>
-                </div>
-                <span id="indexPromoBadge" class="rounded-full px-3 py-1 text-xs font-black bg-white/5">—</span>
-              </div>
-
-              <div class="promo-grid mt-4">
-                <div class="promo-control">
-                  <div class="flex items-center justify-between gap-3">
-                    <div>
-                      <div class="font-bold">Status Promo</div>
-                      <div class="promo-help">Aktif/nonaktif promo index.</div>
-                    </div>
-                    <label class="promo-switch">
-                      <input id="indexPromoEnabled" type="checkbox">
-                      <span class="promo-slider"></span>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="promo-control">
-                  <label class="text-sm text-white/70">Persentase Diskon
-                    <div class="flex items-center gap-2 mt-1">
-                      <input id="indexPromoPercent" type="number" min="0" max="100" step="1"
-                        class="w-full rounded-xl px-3 py-2.5 promo-percent" value="0">
-                      <span class="font-black mint">%</span>
-                    </div>
-                  </label>
-                  <p class="promo-help mt-2">Contoh: isi <b>30</b> untuk diskon 30%.</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="promo-card">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <h3 class="text-lg font-black">🛒 Diskon Jual FLM — Jumat & Minggu</h3>
-                  <p class="promo-help mt-1">Khusus harga promo produk di <b>jual-flm.html</b>.</p>
-                </div>
-                <span id="shopPromoBadge" class="rounded-full px-3 py-1 text-xs font-black bg-white/5">—</span>
-              </div>
-
-              <div class="promo-grid mt-4">
-                <div class="promo-control">
-                  <div class="flex items-center justify-between gap-3">
-                    <div>
-                      <div class="font-bold">Status Promo</div>
-                      <div class="promo-help">Aktif/nonaktif seluruh promo jual FLM.</div>
-                    </div>
-                    <label class="promo-switch">
-                      <input id="shopPromoEnabled" type="checkbox">
-                      <span class="promo-slider"></span>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="promo-control">
-                  <label class="text-sm text-white/70">Persentase Diskon
-                    <div class="flex items-center gap-2 mt-1">
-                      <input id="shopPromoPercent" type="number" min="0" max="100" step="1"
-                        class="w-full rounded-xl px-3 py-2.5 promo-percent" value="9">
-                      <span class="font-black mint">%</span>
-                    </div>
-                  </label>
-                  <p class="promo-help mt-2">Contoh: isi <b>9</b> untuk diskon 9%.</p>
-                </div>
-              </div>
-
-              <div class="mt-4 space-y-2">
-                <div class="font-bold mb-2">Hari Aktif</div>
-
-                <div class="promo-day">
-                  <div>
-                    <div class="font-bold">Jumat</div>
-                    <div class="promo-help">Promo aktif setiap Jumat.</div>
-                  </div>
-                  <label class="promo-switch">
-                    <input id="shopPromoFriday" type="checkbox">
-                    <span class="promo-slider"></span>
-                  </label>
-                </div>
-
-                <div class="promo-day">
-                  <div>
-                    <div class="font-bold">Minggu</div>
-                    <div class="promo-help">Promo aktif setiap Minggu.</div>
-                  </div>
-                  <label class="promo-switch">
-                    <input id="shopPromoSunday" type="checkbox">
-                    <span class="promo-slider"></span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <div class="font-bold">💾 Simpan Pengaturan Promo</div>
-                <p id="promoSettingsStatus" class="text-sm text-white/45 mt-1 promo-status">Memuat pengaturan...</p>
-              </div>
-              <button id="savePromoSettingsBtn" class="btn save-promo-btn">💾 Simpan Pengaturan</button>
-            </div>
-
-            <div class="glass rounded-2xl p-5">
-              <h3 class="font-black text-lg">Konfigurasi Supabase</h3>
-              <p class="text-sm text-white/50 mt-2">Frontend memakai publishable/anon key. Jangan masukkan Client Secret Google OAuth atau service_role key ke file ini.</p>
-              <div class="rounded-xl bg-white/5 p-4 mt-4">
-                <p class="text-sm text-white/50">Admin aktif</p>
-                <p class="font-bold mt-1">muslihshoope@gmail.com</p>
-              </div>
-            </div>
+          <h2 class="text-2xl font-black">⚙️ Pengaturan</h2>
+          <div class="glass rounded-2xl p-6 mt-5 space-y-4">
+            <div><h3 class="font-bold">Konfigurasi Supabase</h3><p class="text-sm text-white/50 mt-2">Frontend memakai publishable/anon key. Jangan masukkan Client Secret Google OAuth atau service_role key ke file ini.</p></div>
+            <div class="rounded-xl bg-white/5 p-4"><p class="text-sm text-white/50">Admin aktif</p><p class="font-bold mt-1">muslihshoope@gmail.com</p></div>
           </div>
         </section>
       </main>
@@ -690,14 +485,10 @@ function renderComments(){
       <td class="p-4 text-white/55 whitespace-nowrap">${esc(dateText(x.created_at))}</td>
       <td class="p-4 font-bold">${esc(x.name)}</td>
       <td class="p-4 whitespace-nowrap">${stars(x.rating)} <span class="text-white/40">${esc(x.rating)}/5</span></td>
-      <td class="p-4 max-w-xl">
-        <div>${esc(x.comment)}</div>
-        ${x.admin_reply?`<div class="mt-2 rounded-lg bg-[#106EBE]/15 border border-[#0FFCBE]/15 p-2 text-sm"><span class="text-[#0FFCBE] font-bold">↩ Balasan Admin:</span> ${esc(x.admin_reply)}</div>`:""}
-      </td>
+      <td class="p-4 max-w-xl">${esc(x.comment)}</td>
       <td class="p-4"><span class="rounded-full px-2.5 py-1 text-xs ${x.approved?'bg-emerald-400/15 text-emerald-300':'bg-yellow-400/15 text-yellow-300'}">${x.approved?'Tampil':'Menunggu'}</span></td>
       <td class="p-4"><div class="flex flex-wrap justify-end gap-2">
         <button class="btn rounded-lg px-3 py-2 text-xs toggle-comment" data-id="${esc(x.id)}" data-approved="${x.approved}">${x.approved?'Sembunyikan':'Tampilkan'}</button>
-        <button class="btn rounded-lg px-3 py-2 text-xs reply-comment" data-id="${esc(x.id)}">↩ Balas</button>
         <button class="btn rounded-lg px-3 py-2 text-xs edit-comment" data-id="${esc(x.id)}">Edit</button>
         <button class="btn-danger rounded-lg px-3 py-2 text-xs delete-comment" data-id="${esc(x.id)}">Hapus</button>
       </div></td>
@@ -712,14 +503,6 @@ function renderComments(){
     if(error)alert("Gagal menghapus: "+error.message);else{await loadComments();await loadDashboardStats()}
   });
   body.querySelectorAll(".edit-comment").forEach(b=>b.onclick=()=>openCommentEdit(Number(b.dataset.id)));
-  body.querySelectorAll(".reply-comment").forEach(b=>b.onclick=()=>{
-    openCommentEdit(Number(b.dataset.id));
-    setTimeout(()=>{
-      const reply=document.getElementById("editCommentReply");
-      reply.focus();
-      reply.scrollIntoView({behavior:"smooth",block:"center"});
-    },50);
-  });
 }
 function openCommentEdit(id){
   const x=commentsCache.find(c=>Number(c.id)===id);if(!x)return;
@@ -727,7 +510,6 @@ function openCommentEdit(id){
   document.getElementById("editCommentName").value=x.name||"";
   document.getElementById("editCommentRating").value=String(x.rating||5);
   document.getElementById("editCommentText").value=x.comment||"";
-  document.getElementById("editCommentReply").value=x.admin_reply||"";
   document.getElementById("editCommentPhoto").value="";
   document.getElementById("commentEditStatus").textContent=x.image_url?"Foto saat ini tersimpan. Pilih file baru jika ingin mengganti.":"Tidak ada foto.";
   document.getElementById("commentEditBox").classList.remove("hidden");
@@ -750,13 +532,7 @@ async function saveCommentEdit(e){
       if(up.error)throw new Error("Upload foto gagal: "+up.error.message);
       imageUrl=sb.storage.from("images").getPublicUrl(path).data.publicUrl;
     }
-    const {error}=await sb.from("comments").update({
-      name:document.getElementById("editCommentName").value.trim(),
-      rating:Number(document.getElementById("editCommentRating").value),
-      comment:document.getElementById("editCommentText").value.trim(),
-      admin_reply:document.getElementById("editCommentReply").value.trim()||null,
-      image_url:imageUrl
-    }).eq("id",id);
+    const {error}=await sb.from("comments").update({name:document.getElementById("editCommentName").value.trim(),rating:Number(document.getElementById("editCommentRating").value),comment:document.getElementById("editCommentText").value.trim(),image_url:imageUrl}).eq("id",id);
     if(error)throw new Error(error.message);
     status.className="text-sm text-emerald-300 mt-2";status.textContent="✅ Komentar diperbarui.";
     await loadComments();await loadDashboardStats();
@@ -764,146 +540,6 @@ async function saveCommentEdit(e){
   }catch(err){status.className="text-sm text-red-300 mt-2";status.textContent="❌ "+err.message}
 }
 function closeCommentEdit(){document.getElementById("commentEditBox").classList.add("hidden")}
-
-
-let promoSettingsCache=null;
-
-function setPromoBadge(id, enabled, percent, detail=""){
-  const el=document.getElementById(id);
-  if(!el) return;
-  el.textContent=enabled ? `ON · ${percent}%${detail}` : "OFF";
-  el.className=enabled
-    ? "rounded-full px-3 py-1 text-xs font-black bg-emerald-400/15 text-emerald-300"
-    : "rounded-full px-3 py-1 text-xs font-black bg-red-400/15 text-red-300";
-}
-
-function setPromoStatus(message, type="normal"){
-  const el=document.getElementById("promoSettingsStatus");
-  if(!el)return;
-  el.textContent=message;
-  el.className=
-    type==="success"
-      ?"text-sm text-emerald-300 mt-1 promo-status"
-      :type==="error"
-        ?"text-sm text-red-300 mt-1 promo-status"
-        :"text-sm text-white/45 mt-1 promo-status";
-}
-
-function clampPercent(value){
-  const n=Number(value);
-  if(!Number.isFinite(n))return 0;
-  return Math.max(0,Math.min(100,Math.round(n)));
-}
-
-function updatePromoBadges(){
-  const indexEnabled=document.getElementById("indexPromoEnabled")?.checked;
-  const indexPercent=clampPercent(document.getElementById("indexPromoPercent")?.value);
-  const shopEnabled=document.getElementById("shopPromoEnabled")?.checked;
-  const shopPercent=clampPercent(document.getElementById("shopPromoPercent")?.value);
-  const friday=document.getElementById("shopPromoFriday")?.checked;
-  const sunday=document.getElementById("shopPromoSunday")?.checked;
-
-  setPromoBadge("indexPromoBadge",indexEnabled,indexPercent);
-  setPromoBadge("shopPromoBadge",shopEnabled,shopPercent,
-    friday && sunday ? " · JUMAT + MINGGU"
-      : friday ? " · JUMAT"
-      : sunday ? " · MINGGU"
-      : ""
-  );
-}
-
-async function loadPromoSettings(){
-  setPromoStatus("⏳ Memuat pengaturan promo...");
-  const {data,error}=await sb
-    .from("promo_settings")
-    .select("id,index_enabled,index_percent,shop_enabled,shop_percent,shop_friday,shop_sunday,updated_at")
-    .eq("id",1)
-    .single();
-
-  if(error){
-    console.error(error);
-    setPromoStatus("❌ Gagal memuat promo: "+error.message,"error");
-    return;
-  }
-
-  promoSettingsCache=data;
-
-  document.getElementById("indexPromoEnabled").checked=!!data.index_enabled;
-  document.getElementById("indexPromoPercent").value=clampPercent(data.index_percent);
-
-  document.getElementById("shopPromoEnabled").checked=!!data.shop_enabled;
-  document.getElementById("shopPromoPercent").value=clampPercent(data.shop_percent);
-  document.getElementById("shopPromoFriday").checked=!!data.shop_friday;
-  document.getElementById("shopPromoSunday").checked=!!data.shop_sunday;
-
-  updatePromoBadges();
-
-  const updated=data.updated_at
-    ? new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeStyle:"short"}).format(new Date(data.updated_at))
-    : null;
-
-  setPromoStatus(
-    updated ? `✅ Pengaturan aktif. Terakhir diubah ${updated}.` : "✅ Pengaturan berhasil dimuat."
-  );
-}
-
-async function savePromoSettings(){
-  const btn=document.getElementById("savePromoSettingsBtn");
-  btn.disabled=true;
-  btn.textContent="⏳ Menyimpan...";
-  setPromoStatus("⏳ Menyimpan pengaturan promo...");
-
-  const payload={
-    index_enabled:document.getElementById("indexPromoEnabled").checked,
-    index_percent:clampPercent(document.getElementById("indexPromoPercent").value),
-    shop_enabled:document.getElementById("shopPromoEnabled").checked,
-    shop_percent:clampPercent(document.getElementById("shopPromoPercent").value),
-    shop_friday:document.getElementById("shopPromoFriday").checked,
-    shop_sunday:document.getElementById("shopPromoSunday").checked,
-    updated_at:new Date().toISOString()
-  };
-
-  try{
-    const {error}=await sb
-      .from("promo_settings")
-      .update(payload)
-      .eq("id",1);
-
-    if(error)throw new Error(error.message);
-
-    promoSettingsCache={id:1,...payload};
-    document.getElementById("indexPromoPercent").value=payload.index_percent;
-    document.getElementById("shopPromoPercent").value=payload.shop_percent;
-    updatePromoBadges();
-
-    setPromoStatus("✅ Pengaturan promo berhasil disimpan.","success");
-  }catch(error){
-    console.error(error);
-    setPromoStatus("❌ Gagal menyimpan: "+error.message,"error");
-  }finally{
-    btn.disabled=false;
-    btn.textContent="💾 Simpan Pengaturan";
-  }
-}
-
-function bindPromoSettingsUI(){
-  [
-    "indexPromoEnabled",
-    "indexPromoPercent",
-    "shopPromoEnabled",
-    "shopPromoPercent",
-    "shopPromoFriday",
-    "shopPromoSunday"
-  ].forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    el.addEventListener("input",updatePromoBadges);
-    el.addEventListener("change",updatePromoBadges);
-  });
-
-  document.getElementById("savePromoSettingsBtn")
-    .addEventListener("click",savePromoSettings);
-}
 
 document.querySelectorAll(".nav-item[data-section]").forEach(btn=>{
   btn.addEventListener("click",async()=>{
@@ -914,7 +550,6 @@ document.querySelectorAll(".nav-item[data-section]").forEach(btn=>{
     if(btn.dataset.section==="products")await loadProducts();
     if(btn.dataset.section==="comments")await loadComments();
     if(btn.dataset.section==="overview")await loadDashboardStats();
-    if(btn.dataset.section==="settings")await loadPromoSettings();
   });
 });
 document.getElementById("addProductBtn").addEventListener("click",openAddProduct);
@@ -938,8 +573,6 @@ document.getElementById("productAudioFile").addEventListener("change",e=>{
   const f=e.target.files[0];
   document.getElementById("productAudioCurrent").textContent=f?`File dipilih: ${f.name}`:"";
 });
-
-bindPromoSettingsUI();
 
 if(!SUPABASE_URL||!SUPABASE_ANON_KEY){
   showStatus("Supabase belum dikonfigurasi.");
